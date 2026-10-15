@@ -20,3 +20,8 @@ ADRs 001–010 sind durch den Owner-Review vom 14.10.2026 akzeptiert; Änderunge
 | ADR | Thema | Status | Gate |
 | --- | --- | --- | --- |
 | ADR-011 | [Identifier, Scanner, Kiosk und Inventur](011.md) | Owner-Invarianten verbindlich; konkrete technische Modellierung vorgeschlagen | Phase 1 dokumentiert; FK-/Unique-/Normalisierungstests vor Phase 3; Loan-/Inventur-/Self-Service-Gates gemäß Roadmap |
+
+| ADR | Thema | Status | Gate |
+| --- | --- | --- | --- |
+| ADR-012 | [Phase-2-Konten, Delegation und Authentik](012.md) | Umsetzung zur Review; Owner-Präzisierung Mitarbeitenden-OIDC verbindlich | Lokale Securitytests, CI und Betreiber-Authentik-Abnahme getrennt |
+| ADR-013 | [Deelvo-Marke und lokale Typografie](013.md) | Owner-Markenentscheidung verbindlich; umgesetzt zur Review | Kontraste/Fonts lokal prüfen; finales Logo später |

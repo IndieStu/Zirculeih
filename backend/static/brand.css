@@ -1,0 +1,14 @@
+/* Deelvo brand tokens. Original Inter 4.1 files, SIL OFL 1.1; served locally. */
+@font-face{font-family:Inter;src:url('fonts/inter/Inter-Regular.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:Inter;src:url('fonts/inter/Inter-Medium.woff2') format('woff2');font-style:normal;font-weight:500;font-display:swap}
+@font-face{font-family:Inter;src:url('fonts/inter/Inter-SemiBold.woff2') format('woff2');font-style:normal;font-weight:600;font-display:swap}
+@font-face{font-family:Inter;src:url('fonts/inter/Inter-Bold.woff2') format('woff2');font-style:normal;font-weight:700;font-display:swap}
+:root{
+  --brand-blue:#5590BF;--brand-orange:#F79007;--ink:#11140F;--charcoal:#272B24;
+  --graphite:#43483E;--muted:#74786F;--line:#D9D9CE;--paper:#F6F3E9;--white:#FFFFFF;
+  --link:#285F89;--primary-hover:#3978A8;--focus:#9C5100;--error:#962B20;
+  --text:var(--ink);--text-secondary:var(--graphite);--surface:var(--white);
+  --background:var(--paper);--control-line:var(--muted);
+  --font:Inter,system-ui,sans-serif;--weight-regular:400;--weight-medium:500;
+  --weight-semibold:600;--weight-bold:700;
+}

@@ -1,0 +1,12 @@
+{% extends "accounts/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}<h1>{{ title }}</h1>
+{% if text %}<div class="prose">{{ text|linebreaks }}</div>{% endif %}
+{% if account %}<p>{{ user.email }} · {% if user.email_verified_at %}E-Mail bestätigt{% else %}E-Mail noch nicht bestätigt{% endif %}</p>
+{% if not user.email_verified_at %}<a href="{% url 'token_request' 'verify' %}">Bestätigungslink anfordern</a>{% endif %}
+<p>Für eine verbindliche Ausleihreservierung brauchen wir deinen vollständigen Namen, deine Anschrift und eine Telefonnummer. Für reine Raum- oder Maschinenzeiten ist dieses Profil normalerweise nicht erforderlich.</p><p>Ausleihprofil: {% if user.borrower_profile_complete %}vollständig{% else %}noch unvollständig{% endif %}</p>{% endif %}
+{% if signup %}<p>Du brauchst zunächst nur eine E-Mail-Adresse und ein Passwort mit mindestens 12 Zeichen.</p><p><a href="{% url 'privacy' %}">Datenschutzhinweise lesen</a></p>{% endif %}
+{% if form or confirm %}<form method="post">{% csrf_token %}{{ form.as_p }}<button type="submit">{% if confirm %}E-Mail bestätigen{% elif account %}Profil speichern{% else %}Weiter{% endif %}</button></form>{% endif %}
+{% if login %}<p><a href="{% url 'token_request' 'reset' %}">Passwort vergessen?</a> · <a href="{% url 'token_request' 'verify' %}">Bestätigungslink anfordern</a></p>{% if oidc_enabled %}<hr><h2>Für Mitarbeitende</h2><form method="post" action="{% url 'oidc_login' %}">{% csrf_token %}<button>Mit Authentik anmelden</button></form>{% endif %}{% endif %}
+{% if account %}<p><a href="{% url 'password_change' %}">Passwort ändern</a> · <a href="{% url 'token_request' 'reset' %}">Lokales Passwort einrichten / zurücksetzen</a></p>{% if user.is_employee and oidc_enabled %}<p><a href="{% url 'oidc_link' %}">Authentik verbinden</a> · <a href="{% url 'oidc_unlink' %}">Verknüpfung entfernen</a></p>{% endif %}{% if groups_admin %}<p><a href="{% url 'groups' %}">Gruppen und Rechte verwalten</a></p>{% endif %}{% endif %}
+{% endblock %}

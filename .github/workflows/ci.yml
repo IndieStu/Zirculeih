@@ -1,4 +1,4 @@
-name: Foundation and PostgreSQL integrity
+name: Deelvo accounts and PostgreSQL integrity
 on:
   push:
   pull_request:
@@ -23,6 +23,10 @@ jobs:
           docker compose run --rm test python -m ruff check .
           docker compose run --rm test python -m ruff format --check .
           docker compose run --rm test python -m mypy
+      - name: Model and configuration checks
+        run: |
+          docker compose run --rm test python backend/manage.py check
+          docker compose run --rm test python backend/manage.py makemigrations --check --dry-run
       - name: PostgreSQL integration and concurrency
         run: docker compose run --rm test python -m pytest --junitxml=/tmp/results.xml
       - name: Bootstrap and health smoke test

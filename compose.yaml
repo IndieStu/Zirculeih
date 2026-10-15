@@ -1,4 +1,4 @@
-name: zirculeih-dev
+name: deelvo-dev
 x-app: &app
   build:
     context: .

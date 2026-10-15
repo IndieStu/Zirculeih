@@ -1,17 +1,6 @@
-{% load static %}
-<!doctype html>
-<html lang="de">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Zirculeih</title>
-  <link rel="stylesheet" href="{% static 'foundation.css' %}">
-</head>
-<body>
-  <main>
-    <h1>Zirculeih</h1>
-    <p>Die technische Grundlage ist eingerichtet.</p>
-    <p>Die Anwendung befindet sich in Entwicklung.</p>
-  </main>
-</body>
-</html>
+{% extends "accounts/base.html" %}
+{% block title %}Willkommen{% endblock %}
+{% block content %}<h1>Gemeinsam nutzen.<br>Einfach ausleihen.</h1>
+<p>Willkommen bei Deelvo. Dein Ort für gemeinsam genutzte Gegenstände, Räume und Werkstätten.</p>
+{% if user.is_authenticated %}<p><a href="{% url 'account' %}">Zu deinem Konto</a></p>{% else %}<p><a href="{% url 'signup' %}">Konto erstellen</a> · <a href="{% url 'login' %}">Anmelden</a></p>{% endif %}
+<p>Die Anwendung befindet sich in Entwicklung. Der Katalog wird in einem späteren Schritt ergänzt.</p>{% endblock %}

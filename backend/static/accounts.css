@@ -1,0 +1,22 @@
+*{box-sizing:border-box}
+body{margin:0;background:var(--background);color:var(--text);font:var(--weight-regular) 1rem/1.6 var(--font)}
+a{color:var(--link);text-underline-offset:.18em}a:hover{color:var(--charcoal)}
+header,footer{padding:1.2rem max(1rem,calc((100% - 68rem)/2));background:var(--surface)}
+header{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-bottom:1px solid var(--line);border-top:5px solid var(--brand-blue)}
+.brand{font-size:1.5rem;font-weight:var(--weight-bold);text-decoration:none;color:var(--ink)}
+.brand:hover{color:var(--ink)}
+nav{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}nav form{margin:0}
+main{max-width:48rem;margin:2rem auto;padding:2rem;background:var(--surface);border:1px solid var(--line);border-radius:1rem}
+h1{font-size:2rem;font-weight:var(--weight-bold);line-height:1.2}h2{margin-top:2rem;font-weight:var(--weight-semibold)}
+form p{margin:1rem 0}label{display:block;font-weight:var(--weight-semibold)}
+input,select,textarea{font:inherit;max-width:100%;width:100%;padding:.65rem;border:1px solid var(--control-line);border-radius:.35rem;background:var(--white);color:var(--ink)}
+input[type=checkbox]{width:1.15rem;height:1.15rem;accent-color:var(--link)}
+button{font:inherit;font-weight:var(--weight-semibold);padding:.6rem 1rem;background:var(--brand-blue);border:2px solid var(--link);color:var(--ink);border-radius:.4rem;cursor:pointer}
+button:hover{background:var(--primary-hover);color:var(--white)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.errorlist{color:var(--error)}.helptext{display:block;color:var(--text-secondary);font-size:.9rem}
+.notice{padding:1rem;background:var(--paper);border-left:4px solid var(--brand-orange)}
+.skip{position:absolute;left:-9999px}.skip:focus{left:1rem;top:1rem;background:var(--white);padding:1rem}
+.prose{overflow-wrap:anywhere}li{margin:.6rem 0}li form{display:inline-block;margin:.25rem}
+footer{margin-top:2rem;font-weight:var(--weight-medium)}
+@media(max-width:600px){main{margin:1rem .6rem;padding:1rem}header{padding:1rem}h1{font-size:1.6rem}nav{gap:.6rem}}

@@ -1,4 +1,4 @@
-# Abhängigkeiten — Phase 1, geprüft 14.10.2026
+# Abhängigkeiten — Deelvo, Phase 1/2
 
 ## Konkrete Aufnahmeprüfung
 
@@ -30,7 +30,7 @@ Die folgenden Wheels wurden von PyPI heruntergeladen, gegen dort veröffentlicht
 
 MIT/BSD/PSF/Apache-Pakete erscheinen unter Erhalt ihrer Copyright-/Lizenz-/Notice-Texte mit der angestrebten AGPL-3.0-or-later-Veröffentlichung plausibel kombinierbar. Django enthält zusätzliche MIT-/BSD-Notices für vendorte Adminassets; Admin ist nicht aktiviert, Texte trotzdem im Wheel vorhanden. Mypy enthält zusätzlich Apache-2.0-Typeshed; erzeugter Anwendungscode übernimmt keine Stubquellen. Pathspec ist MPL-2.0, nicht MIT: nur unverändertes getrenntes Devtool, file-level Pflichten/Quellzugang beim Verteilen beibehalten; nicht in Runtime importiert.
 
-Psycopg 3.3.6 ist laut konkreter Wheel-Metadaten **LGPL-3.0-only**, nicht der frühere or-later-Kandidat. Unveränderte separate Pythonbibliothek und dynamisches system-libpq; keine statische Einbettung. Lizenztexte, Bibliotheksquellen/Änderungen und Austauschbarkeit bei Distribution sicherstellen. Eine mögliche AGPL-3.0-or-later-Lizenz des eigenen Anwendungscodes ändert diese Bibliothekslizenz nicht. Psycopg-binary wurde als mögliche lokale Testhilfe geprüft, aber nicht installiert oder verwendet; nicht in Runtime-/CI-Lock oder Dockerimage; gebündelte native Bibliotheken brauchen eigenen Releaseaudit, falls später aufgenommen. Keine definitive Rechtsmeinung oder Lizenzwahl für Zirculeih.
+Psycopg 3.3.6 ist laut konkreter Wheel-Metadaten **LGPL-3.0-only**, nicht der frühere or-later-Kandidat. Unveränderte separate Pythonbibliothek und dynamisches system-libpq; keine statische Einbettung. Lizenztexte, Bibliotheksquellen/Änderungen und Austauschbarkeit bei Distribution sicherstellen. Eine mögliche AGPL-3.0-or-later-Lizenz des eigenen Anwendungscodes ändert diese Bibliothekslizenz nicht. Psycopg-binary wurde als mögliche lokale Testhilfe geprüft, aber nicht installiert oder verwendet; nicht in Runtime-/CI-Lock oder Dockerimage; gebündelte native Bibliotheken brauchen eigenen Releaseaudit, falls später aufgenommen. Keine definitive Rechtsmeinung oder Lizenzwahl für Deelvo.
 
 ## Interpreter und Container
 
@@ -59,3 +59,19 @@ CI-Action: actions/checkout Commit `11d5960a326750d5838078e36cf38b85af677262` (a
 ## Scanner-Ergänzung — 15.10.2026
 
 Die erste Scannerunterstützung basiert auf HID-Keyboard-Eingabe mit Enter und demselben Formular wie manuelle Codeeingabe. Dafür wird jetzt weder eine proprietäre Scanner-SDK-Abhängigkeit noch ein neues Runtimepaket aufgenommen. Kamera-/Barcode-Decoder, Labelgeneratoren und optionale Audiofunktionen werden erst bei tatsächlicher Implementierung gegen konkrete Releaseartefakte/Lizenzen geprüft. Kein externer Scan-/Cloudauflösungsdienst und keine zusätzliche Offline-Synchronisationsinfrastruktur.
+
+## Phase 2 — Authentik und Inter, geprüft 15.10.2026
+
+[OIDC-Auditmanifest](docs/oidc-dependency-artifacts.json): konkrete macOS-arm64- und Linux-x86_64-Wheels heruntergeladen, PyPI-SHA-256 verglichen, beiliegende Lizenztexte/Metadaten gelesen. Runtimepins/Hashlock ergänzt, lokal ausschließlich aus geprüften Wheels installiert. PyPI-Metadaten meldeten bei Abfrage keine vulnerabilities-Einträge; das ersetzt keinen vollständigen Securityscan.
+
+| Komponente | Version | SPDX | Verwendung / Quelle |
+| --- | --- | --- | --- |
+| PyJWT | 2.15.1 | MIT | geprüfte RS256-ID-Token, [Release](https://pypi.org/project/PyJWT/2.15.1/) |
+| cryptography | 50.0.2 | Apache-2.0 OR BSD-3-Clause | RSA/JWK-Kryptografie, [Release](https://pypi.org/project/cryptography/50.0.2/) |
+| cffi | 2.1.1 | MIT-0 | native cryptography-Anbindung, [Release](https://pypi.org/project/cffi/2.1.1/) |
+| pycparser | 3.11 | BSD-3-Clause | cffi-Abhängigkeit, [Release](https://pypi.org/project/pycparser/3.11/) |
+| Inter | 4.1 | OFL-1.1 | originale lokale Regular/Medium/SemiBold/Bold WOFF2, [Release](https://github.com/rsms/inter/releases/tag/v4.1) |
+
+MIT/BSD/Apache/MIT-0 erlauben die unveränderte Bibliotheksverwendung bei Erhalt geltender Lizenz-/Noticetexte. Native Wheels enthalten zusätzlich Bibliotheksbestandteile (u.a. OpenSSL/libffi); vollständige native Notices/SBOM und OS-Schwachstellenprüfung bleiben verpflichtender Releaseaudit, keine pauschale Freigabe aller zukünftigen Artefakte. Keine selbst implementierte RSA-Signaturprüfung. Keine allauth-/Authlib-/HTTP-Client-Abhängigkeit eingeführt; fest konfigurierte HTTPS-Requests verwenden Python-Standardbibliothek.
+
+Inter-Fonts unverändert, ursprüngliche Lizenz-/Copyrightdatei wird neben den Fonts ausgeliefert, keine Umbenennung oder Ableitung des Fontnamens. [SHA-256-/Quellmanifest](docs/branding-artifacts.json), [mitgelieferte OFL](backend/static/fonts/inter/LICENSE.txt). Der OFL-Font bleibt separat lizenziert; keine endgültige Lizenzentscheidung für die Anwendung. Alle Fontrequests an dieselbe selbst gehostete Instanz, kein Google/CDN-Laufzeitdienst.
