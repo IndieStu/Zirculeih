@@ -1,6 +1,6 @@
 # Entwicklungsplan
 
-Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phase 1 ist gemerged; Phase 2 wurde am 15.10.2026 ausdrücklich freigegeben. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
+Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phase 2 ist akzeptiert und gemerged; Phase 3 wurde am 15.10.2026 ausdrücklich freigegeben und ist in Arbeit. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
 
 | Phase | Kleine Lieferinkremente / Abhängigkeiten | Gate |
 | --- | --- | --- |
@@ -13,9 +13,9 @@ Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. P
 | 6 Ausleihe | zuerst Agreements/Identität/Haftpflicht; HID-Eingabe in Ausgabe/Abholung/Spontanausleihe und Rücknahme; Multi-Booking-Loan, Teilrückgabe/Custody; Verlängerung | bewusste atomare Bestätigung; alle normalen OD-/Policygates; keine doppelte Buchung bei Abholung, tatsächliche Rückgabe beweisbar |
 | 7 Einweisungen/Pools/Bundles | unbefristete Qualifikation; konkrete Poolzuweisung; atomare Komponenten; Wartung | AC-05/07/08/14, Race-Tests |
 | 8 Serien | begrenzte Wochenregeln; Anfrage; all-or-nothing Genehmigung; Einzel-Ausnahme | AC-10/11/23 mit PG |
-| 9 Benachrichtigungen | Outbox/Retry; SMTP; Reminder; revocable iCal | genau ein logisches Ereignis, keine PII-Feeds |
+| 9 Benachrichtigungen/Kalender | Outbox/Retry; SMTP; Reminder; standardkonforme subscribable ICS, stabile UIDs, DST, revocable private Feedtokens; Nextcloud-Subscription | CAL-01–06, keine PII-Lecks, Update/Cancel/Widerruf; keine CalDAV-Pflicht |
 | 10 Assetbetrieb | Inventory Runs/Erwartungssnapshot; Scans nach Ort, Seen/Not-Seen, Abweichungen/Custodybericht; explizite Moves; Labels/Wartung/Berichte; dedizierte Staffed-Kiosk-UI als eigenes Inkrement | Inventur-only Assets, keine stillen Standortänderungen; HID/Fokus/Touch/Reset/Privacy vor Pilot; scoped Audit |
-| 11 API | DRF nur benötigte Endpunkte; Schema; Authentik-Härtung | gleiche Services/Permissions, Rate Limits |
+| 11 API | explizites /api/v1/, bedarfsgerechte Endpunkte/OpenAPI, scoped gehashte Token/Clients; DRF nur nach Review | API-01–04, gleiche Services/Permissions, Owner-Rechteobergrenze, Rate Limits |
 | 12 Produktion | Threat-/A11y-Review; Last; Restore; Upgrade/Rollback; SBOM | AC-18/19/20, Privacy/Retention, Operatorhandbuch |
 | 13 Pilot/Release | reale Kategorien manuell; kleiner Pilot; Fehler beheben; Release/Lizenz | Owner-Abnahme und Lizenzentscheidung |
 
@@ -46,3 +46,11 @@ Self-Service-Authentifizierung, Device Trust, Kamera und Offline-Inventur werden
 ## Phase 2 — freigegebene Inkremente 15.10.2026
 
 P2.1 eigenes Usermodell und Migrationen, lokale Registrierung/Verifikation/Reset/Sessions sowie Pflichtprofil. P2.2 Grantresolver, sichere Baseline, Gruppen-/Mitgliedschaftsservices und Audit unter gemeinsamem Autorisierungslock; UI mit beschränkter Delegation und Sperre. P2.3 Authentik-Codeflow/PKCE, sichere ausdrückliche Kontoverknüpfung und lokaler Fallback; kein Claimimport. P2.4 Owner-Branding Deelvo, lokale Inter-Schriften und zentrale Tokens; responsive Konten-/Gruppenansichten. Sicherheits-/Race-/Kontrasttests, Migration und Operatoranleitung im [Phase-2-Review](docs/PHASE_2_REVIEW.md). Kein Inventar-/Buchungs-/Kioskfeature vorweggenommen.
+
+## Phase 3 und fortlaufende Owner-Ergänzungen
+
+P3.1 Inventaridentität/Baum-/Namespaceintegrität; P3.2 gemeinsame Services, Scopegrenzen, Historie und HID-Lookup; P3.3 typisierte Zusatzfelder, restriktive private Medien und CSV preview/commit/export; P3.4 operative Übersicht ausschließlich mit vorhandenem Inventar; P3.5 Phase-2/3-Handbuch, zentrale Dokumentationsintegration und API-/ICS-Architektur gemäß [ADR-015](docs/adr/015.md); P3.6 vollständige Regression, PostgreSQL-CI, manuelle UI-Abnahme und Owner-Review. Stand und offene Punkte im [WIP-Protokoll](docs/PHASE_3_WIP.md); dortige Testzahlen sind zeitgebundene Zwischenstände.
+
+Ab Phase 3 ist ein Feature erst vollständig mit Implementierung, automatisierten und Autorisierungs-/Securitytests, aktualisiertem Handbuch, relevanter API-Dokumentation und Architektur/ADRs. Das Handbuch entsteht jetzt für Konten/Gruppen/Inventar und wächst mit jeder Phase, nicht erst in Phase 12. DASH-/DOC-Szenarien gelten in Phase 3; API-/CAL-Szenarien bleiben nachvollziehbar geplant bis Phase 11/9.
+
+Der Dashboard-Ausbau folgt den produktiven Domänen: Phase 5 Bookings/Heute, Phase 6 Abholung/Rückgabe/Überziehung, Phase 7 Wartungs-/Qualifikationsbedarf ohne initiale Qualifikationsabläufe, Phase 8 Genehmigungen, Phase 10 Inventurabweichungen. Alle Projektionen bleiben rollen-/scopeabhängig. Keine dieser Roadmapergänzungen startet Phase 4 oder Produktion.

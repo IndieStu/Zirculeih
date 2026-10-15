@@ -86,10 +86,53 @@ class GrantForm(forms.Form):
         label="Max. Dauer in Minuten", min_value=1, required=False
     )
 
+    def __init__(self, *args, actor=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        from inventory.forms import NodeChoice, permitted_nodes
+        from inventory.models import Asset, Category, Location
+        from inventory.services import visible_assets
+
+        self.fields["scope_kind"].choices += [
+            ("location", "Ein Standort"),
+            ("category", "Eine Kategorie"),
+            ("asset", "Ein Asset"),
+        ]
+        self.fields["scope_location"] = NodeChoice(
+            label="Zielstandort",
+            required=False,
+            queryset=permitted_nodes(actor, Location, "location.read")
+            if actor
+            else Location.objects.none(),
+        )
+        self.fields["scope_category"] = NodeChoice(
+            label="Zielkategorie",
+            required=False,
+            queryset=permitted_nodes(actor, Category, "category.read")
+            if actor
+            else Category.objects.none(),
+        )
+        self.fields["scope_asset"] = forms.ModelChoiceField(
+            label="Zielasset",
+            required=False,
+            queryset=visible_assets(actor) if actor else Asset.objects.none(),
+        )
+        self.fields["inherit"] = forms.BooleanField(
+            label="Auch untergeordnete Standorte/Kategorien", required=False
+        )
+
     def clean(self):
         data = super().clean()
         group, email = data.pop("scope_group", None), data.pop("scope_email", "")
         kind = data.get("scope_kind")
+        targets = {k: data.pop("scope_" + k, None) for k in ("location", "category", "asset")}
+        if kind in targets:
+            target = targets[kind]
+            if target is None or group or email or any(v for k, v in targets.items() if k != kind):
+                raise forms.ValidationError("Bitte genau ein passendes Zielobjekt auswählen.")
+            data["scope_id"] = target.pk
+            return data
+        if any(targets.values()):
+            raise forms.ValidationError("Bitte keine weiteren Zielobjekte angeben.")
         if kind == "group":
             if not group or email:
                 raise forms.ValidationError("Bitte genau eine Zielgruppe wählen.")

@@ -2,9 +2,14 @@
 
 Selbst gehostete Inventarverwaltung, Ressourcenreservierung und Ausleihe für Makerspaces.
 
-Stand: 15.10.2026. Phase 1 ist gemerged. Phase 2 ist vom Owner freigegeben und liefert Konten, Gruppen, Berechtigungsservices sowie Authentik-Komfortlogin für Mitarbeitende zur Review. Produktname und Designgrundlage sind Deelvo. Inventar, Katalog und Buchungen folgen in eigenen Phasen.
+Stand: 15.10.2026. Phase 2 ist akzeptiert und gemerged. Phase 3 ist freigegeben und in Arbeit: Inventar, Standort-/Kategoriebäume, Identifier und HID-Lookup, Zusatzfelder, private Medien, CSV und operative Übersicht. Lokale und Docker-/PostgreSQL-17-Prüfungen sind bestanden; Phase 3 steht zur Owner-Review. Katalog, Buchungen und Ausleihen folgen in eigenen Phasen.
 
 ## Start und Review
+
+- [Benutzer- und Administratorhandbuch](docs/handbook/README.md)
+- [Phase-3-Review mit Tests und Screenshots](docs/PHASE_3_REVIEW.md)
+- [Historischer WIP-Sicherungspunkt](docs/PHASE_3_WIP.md)
+- [API-/Kalenderarchitektur und Phasenzuordnung](docs/INTEGRATIONS.md)
 
 - [Phase-2-Review](docs/PHASE_2_REVIEW.md) und [Konten-/Authentik-Konfiguration](docs/ACCOUNTS.md)
 - [Markenentscheidung und lokale Schriften](docs/adr/013.md)

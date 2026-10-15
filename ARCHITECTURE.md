@@ -61,3 +61,13 @@ Das logische identification-Modul muss keine eigene Django-App werden: Phase 3 k
 HID-Tastatur und manuelle Codeeingabe zuerst. Kioskmodus, Device und Scaninhalt verleihen keine Rechte. Kiosk/UI ist ein Client derselben Transaktionsgrenze; auch Scanvorbereitung wird beim Commit neu autorisiert. Ein Multiasset-Korb kann mehrere bestehende oder spontan angelegte Bookings einem Loan zuordnen; kein bestehender Bookingbezug geht verloren. Die Scannersitzung hält keine unbemerkten Reservierungen.
 
 Phase 1 dokumentiert Identifier-FKs, Eindeutigkeit/Normalisierung, Kontextgrenzen und spätere Race-Tests. Keine Kioskoberfläche, Device-Trust-Infrastruktur oder Identifier-Fachmigration in diesem Inkrement. Modell und frühe Umsetzungsreihenfolge sind bereits Teil der Roadmap, nicht erst ein Release-Nachtrag.
+
+## Productive Phase-3 inventory boundary
+
+Implemented in `backend/inventory`: asset/category/location/tag models; identifier registry and read-only resolver; typed custom values; private media; CSV preview/commit and export. Central authorization remains in `accounts.authorization`; batch reads use the same grant algebra as individual checks. Mutations use its authorization-write transaction lock, revision checks, scoped target validation and audit. PostgreSQL separately guards tree cycles, identifier identity and typed-value integrity. See [ADR-014](docs/adr/014.md).
+
+Assets retain their identity without a Resource. Phase 4 may add an explicit ResourceUnit-to-Asset relationship and an additive Unit identifier FK with XOR constraint, preserving namespace/code uniqueness. No productive ResourceUnit or Booking model is introduced here. Movements store source/target IDs and path snapshots; hierarchy reparenting audits affected contexts rather than erasing prior placement.
+
+The dashboard composes authorized read projections and permitted actions from productive domains. Phase 3 only shows inventory attention, inactive locations and secondary counts. Later Booking/Loan providers can extend the view without becoming dependencies of inventory services. [ADR-015](docs/adr/015.md) and [integration contract](docs/INTEGRATIONS.md) define `/api/v1/`, shared services, permission-bounded tokens and Phase-9 ICS/Nextcloud subscription; actual API implementation remains Phase 11. No CalDAV, placeholder booking feeds, API framework or chart dependency is introduced now.
+
+User/admin procedures live in the [handbook](docs/handbook/README.md); architecture and integration contracts remain developer documents. Documentation and permission tests are part of each feature's completion gate. Current template/CSS implementation needs no Tailwind/HTMX runtime; the earlier frontend options are not installed dependencies.

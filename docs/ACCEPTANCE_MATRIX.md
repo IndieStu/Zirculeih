@@ -90,3 +90,50 @@ Eine vorläufige Scanliste darf keine Claims erzeugen. Testdaten für Inventory-
 - AC-22: Sperre, Sitzungs-/Tokenentzug und Trennung Actor/gesperrter Beneficiary bestanden; tatsächlicher Return-/Checkout-Service folgt Phase 6.
 - AC-31: delegierte Mitgliedschaftsgrenzen, parallele Zuweisung und serialisierter Rechteentzug bestanden; Bookinglimits über verschiedene Units folgen Phase 5.
 - KIOSK-Szenarien bleiben geplant. Die zentrale Aktionsliste/Scopegrenze ist vorbereitet; keine erfundene Kiosk-Ausführung.
+
+## Phase-3-Inventar und Owner-Ergänzung
+
+Originalaufträge: [Phase 3](OWNER_APPROVAL_PHASE_3.md), [Dashboard/API/Handbuch](OWNER_ADDITION_DASHBOARD_API_HANDBOOK.md). Inventar-/Dashboardtests sind tatsächliche Phase-3-Tests; vollständige Suite/Umgebungen/Resultate stehen im abschließenden Phase-3-Review. API/CAL bleiben ausdrücklich geplant.
+
+| ID | Nachweis | Phase | Status / Test |
+| --- | --- | --- | --- |
+| P3-AC-01 | beliebige Location-/Kategoriehierarchie, stabile UUID/Pfade, keine Zyklen | 3 | Service-, direkte SQL- und parallele Reparenttests |
+| P3-AC-02 | sichere Reparent-/Aktivstatusänderung, alte/neue Scopes, PROTECT | 3 | Hierarchie-/Move-/Negativtests |
+| P3-AC-03 | Inventar-only Asset, keine implizite Resource/Unit/Loan | 3 | produktiver Assetservice, keine vorgezogenen Modelle |
+| P3-AC-04 | Inventarnummer permanent/DB-unique, Archiv erhält Historie | 3 | Edit-/SQL-/Archive-/Reuse-Negativtests |
+| P3-AC-05 | Zustand und Lebenszyklus getrennt, stale Edit wird abgewiesen | 3 | Domänen-/Formulartests |
+| P3-AC-06 | mehrere Identifier, Namespace+normalisierter Wert DB-eindeutig | 3 | direkte SQL- und Konkurrenztests |
+| P3-AC-07 | genaue/ASCII-upper Normalisierung, führende Nullen, bösartige Eingaben | 3 | Normalisierungs-/Längen-/Steuerzeichenfälle |
+| P3-AC-08 | keine Reassignment/Reaktivierung/Löschung alter Codes | 3 | Stilllegungs-/direkte SQL-Negativtests |
+| P3-AC-09 | zufällige opake Deelvo-Codes, kein sequenzieller DB-/PII-Code | 3 | Generator-/Resolutiontests |
+| P3-AC-10 | Lookup read-only, manuell/HID Enter, Folgeeingabe leer, gleiche Unknown-Antwort | 3 | Services/HTML/CSRF/Repeated-lookup; echte Hardware vor Pilot |
+| P3-AC-11 | Scope/IDOR/Denies/Sensitive-/Finanzfelder auf Listen/Details/Medien/CSV | 3 | Domänen-/UI-/Export-Negativtests |
+| P3-AC-12 | Umzug behält alte/neue Orte/Pfadtexte und Actor | 3 | AssetMovement-/Audit-/PROTECT-Tests |
+| P3-AC-13 | getypte Custom Values, Definitionstyp-/Vertraulichkeitsguard | 3 | sechs Typen/negative Werte/direkte SQL-Tests |
+| P3-AC-14 | private Medien, Allowlist, Größe/Pixel, metadatafreies Reencode, CSRF | 3 | Bild-/Malware-/Storagefehler-/Download-Scope-Tests |
+| P3-AC-15 | CSV-Vorschau ohne Assetschreibvorgang, atomarer geprüfter Commit/Retry | 3 | Konflikt-/Rechteentzug-/Owner-/Formelneutralisierungstests |
+| P3-AC-16 | keine operative Admin-/Employee-Sonderrolle, reale Scopeauswahl | 3 | Integrations-/Gruppeneditor-/Objektrechte-Tests |
+| DASH-01 | Dashboard filtert Inhalte und Counts nach aktuellen Scopes/Denies | 3+ | Tests in test_inventory_ui.py |
+| DASH-02 | nur implementierte erlaubte Schnellaktionen; persönlicher Bereich getrennt | 3+ | positive/negative Link- und Redirecttests |
+| DASH-03 | prüfbare Inventarhinweise vor Bestandszahlen, keine Fakecharts/-Loans | 3+ | Dashboardinhalt/Hierarchie, manuelle Browserabnahme |
+| DASH-04 | Phase-3-Dashboard ohne Booking/Loan/InventoryRun produktiv | 3 | reale Inventardaten/Scope-Tests; Timeline erst in ihren Phasen |
+| API-01 | APIadapter ruft gemeinsame Services/Schreiblocks, keine Regeldoppelung | 11 | geplant, noch keine externen Endpunkte |
+| API-02 | /api/v1/, explizite DTOs und OpenAPI, bounded Pagination/Filter/Fehler | 11 | geplant, dokumentierter Vertragsrahmen |
+| API-03 | Tokenrechte höchstens Owner/Client ∩ Token, Widerruf/Sperre aktuell | 11 | geplant, kein Tokenmodell vorgezogen |
+| API-04 | kein internes Modell-/Feld-/Objekt-Bypass; API-IDOR und read-only Token | 11 | geplant, negative Transporttests erforderlich |
+| CAL-01 | RFC-5545-konformes UTF-8-ICS aus produktiven Bookingdaten | 9 | geplant, kein Phase-3-Fakefeed |
+| CAL-02 | stabile UID bei Wiederabruf/Änderung/Storno, keine Duplikate | 9 | geplant, Parser-/Clienttests |
+| CAL-03 | IANA/DST/UTC, [start,end), echte DATE-Endsemantik | 9 | geplant, Berlin Gap/Fold und Tagesausleihe |
+| CAL-04 | persönliche/Resource-/Kategorie-/Ort-/Org-Sicht ohne PII-/Privatleck | 9/11 | geplant, Scope-/Feld-Negativtests |
+| CAL-05 | starke gehashte private Feedtokens, Widerruf/Regeneration/Rechteentzug | 9/11 | geplant, keine globalen öffentlichen Kalenderlinks |
+| CAL-06 | Nextcloud-Abo über offene ICS-Standards, Update/Refresh/Widerruf real geprüft | 9/11 | geplant, eigene Testinstanz; kein CalDAV nötig |
+| DOC-01 | Handbuch existiert und ist von Architektur-/API-/Betriebsdokumenten getrennt | 3+ | docs/handbook/README.md, CI-Struktur-/Linkprüfung |
+| DOC-02 | tatsächliche Phase-2-Konten/Gruppen/Authentik/Sperre dokumentiert | 3+ | Getting-started / Users-and-groups, redaktionelle Review |
+| DOC-03 | tatsächliche Phase-3-Inventar-/Orts-/Code-/Rechte-/Dashboardaufgaben dokumentiert | 3+ | Inventar-/Location-/Identifier-/Admin-/Dashboardkapitel |
+| DOC-04 | Handbuch/API/ADRs mit Featureänderung Teil der Definition of Done | 3+ | Ownerentscheidung, AGENTS/Plan/CI, menschliche Feature-Review |
+
+Bisherige AC-/KIOSK-Fälle bleiben verbindlich. AC-13 ist jetzt für die produktive Inventargrundlage erfüllt (Bild/serielle/Standortfelder, keine Resourcepflicht); Wartungs-/Garantie-Fachprozesse bleiben ihren Phasen zugeordnet. KIOSK-AC für aktive Ausgabe/Rücknahme/Inventurläufe bleiben geplant. API-/CAL-Konzeptdokumente sind kein Laufzeitnachweis der späteren Features.
+
+## Phase-3-Prüfstand 15.10.2026
+
+P3-/DASH-Szenarien werden durch 56 neue Phase-3-Testfälle zusätzlich zu 65 bestehenden Fällen abgedeckt: 121 lokal und 121 in Docker/PostgreSQL 17 bestanden auf Anwendungscode `29d232e`. [Review und exakte Grenzen](PHASE_3_REVIEW.md), [JUnit](test-results/phase-3-local.xml), [CI](test-results/phase-3-ci.json). DOC-Struktur/Links geprüft und zwölf tatsächliche Handbuchkapitel vorhanden; sachliche Owner-Abnahme bleibt offen. API-/CAL-Laufzeitfälle bleiben geplant. Echte HID-Hardware und umfassende A11y-Abnahme sind noch nicht bestanden.

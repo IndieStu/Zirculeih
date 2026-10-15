@@ -186,13 +186,13 @@ def group_detail(request, group_id):
     admin = allowed(request.user, "permissions.manage")
     if not admin:
         require(request.user, "user.manage_groups", Scope("group", group.pk))
-    grant_form = forms.GrantForm()
+    grant_form = forms.GrantForm(actor=request.user)
     member_form = forms.MembershipForm()
     if request.method == "POST":
         op = request.POST.get("operation")
         if op == "grant":
             require(request.user, "permissions.manage")
-            grant_form = forms.GrantForm(request.POST)
+            grant_form = forms.GrantForm(request.POST, actor=request.user)
             if grant_form.is_valid():
                 try:
                     services.add_grant(request.user, group.pk, grant_form.cleaned_data)
