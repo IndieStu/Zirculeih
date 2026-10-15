@@ -18,4 +18,4 @@ Parallele Tests arbeiten mit eigenen Connections, synchronisierter Startbarriere
 
 Keine Berechtigungs-/Agreement-/Profilprüfung, keine Idempotenzkeys, kein Maintenance-Workflow, keine Benachrichtigungen, keine produktive Poolrekonfiguration, keine Policy-/Membershiplocks, keine Verlängerungs- oder Serienimplementierung. Diese Grenzen sind keine Lockerung der bindenden Architektur: sie sind die isolierte Versuchsanordnung vor Fachimplementierung. Konfiguration der Poolmitglieder bleibt im Test statisch; spätere Änderungen müssen Poollock vor Unitlocks verwenden. Reservierungsstatus und Gefährdung sind hier nur technische Testfelder.
 
-Lokale Testumgebung kann von Compose/PostgreSQL 17 abweichen; genaue Version und Ergebnisse stehen im Phase-1-Review. Ein erfolgreicher lokaler PostgreSQL-16-Test ersetzt nicht den ausstehenden Test des gepinnten Linux/PostgreSQL-17-Images.
+Lokale Testumgebung kann von Compose/PostgreSQL 17 abweichen; genaue Version und Ergebnisse stehen im Phase-1-Review. Der separate Test des gepinnten Linux/PostgreSQL-17-Images ist inzwischen in GitHub Actions erfolgreich ausgeführt; Nachweis im Phase-1-Review.

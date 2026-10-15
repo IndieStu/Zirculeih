@@ -429,4 +429,4 @@ Implementation recommendations and remaining review gates are in docs/adr/. Thes
 - Public/shared kiosks minimize displayed personal data and reset transaction context; future Self-Service needs server-side session reset, inactivity timeout and protection against previous-user data. No offline booking/checkout/return writes or blind later replay.
 - Phase 1: architecture/identifier boundaries and PostgreSQL constraints documented, no full kiosk UI or domain migrations. Phase 3 implements identifier model/manual lookup; Phase 6 adds HID-supported loan workflows; Phase 10 implements scanner inventory and a separately gated kiosk UI increment before pilot. Self-Service activation requires later explicit authentication/privacy decision.
 
-The new scenarios are planned, not implemented or passed. Phase-1 Docker/PostgreSQL-17 and GitHub-CI verification gates remain open as previously reported; this owner addition does not authorize Phase 2.
+The new scenarios are planned, not implemented or passed. Phase-1 Docker/PostgreSQL-17 and GitHub-CI verification subsequently passed on 2026-10-15 (see docs/PHASE_1_REVIEW.md); this owner addition does not authorize Phase 2.

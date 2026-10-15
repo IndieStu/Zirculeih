@@ -18,3 +18,5 @@ Kiosk/Scanner/Inventur ist jetzt verbindlicher Produktumfang; [Original](OWNER_R
 ## Nachtrag: lokaler Git-/SSH-Zugang — 15.10.2026
 
 Der lokale SSH-Zugang wurde nach Hinweis des Owners geprüft: GitHub authentifiziert IndieStu, Zirculeih HEAD ist über SSH erreichbar. Der Connector-403 betrifft diesen separaten Zugang nicht. Der bisherige Arbeitsordner hatte noch keine .git-Metadaten; Veröffentlichung wird über einen separaten Checkout vorbereitet, ohne bestehende Quelldateien zu überschreiben. Keine neue Phase oder Produktionsbereitstellung.
+
+Veröffentlichung inzwischen erfolgreich: Reviewbranch `review/foundation-and-kiosk-20261015` über Git/SSH gepusht; [Linux-Compose/PostgreSQL-17-CI](https://github.com/IndieStu/Zirculeih/actions/runs/38709084229) erfolgreich, alle 17 Tests bestanden. Connector-PR-Erstellung weiterhin 403. Kein Merge, kein Deployment, Phase 2 nicht begonnen.

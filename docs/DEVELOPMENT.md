@@ -40,3 +40,7 @@ Der Allocation-Prototyp erzeugt pro Test ein zufälliges Schema innerhalb der di
 ## Migration und Upgrade
 
 Phase 1 hat keine Fachmodelle und keine Fachmigrationen. `migrate` bleibt ein expliziter einmaliger Releasebefehl, nie automatisch in jedem Webcontainer. Dockerbuilds installieren ausschließlich gehashte Locks. Upgrades werden als kleine Reviewänderung mit neuem Lizenz-/Sicherheitsscan und PostgreSQL-Tests durchgeführt.
+
+## GitHub-Zugang dieses Projekts
+
+Der Projektordner ist seit 15.10.2026 ein Git-Checkout. Primärer Git-Zugang ist `origin = git@github.com:IndieStu/Zirculeih.git` über vorhandene lokale SSH-Authentifizierung. Diese wurde als IndieStu geprüft; Branchpush funktioniert. Der separate GitHub-Connector meldet bei Schreiboperationen weiterhin 403, ist aber für öffentliche Reads/CI-Abfragen nutzbar. Für Git-Operationen deshalb den vorhandenen lokalen SSH-Weg verwenden; keine Schlüssel kopieren oder Connector-403 als fehlende lokale Git-Berechtigung behandeln. Keine automatische Main-/Produktionsänderung.

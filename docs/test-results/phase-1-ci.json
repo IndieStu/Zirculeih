@@ -1,0 +1,78 @@
+{
+  "checked_at": "2026-10-15",
+  "run_url": "https://github.com/IndieStu/Zirculeih/actions/runs/38709084229",
+  "commit": "c8588b372fde8481e940827add9bb627d61b1bcd",
+  "status": "completed",
+  "conclusion": "success",
+  "environment": "Linux, Python 3.12.15, pinned PostgreSQL 17 Docker image",
+  "tests": {
+    "passed": 17,
+    "duration_seconds": 1.4,
+    "source": "Decoded job logs for job 116335703109"
+  },
+  "jobs": [
+    {
+      "id": 116335703109,
+      "name": "foundation",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Check documentation",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Create disposable development configuration",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Validate and build Compose",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Lint and types",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "PostgreSQL integration and concurrency",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Bootstrap and health smoke test",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Disposable cleanup",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ]
+}
