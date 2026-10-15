@@ -1,9 +1,9 @@
-# Codex instructions — Zirculeih
+# Codex instructions — Deelvo
 
 Read `PROJECT_SPEC.md` completely before any work. The specification is authoritative.
 
 1. Work in explicit phases. **Phase 0 is documentation and architecture only.** Do not create application feature code or start Phase 1 without owner approval.
-2. Keep Zirculeih a modular monolith, single organization, fully self-hosted. Never assume inventory asset = bookable resource = loan.
+2. Keep Deelvo a modular monolith, single organization, fully self-hosted. Never assume inventory asset = bookable resource = loan.
 3. Local email/password signup must work without Authentik. OIDC is optional. Group membership and permissions are administered in the app; employee status grants nothing by itself.
 4. Enforce object-level authorization in all views, APIs, exports and service methods. Use default deny and explicit, audited admin overrides.
 5. Never confirm overlapping exclusive bookings. Booking writes use one service layer and transaction-safe PostgreSQL allocation; test concurrent requests.

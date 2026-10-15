@@ -1,7 +1,7 @@
-# Zirculeih — Product & Engineering Specification
+# Deelvo — Product & Engineering Specification
 
-**Version:** 0.2 · **Status:** Phase-0 owner review incorporated; Phase-1 foundation; kiosk extension incorporated · **Date:** 2026-10-15  
-**Working title:** Zirculeih · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
+**Version:** 0.3 · **Status:** Phase 1 merged; Phase 2 owner-approved; Deelvo branding confirmed · **Date:** 2026-10-15
+**Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
 
@@ -376,7 +376,7 @@ For each decision: propose a sensible default, state alternatives/tradeoffs, rec
 
 ## 16. Codex operating instructions
 
-You are the principal software architect and implementation agent for **Zirculeih**. Read this entire specification before taking action. Treat requirements marked non-negotiable as binding. Never invent business requirements, never bypass authorization or booking invariants for speed, never introduce a proprietary dependency, and never start Phase 1 before Phase 0 approval.
+You are the principal software architect and implementation agent for **Deelvo**. Read this entire specification before taking action. Treat requirements marked non-negotiable as binding. Never invent business requirements, never bypass authorization or booking invariants for speed, never introduce a proprietary dependency, and never start Phase 1 before Phase 0 approval.
 
 **First response in a new repository:** inspect the repository; summarize your understanding, propose Phase 0 deliverables and file tree, list only decisions that block architectural correctness, then create documentation/ADRs only. Do not scaffold Django or write production feature code in Phase 0. You may create architecture diagrams and test plans. Present the architecture review to the owner and STOP.
 
@@ -394,7 +394,7 @@ You are the principal software architect and implementation agent for **Zirculei
 - SpaceWorks: makerspace-oriented inventory/booking; https://github.com/SpaceWorks-HQ/SpaceWorks
 - Rapla: resource scheduling, repeat bookings and fine-grained permissions; https://rapla.org/
 
-Research sources must not be copied into Zirculeih without independent license and attribution review. This specification records requirements, not legal approval to reuse source code.
+Research sources must not be copied into Deelvo without independent license and attribution review. This specification records requirements, not legal approval to reuse source code.
 
 
 
@@ -430,3 +430,11 @@ Implementation recommendations and remaining review gates are in docs/adr/. Thes
 - Phase 1: architecture/identifier boundaries and PostgreSQL constraints documented, no full kiosk UI or domain migrations. Phase 3 implements identifier model/manual lookup; Phase 6 adds HID-supported loan workflows; Phase 10 implements scanner inventory and a separately gated kiosk UI increment before pilot. Self-Service activation requires later explicit authentication/privacy decision.
 
 The new scenarios are planned, not implemented or passed. Phase-1 Docker/PostgreSQL-17 and GitHub-CI verification subsequently passed on 2026-10-15 (see docs/PHASE_1_REVIEW.md); this owner addition does not authorize Phase 2.
+
+## 21. Binding Phase-2 approval, staff OIDC and Deelvo branding — 2026-10-15
+
+Owner explicitly approved Phase 2 after Phase-1 merge. Authentik/OIDC is a required staff comfort-login feature in Phase 2, not a deferred optional implementation. Normal users register locally. Deployment activation requires configured provider credentials/endpoints; local login remains independent. No external group/admin claim import or automatic email linking. [Implementation decision](docs/adr/012.md).
+
+Product name Deelvo; new technical identifiers use deelvo where appropriate. Superseded working names remain only in historical sources/ADRs and existing repository/data identifiers whose migration is separate. Inter, self-hosted under SIL OFL 1.1, weights 400/500/600/700. Brand palette: Blue #5590BF (primary), Orange #F79007 (deliberate accent), Ink #11140F, Charcoal #272B24, Graphite #43483E, Muted #74786F, Line #D9D9CE, Warm Paper #F6F3E9, White #FFFFFF. WCAG 2.2 AA takes precedence; darker accessible variants allowed. No approved logo mark: only plain Deelvo text in Ink on light surfaces or white/light neutral on dark. Centralized brand tokens, no external font runtime dependency. [Binding branding decision](docs/adr/013.md).
+
+Phase 3 still requires its own owner approval; no production deployment is authorized.

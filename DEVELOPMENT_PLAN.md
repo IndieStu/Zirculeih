@@ -1,12 +1,12 @@
 # Entwicklungsplan
 
-Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phase 1 ist nach Dokumentaktualisierung freigegeben. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
+Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phase 1 ist gemerged; Phase 2 wurde am 15.10.2026 ausdrücklich freigegeben. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
 
 | Phase | Kleine Lieferinkremente / Abhängigkeiten | Gate |
 | --- | --- | --- |
 | 0 Architektur | Dokumente, OD-01–08, ADRs, AC-Matrix | Owner-Review, keine Features |
 | 1 Grundlage | Django/PostgreSQL Compose; Health/Logs; CI/pytest/lint/types; leeres Grundlayout; Identifier-/Kioskgrenzen und PostgreSQL-Constraints dokumentieren | frischer Clone startet, reale PG-Tests, keine Secrets; ADR-011 und Scanner-Testplan, keine Kiosk-UI |
-| 2 Konten/Gruppen | lokale Verifikation/Reset; Pflichtprofil; Grant-Service/Delegation; Sperre; OIDC optional | Eskalations-/IDOR-Tests, kein Claimimport |
+| 2 Konten/Gruppen | lokale Verifikation/Reset; Pflichtprofil; Grant-Service/Delegation; Sperre; Authentik-Komfortlogin für Mitarbeitende | Eskalations-/IDOR-Tests, kein Claimimport |
 | 3 Inventar | Orte/Assets unabhängig; Identifier/Aliase, Barcode-/QR-Zuordnung, manuelle Codeeingabe/Lookup und Suche; Custom Fields/Medien; CSV preview/export | inventory-only scanbar; eindeutige Identifier mit PostgreSQL-Race-Tests; Datenschutzrechte |
 | 4 Katalog | Resource/Units; Unitprojektion im Resolver; Pools als Konfiguration; öffentliche Galerie/Suche | keine privaten Assets sichtbar; Assetidentität und Buchbarkeit getrennt |
 | 5 Buchungskern | Zeitschedules/Resolver; Claims/Exclusion; Idempotenz; eigene Reservierungen | AC-03/04/09/12/17/21 in PG |
@@ -42,3 +42,7 @@ Neue Owner-Anforderung bereits architektonisch Teil der Phase-1-Grundlage; keine
 - Vor Pilot: KIOSK-AC-01–13 und -15–22 passend zum implementierten Betrieb, echter HID-Hardwaretest, Autorisierung, Netzausfall und gemeinsam genutztes Terminal abnehmen. KIOSK-AC-14 ist Gate vor Self-Service-Aktivierung, kein stillschweigend zugesagter früher Self-Servicebetrieb.
 
 Self-Service-Authentifizierung, Device Trust, Kamera und Offline-Inventur werden separat spezifiziert und bei Dependencies lizenzgeprüft. Kein Offline-Booking/Checkout/Return. Neue Phasenfreigaben bleiben erforderlich; die Roadmapergänzung startet weder Phase 2 noch Produktion.
+
+## Phase 2 — freigegebene Inkremente 15.10.2026
+
+P2.1 eigenes Usermodell und Migrationen, lokale Registrierung/Verifikation/Reset/Sessions sowie Pflichtprofil. P2.2 Grantresolver, sichere Baseline, Gruppen-/Mitgliedschaftsservices und Audit unter gemeinsamem Autorisierungslock; UI mit beschränkter Delegation und Sperre. P2.3 Authentik-Codeflow/PKCE, sichere ausdrückliche Kontoverknüpfung und lokaler Fallback; kein Claimimport. P2.4 Owner-Branding Deelvo, lokale Inter-Schriften und zentrale Tokens; responsive Konten-/Gruppenansichten. Sicherheits-/Race-/Kontrasttests, Migration und Operatoranleitung im [Phase-2-Review](docs/PHASE_2_REVIEW.md). Kein Inventar-/Buchungs-/Kioskfeature vorweggenommen.

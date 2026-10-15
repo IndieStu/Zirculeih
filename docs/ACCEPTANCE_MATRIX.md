@@ -1,6 +1,6 @@
 # Akzeptanzmatrix — Testplan, nicht ausgeführte Tests
 
-AC-01–24 stammen aus PROJECT_SPEC.md; AC-22 wird durch OD-07 bewusst ersetzt. AC-25–31 ergänzen Owner-Anforderungen und Architektur-Risiken. Alle Zeilen: **geplant / nicht ausgeführt**. Unit-Tests allein reichen für mit PostgreSQL markierte Zeilen nicht aus.
+AC-01–24 stammen aus PROJECT_SPEC.md; AC-22 wird durch OD-07 bewusst ersetzt. AC-25–31 ergänzen Owner-Anforderungen und Architektur-Risiken. Die ursprünglichen Szenarien sind weiterhin phasenübergreifend. Phase-2-Teilnachweise sind unten ausdrücklich abgegrenzt; noch nicht implementierte Fachabläufe bleiben geplant. Unit-Tests allein reichen für mit PostgreSQL markierte Zeilen nicht aus.
 
 | ID | Nachweis | Phase | Echtes PostgreSQL | Testschwerpunkt |
 | --- | --- | --- | --- | --- |
@@ -78,3 +78,15 @@ Quelle: [Originalanforderung](OWNER_REQUIREMENT_KIOSK.md), [Konzept](KIOSK_SCANN
 Zunächst manuelle Tastatureingabe und simulierte HID-Enter-Events, vor Abnahme zusätzlich reale USB-/Bluetooth-Hardware mit dokumentiertem Layout/Suffix. UI-Tests prüfen schnelles Scannen, zugängliches Feedback, Notiz-/Dialogfokus und unbekannte Codes; DB-Tests beweisen Eindeutigkeit, Atomarität, per-Line-Gewahrsam und Inventurabschluss mit eigenen Connections/echten Commits. Tests ausschließlich mit synthetischen Personen und Assets.
 
 Eine vorläufige Scanliste darf keine Claims erzeugen. Testdaten für Inventory-only Asset, Unit mit Asset, logische Unit, zwei Aliase derselben Sache, mehrdeutigen Produktbarcode, drei Bookings desselben Beneficiary, einen fremden Beneficiary, Teilrückgabe, regulär ausgeliehenes/überfälliges Asset und Standortwechsel während des Runs. Nach Device-/Modus-/Beneficiarywechsel alte Antworten/Requests gezielt zustellen und Ablehnung prüfen. Kein SQLite-Ersatz für PostgreSQL-Constraints oder Race-Tests. Kamera und Self-Service nur testen/freigeben, wenn deren Implementierungsinkrement tatsächlich beauftragt wurde.
+
+## Ausgeführte Phase-2-Teilnachweise — 15.10.2026
+
+[Review](PHASE_2_REVIEW.md), Tests in tests/test_accounts.py und tests/test_branding.py, [lokales JUnit](test-results/phase-2-local.xml).
+
+- AC-02: lokale Registrierung/Verifikation, Token-Replay und manipulierte Privilegienfelder gegen PostgreSQL bestanden.
+- AC-11/29: Mitarbeitermarker ohne Rechte, scoped unbetreute Nutzung und getrennte operative Aktionen bestanden; echte Buchungen/Öffnungszeiten folgen Phase 5/8.
+- AC-15: signierte synthetische OIDC-Tokens, state/nonce/issuer/audience/Signatur/Ablauf, keine E-Mail-Verknüpfung oder Claimrechte, lokaler Login bei Providerfehler bestanden. Echter Betreiber-Authentik-Flow noch Installationsabnahme.
+- AC-16/25: eigenes Profil, keine fremden Profil-URLs, Gruppen-IDOR, getrennte Pflichtprofilvollständigkeit bestanden; Asset-/Booking-/Exportpfade noch nicht vorhanden.
+- AC-22: Sperre, Sitzungs-/Tokenentzug und Trennung Actor/gesperrter Beneficiary bestanden; tatsächlicher Return-/Checkout-Service folgt Phase 6.
+- AC-31: delegierte Mitgliedschaftsgrenzen, parallele Zuweisung und serialisierter Rechteentzug bestanden; Bookinglimits über verschiedene Units folgen Phase 5.
+- KIOSK-Szenarien bleiben geplant. Die zentrale Aktionsliste/Scopegrenze ist vorbereitet; keine erfundene Kiosk-Ausführung.

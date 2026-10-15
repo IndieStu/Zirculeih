@@ -44,3 +44,7 @@ Phase 1 hat keine Fachmodelle und keine Fachmigrationen. `migrate` bleibt ein ex
 ## GitHub-Zugang dieses Projekts
 
 Der Projektordner ist seit 15.10.2026 ein Git-Checkout. Primärer Git-Zugang ist `origin = git@github.com:IndieStu/Zirculeih.git` über vorhandene lokale SSH-Authentifizierung. Diese wurde als IndieStu geprüft; Branchpush funktioniert. Der separate GitHub-Connector meldet bei Schreiboperationen weiterhin 403, ist aber für öffentliche Reads/CI-Abfragen nutzbar. Für Git-Operationen deshalb den vorhandenen lokalen SSH-Weg verwenden; keine Schlüssel kopieren oder Connector-403 als fehlende lokale Git-Berechtigung behandeln. Keine automatische Main-/Produktionsänderung.
+
+## Phase 2 / Deelvo
+
+[Konten, Authentik, SMTP und Migrations-/Rollbackanleitung](ACCOUNTS.md). Neue Compose-Projekte heißen deelvo-dev; vorhandene .env-DB-Namen behalten und bei vorhandenem früherem Devvolume COMPOSE_PROJECT_NAME=zirculeih-dev setzen. Kein automatisches Umbenennen bestehender DBs/Volumes. Repositoryadresse bleibt bis separater Owner-Umbenennung unverändert.

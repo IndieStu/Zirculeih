@@ -1,0 +1,69 @@
+{
+  "repository": "IndieStu/Zirculeih",
+  "branch": "review/phase-2-accounts-authentik",
+  "commit": "d8c76ac0147ca7c4df0e0412052dff5fe09dbae0",
+  "run_id": 38715476545,
+  "url": "https://github.com/IndieStu/Zirculeih/actions/runs/38715476545",
+  "conclusion": "success",
+  "job_id": 116356984786,
+  "environment": {
+    "os": "Linux",
+    "python": "3.12.15",
+    "django": "5.2.18",
+    "postgresql": "17 (digest-pinned Compose image; minor version not printed)"
+  },
+  "pytest": {
+    "passed": 65,
+    "duration_seconds": 24.71
+  },
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+      "conclusion": "success"
+    },
+    {
+      "name": "Check documentation",
+      "conclusion": "success"
+    },
+    {
+      "name": "Create disposable development configuration",
+      "conclusion": "success"
+    },
+    {
+      "name": "Validate and build Compose",
+      "conclusion": "success"
+    },
+    {
+      "name": "Lint and types",
+      "conclusion": "success"
+    },
+    {
+      "name": "Model and configuration checks",
+      "conclusion": "success"
+    },
+    {
+      "name": "PostgreSQL integration and concurrency",
+      "conclusion": "success"
+    },
+    {
+      "name": "Bootstrap and health smoke test",
+      "conclusion": "success"
+    },
+    {
+      "name": "Disposable cleanup",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ]
+}

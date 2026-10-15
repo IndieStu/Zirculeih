@@ -1,11 +1,13 @@
-# Zirculeih
+# Deelvo
 
 Selbst gehostete Inventarverwaltung, Ressourcenreservierung und Ausleihe für Makerspaces.
 
-Stand: 15.10.2026. Phase 0 vom Owner geprüft; Phase 1 enthält ausschließlich die technische Grundlage. Noch keine fachliche Benutzer-, Inventar-, Buchungs- oder Loan-Anwendung. Phase 2 benötigt neue ausdrückliche Freigabe.
+Stand: 15.10.2026. Phase 1 ist gemerged. Phase 2 ist vom Owner freigegeben und liefert Konten, Gruppen, Berechtigungsservices sowie Authentik-Komfortlogin für Mitarbeitende zur Review. Produktname und Designgrundlage sind Deelvo. Inventar, Katalog und Buchungen folgen in eigenen Phasen.
 
 ## Start und Review
 
+- [Phase-2-Review](docs/PHASE_2_REVIEW.md) und [Konten-/Authentik-Konfiguration](docs/ACCOUNTS.md)
+- [Markenentscheidung und lokale Schriften](docs/adr/013.md)
 - [Entwicklungsstart mit Docker Compose](docs/DEVELOPMENT.md)
 - [Phase-1-Review und tatsächliche Testresultate](docs/PHASE_1_REVIEW.md)
 - [Owner-Freigabe](docs/OWNER_REVIEW_PHASE_0.md) und [eingearbeitete Änderungen](docs/DECISION_CHANGE_SUMMARY.md)

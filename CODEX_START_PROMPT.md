@@ -2,7 +2,7 @@
 
 # First Codex assignment — Phase 0 only
 
-You are taking over the initial architecture work for **Zirculeih**, a self-hosted, open-source resource booking, lending and asset management application for the WERK / Zircula environment, designed to be reusable by other makerspaces.
+You are taking over the initial architecture work for **Deelvo**, a self-hosted, open-source resource booking, lending and asset management application for the WERK / Zircula environment, designed to be reusable by other makerspaces.
 
 Read `PROJECT_SPEC.md` and `AGENTS.md` completely before doing anything else. The product specification contains binding scope, business rules, acceptance scenarios and a phase-by-phase roadmap.
 

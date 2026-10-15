@@ -33,3 +33,9 @@ Registrierung nur E-Mail/Passwort. Vollständiges Pflichtprofil vor verbindliche
 | OD-16 | Kein Offline-Booking/Checkout/Return; auditierte relevante Änderungen, kein pauschales personenbezogenes Lookuplog; frühe Identifier-/Loan-/Inventur-Inkremente, keine volle Kiosk-UI in Phase 1. |
 
 Technische FK-/Namespace-/Snapshotvorschläge in [ADR-011](adr/011.md) werden vor den jeweiligen Fachmigrationen konkret geprüft; bestätigte Owner-Invarianten werden dadurch nicht erneut zur Disposition gestellt.
+
+## Weitere Festlegungen 15.10.2026
+
+- Phase 2 nach Merge ausdrücklich freigegeben; Phase 3 bleibt getrenntes Gate.
+- Authentik ist eine erforderliche Komfortoption für Mitarbeitende und bereits in Phase 2 umzusetzen. Normale Nutzer registrieren sich lokal; Sicherheitsgrenzen aus ADR-009 bleiben bestehen.
+- Produktname Deelvo, technische neue Bezeichner deelvo; frühere Arbeitsnamen abgelöst. Inter selbst hosten (SIL OFL 1.1, 400/500/600/700), Ownerpalette und zentrale Tokens, Barrierefreiheit vorrangig. Kein finales Logo: reine Textwortmarke. Vollständige Umsetzung: [ADR-013](adr/013.md).

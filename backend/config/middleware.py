@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
 
-logger = logging.getLogger("zirculeih.request")
+logger = logging.getLogger("deelvo.request")
 
 
 class RequestLogMiddleware:
@@ -27,4 +27,19 @@ class RequestLogMiddleware:
                 "duration_ms": round((monotonic() - started) * 1000, 2),
             },
         )
+        return response
+
+
+class AccountPrivacyMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        if request.path.startswith("/konto/"):
+            response["Cache-Control"] = "no-store, private"
+            response["Referrer-Policy"] = "same-origin"
+            response["Content-Security-Policy"] = (
+                "default-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+            )
         return response
