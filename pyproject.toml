@@ -1,0 +1,21 @@
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+pythonpath = ["backend", "."]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = ["postgres: requires real PostgreSQL, never SQLite"]
+filterwarnings = ["error"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["backend", "prototypes"]
+check_untyped_defs = true
+warn_unused_ignores = true
+ignore_missing_imports = true

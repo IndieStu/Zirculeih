@@ -1,3 +1,5 @@
+> Historical initial assignment. Phase 0 has been reviewed; [Owner review](docs/OWNER_REVIEW_PHASE_0.md) authorizes Phase 1 after documentation updates. This initial prompt does not revoke that approval.
+
 # First Codex assignment — Phase 0 only
 
 You are taking over the initial architecture work for **Zirculeih**, a self-hosted, open-source resource booking, lending and asset management application for the WERK / Zircula environment, designed to be reusable by other makerspaces.
@@ -20,3 +22,4 @@ Read `PROJECT_SPEC.md` and `AGENTS.md` completely before doing anything else. Th
 Critical invariants: no double booking; no unauthorized access; employee marker does not confer operational permissions; booking/loan/asset are separate; external users do not require Authentik; recurring series require approval unless created by authorized editors/admins; no fees/payments in v1; no precise machine usage telemetry; inventory-only assets are supported.
 
 Do not overengineer. Prefer simple, maintainable, well-tested architecture and concrete acceptance tests over speculative frameworks.
+

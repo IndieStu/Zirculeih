@@ -14,3 +14,4 @@ Read `PROJECT_SPEC.md` completely before any work. The specification is authorit
 10. Every feature needs automated tests, docs, and an explicit acceptance check. Never report a test passed unless run. Never deploy or touch production without instruction.
 11. Record architectural choices in `docs/adr/`. Escalate unresolved requirements that impact schema, security, booking invariants or legal compliance.
 12. At end of each phase: summarize files changed, commands run, tests, open risks, and ask for approval before the next phase.
+

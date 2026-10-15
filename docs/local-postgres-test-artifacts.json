@@ -1,0 +1,26 @@
+{
+  "role": "local-test-only",
+  "pgserver": {
+    "version": "0.1.4",
+    "postgres_version": "16.2",
+    "license": "Apache-2.0 wrapper; PostgreSQL binaries",
+    "artifact": {
+      "name": "pgserver",
+      "version": "0.1.4",
+      "filename": "pgserver-0.1.4-cp312-cp312-macosx_11_0_arm64.whl",
+      "sha256": "780fa89f26a960cca0215caf471e70848dd8597bd8ceaeba7faf42170278980c",
+      "source": "https://files.pythonhosted.org/packages/23/57/94b5f05a23d0fa683c01bfc2d785224057a9eaf0eb00cbfd6da19547012f/pgserver-0.1.4-cp312-cp312-macosx_11_0_arm64.whl",
+      "size": 9822137
+    }
+  },
+  "btree_gist": {
+    "version": "PostgreSQL 16.2_1",
+    "license": "PostgreSQL",
+    "bottle": {
+      "sha256": "40d2efe6bbcf70078f6fbe80ca8e72eafc16d6003d3903d475856f53514624a1",
+      "url": "https://ghcr.io/v2/homebrew/core/postgresql/16/blobs/sha256:40d2efe6bbcf70078f6fbe80ca8e72eafc16d6003d3903d475856f53514624a1",
+      "version": "16.2_1",
+      "source": "https://raw.githubusercontent.com/Homebrew/homebrew-core/a5c79b9fabf218624410e2c15ffbe3947731cb35/Formula/p/postgresql@16.rb"
+    }
+  }
+}
