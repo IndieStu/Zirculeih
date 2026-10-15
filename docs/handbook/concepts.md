@@ -12,4 +12,4 @@
 
 **Gruppe und Recht:** Zugehörigkeit und ausdrückliche Aktionen bestimmen, was du in welchem Bereich tun kannst. Mitarbeitendenstatus oder Systemadministration allein geben keine operativen Inventarrechte. Eine ausdrückliche Verweigerung hat Vorrang.
 
-**Reservierung und Ausleihe:** werden später getrennte Vorgänge. Eine Reservierung betrifft zugesagte Nutzung; eine Ausleihe dokumentiert tatsächliche Ausgabe/Rückgabe. Beides ist noch keine Funktion der Phase-3-Inventaroberfläche.
+**Reservierung und Ausleihe:** sind getrennte Vorgänge. Eine Reservierung betrifft zugesagte Nutzung; eine Ausleihe dokumentiert tatsächliche Ausgabe/Rückgabe. Vor-Ort-Reservierungen sind seit Phase 5 verfügbar, physische Ausleihen folgen später.

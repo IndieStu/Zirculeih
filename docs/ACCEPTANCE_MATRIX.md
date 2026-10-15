@@ -158,3 +158,26 @@ P3-/DASH-Szenarien werden durch 56 neue Phase-3-Testfälle zusätzlich zu 65 bes
 | P4-AC-14 | Handbuch/ADR/Security/Migrationen aktuell, neue Dependencies geprüft | 4 | Dokumentationsprüfung/Review; keine neue Abhängigkeit |
 
 Phase-4-Prüfstand 15.10.2026: 148 Tests (121 bestehende + 27 Ressourcenfälle) lokal und in Docker/PostgreSQL 17 bestanden für Anwendungscode `0c27a8d`. [Review mit Grenzen](PHASE_4_REVIEW.md), [JUnit](test-results/phase-4-local.xml), [CI-Nachweis](test-results/phase-4-ci.json). Manuelle Abnahme: Home/Enter-Suche/Katalog/Detail/Verwaltung und 320px ohne horizontalen Überlauf. Vollständige A11y-/Hardware-/Produktionsabnahme bleibt offen; P4-Ownerreview steht aus.
+
+## Phase 5 — konkrete Prüffälle
+
+Nachweise in tests/test_bookings.py, [Review](PHASE_5_REVIEW.md). AC-03/04/09/17/21 werden im Buchungskern geprüft. AC-12: Website, Nutzung, Zugang, betreute Öffnung und harte Sperren geprüft; Abhol-/Rückgabepläne bleiben getrennt und beeinflussen onsite nicht. Physische Terminregeln werden erst in Phase 6 als vollständiger Ausleihablauf abgenommen. AC-14 ist hier nur für Reservierung/Sperrrace teilbelegt, Ausgabe bleibt später. Keine pauschale Abnahme aller phasenübergreifenden ACs.
+
+| ID | Nachweis | Testschwerpunkt | Status |
+| --- | --- | --- | --- |
+| P5-AC-01 | Eigene Bestätigung, konkrete Unit, Beleg ohne Loan | confirm_claim_and_adjacent_intervals | Implementiert; finale Nachweise im Review |
+| P5-AC-02 | Vollständige Grantprofile, Horizonte und Deny | grant_horizons_and_complete_profiles | Implementiert; finale Nachweise im Review |
+| P5-AC-03 | 20 gleichzeitige Anfragen, genau ein Gewinner | twenty_concurrent_requests_have_exactly_one_winner | Implementiert; finale Nachweise im Review |
+| P5-AC-04 | DST Gap/Fold, inklusive Tage und Nachbarschaft | time_rules / test_bookings | Implementiert; finale Nachweise im Review |
+| P5-AC-05 | Nutzung/Zugang/Öffnung getrennt, unbetreut nur Öffnung | unstaffed_does_not_bypass_usage_access_or_closure | Implementiert; finale Nachweise im Review |
+| P5-AC-06 | Datumsersatz einschließlich Nachtübertrag | schedule exceptions | Implementiert; finale Nachweise im Review |
+| P5-AC-07 | Puffer, Mindestdauer, Raster und Parallelgrenze | policy limits | Implementiert; finale Nachweise im Review |
+| P5-AC-08 | Idempotente parallele Wiederholung, Payloadkonflikt | parallel_idempotency_retries_return_one_booking | Implementiert; finale Nachweise im Review |
+| P5-AC-09 | Storno mit Revision/Frist, Historie und Claimfreigabe | cancel_releases_claim_and_preserves_history | Implementiert; finale Nachweise im Review |
+| P5-AC-10 | Harte Sperre gegen Bestätigung, Zusage mit Incident erhalten | block_and_confirmation_race_retains_or_prevents_promise | Implementiert; finale Nachweise im Review |
+| P5-AC-11 | PostgreSQL Exclusion, finite [start,end), deferred Statusguards | database constraints | Implementiert; finale Nachweise im Review |
+| P5-AC-12 | Fremde IDs, Admin ohne Betriebsgrant, Scopefilter und CSRF | UI/security tests | Implementiert; finale Nachweise im Review |
+| P5-AC-13 | Regeln/Zeitfenster/Ausnahmen/Sperren über berechtigte Formulare | policy_post_and_malformed_exception_are_safe | Implementiert; finale Nachweise im Review |
+| P5-AC-14 | Onsite-Statusjob ohne physische Rückgabe | advance_onsite_bookings | Implementiert; finale Nachweise im Review |
+| P5-AC-15 | Dashboard/Heute nur tatsächlich erlaubte Bookings | stale_cancel_and_scoped_operational_dashboard | Implementiert; finale Nachweise im Review |
+| P5-AC-16 | Physische Profil-/Vertrags-/Qualifikationsgates fail-closed | physical/qualification/agreement gates | Implementiert; finale Nachweise im Review |

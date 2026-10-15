@@ -36,3 +36,7 @@ Für Erstadmin, SMTP, Datenschutzhinweise und Authentik benötigt die Systemadmi
 `resource.manage` erlaubt Angebote/Units/Pools im Scope zu verwalten; `resource.publish` ist zusätzlich für Veröffentlichung, Rücknahme/Archivierung und Änderungen bereits veröffentlichter Inhalte nötig. `resource.type_manage` ist ein organisationsweites Konfigurationsrecht für frei benannte Angebotstypen. Interne veröffentlichte Angebote lesen braucht `catalog.view_private`; weder Employee- noch Systemadminstatus ersetzt dies.
 
 Die Gruppenkonfiguration bietet jetzt reale Angebote als Scopeziele, gefiltert nach eigener Verwaltungsberechtigung. Für physische Unitzuordnung zusätzlich `asset.read` und `asset.manage`, für Standort-/Kategorieauswahl deren Leserechte einrichten. Unitcodes brauchen Identifierrechte im Angebots- und bei physischer Verknüpfung im Assetscope. Standort-/Kategoriebäume mit Angeboten lassen sich nicht ohne passende Ressourcenrechte in andere Berechtigungskontexte verschieben. Veröffentlichung ist eine bewusste redaktionelle Entscheidung; siehe [Katalog](catalog.md).
+
+## Buchungsregeln
+
+Mit eigenen fachlichen Rechten konfigurierst du [Buchungsregeln, Zeitpläne und Sperren](booking-administration.md). Das geschützte Systemadministrationsrecht allein reicht dafür nicht. Aktiviere nur Angebote, deren vollständige Prüfbedingungen bereits eingerichtet sind.

@@ -314,6 +314,10 @@ def save_asset(actor, data, *, asset_id=None, expected_revision=None):
                 "Inventarnummer",
             )
             owned_identifier(actor, asset)
+        elif set(data) & {"condition", "lifecycle", "category"}:
+            from bookings.integrity import asset_changed
+
+            asset_changed(asset.pk)
         audit(
             actor,
             "asset.updated" if asset_id else "asset.created",
@@ -354,6 +358,9 @@ def move_asset(actor, asset_id, location_id, reason, expected_revision):
         asset.revision += 1
         asset.updated_at = timezone.now()
         asset.save(update_fields=["location", "revision", "updated_at"])
+        from bookings.integrity import asset_changed
+
+        asset_changed(asset.pk)
         audit(
             actor,
             "asset.moved",
@@ -382,6 +389,9 @@ def archive_asset(actor, asset_id, expected_revision, reason):
         asset.revision += 1
         asset.updated_at = timezone.now()
         asset.save(update_fields=["archived_at", "lifecycle", "revision", "updated_at"])
+        from bookings.integrity import asset_changed
+
+        asset_changed(asset.pk)
         audit(
             actor,
             "asset.archived",

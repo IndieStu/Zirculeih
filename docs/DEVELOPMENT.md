@@ -58,3 +58,11 @@ Abgelaufene private CSV-Vorschauen regelmäßig über `docker compose run --rm w
 ## Phase 4
 
 Nach den neuen Migrationen können berechtigte Gruppen über „Angebote verwalten“ Angebote, Units und Pools anlegen. Veröffentlichung braucht zusätzlich resource.publish; Typen brauchen resource.type_manage. `/entdecken/` zeigt nur veröffentlichte berechtigte Inhalte; neue Entwürfe sind privat. Eigene Ressourcenbilder liegen ebenfalls im Medienvolume. [Handbuch](handbook/resources.md), [Publikation](handbook/catalog.md), [Migration-/Rollbackgrenzen und Nachweise](PHASE_4_REVIEW.md). Kein Rollback auf Phase-3-Code nach produktiver Nutzung logischer Unitcodes ohne abgestimmten Restore.
+
+## Phase-5 migrations and status job
+
+Apply `python backend/manage.py migrate` before starting updated web processes. bookings/0001 creates new tables and btree_gist; 0002 installs immutable identity and deferred claim/status triggers; 0003 rejects infinite range bounds. PostgreSQL remains mandatory, not SQLite. Existing asset/resource data is not rewritten. Test database builds all migrations from scratch; local synthetic development migration is separate from tests.
+
+Run `python backend/manage.py advance_onsite_bookings` regularly through the deployment's approved scheduling mechanism; no scheduler service was added. It updates only onsite snapshots, idempotently, and releases completed claims without physical returns. No scheduling or deployment was activated in production.
+
+Back up DB and media consistently before upgrades. Once bookings exist, reverting to older code removes their interface and cannot safely preserve new writes. Prefer a forward fix; a rollback requires stopping writes and restoring the matching DB/media backup. Never drop claims/booking history to force a downgrade. Reverse SQL exists for disposable migration testing, not an automatic data-preserving downgrade guarantee. The global authorization lock is a deliberate initial throughput limit.

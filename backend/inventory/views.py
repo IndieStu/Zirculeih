@@ -68,7 +68,7 @@ def any_action(actor, action):
         return False
     if allowed(actor, action):
         return True
-    if action.startswith("resource.") or action.startswith("identifier."):
+    if action.startswith(("resource.", "identifier.", "booking.")):
         from resources.models import Resource
         from resources.services import resource_scope
 
@@ -104,8 +104,34 @@ def navigation(actor):
 def dashboard(request):
     nav = navigation(request.user)
     assets = services.visible_assets(request.user)
-    if not any(nav.values()) and not assets.exists():
+    booking_can_operate = any(
+        any_action(request.user, action)
+        for action in ("booking.read_all", "booking.configure", "booking.block")
+    )
+    if not any(nav.values()) and not assets.exists() and not booking_can_operate:
         return redirect("account")
+    from datetime import datetime, time, timedelta
+
+    from bookings.models import BookingIncident
+    from bookings.services import visible_bookings
+    from django.utils import timezone
+
+    bookings = visible_bookings(request.user, operational=True) if booking_can_operate else None
+    today_start = datetime.combine(
+        timezone.localdate(), time.min, tzinfo=timezone.get_current_timezone()
+    )
+    today = (
+        bookings.filter(start__lt=today_start + timedelta(days=1), end__gt=today_start).exclude(
+            status="cancelled"
+        )
+        if bookings is not None
+        else []
+    )
+    incidents = (
+        BookingIncident.objects.filter(booking__in=bookings, is_open=True)
+        if bookings is not None
+        else BookingIncident.objects.none()
+    )
     attention = assets.filter(
         Q(condition__in=["damaged", "inspection"])
         | Q(lifecycle__in=["unavailable", "maintenance", "lost"])
@@ -125,6 +151,9 @@ def dashboard(request):
             "inactive_locations": inactive_locations[:10],
             "asset_count": assets.count(),
             "archived_count": assets.filter(archived_at__isnull=False).count(),
+            "booking_can_operate": booking_can_operate,
+            "today_bookings": today[:20],
+            "booking_incident_count": incidents.count(),
         },
     )
 

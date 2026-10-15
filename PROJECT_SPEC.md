@@ -1,6 +1,6 @@
 # Deelvo — Product & Engineering Specification
 
-**Version:** 0.5 · **Status:** Phase 3 accepted and merged; Phase 4 authorized and in progress · **Date:** 2026-10-15
+**Version:** 0.6 · **Status:** Phase 4 accepted and merged; Phase 5 authorized and in progress · **Date:** 2026-10-15
 **Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
@@ -456,3 +456,7 @@ The living [handbook](docs/handbook/README.md) is a first-class deliverable, sep
 The owner accepted the delivered Phase-3 review with “freigegeben” after the explicit next-phase gate, then confirmed Phase 3 is merged. [Conversation record](docs/OWNER_APPROVAL_PHASE_4.md). Phase 4 resources/catalog is authorized, based on Main 25f3a4c. [ADR-016](docs/adr/016.md) concretizes independent authored Resource content, configurable types, permanent optional Asset-to-Unit identity, same-resource pools, additive Unit identifiers/XOR and scoped publication.
 
 Public catalog/Home/search/detail/gallery use explicitly published Resource fields and separate sanitized catalog images; inventory metadata and internal location paths stay private. Internal published offers require current private-catalog grants; drafts and archive are not public. A public location label is separately authored. Publication and edits to published content require explicit resource.publish alongside manage. Tree changes cannot shift Resource scopes without corresponding management/publication rights. Units/pools are configuration; no booking engine, availability promise or dummy booking action before Phase 5. The handbook covers actual resources/catalog workflows now. No new dependency is needed; existing reviewed Pillow validates separate gallery uploads. Phase 4 stops for owner review before Phase 5.
+
+## 24. Phase-4 acceptance and Phase-5 authorization — 2026-10-15
+
+Owner confirmed “freigegeben und merged”; [record](docs/OWNER_APPROVAL_PHASE_5.md). Main 549ca27 is the Phase-5 basis. [ADR-017](docs/adr/017.md) implements the booking core with explicit onsite/physical_loan modes, current complete grant profiles, separate schedules, UTC claims, PostgreSQL exclusion and idempotency. Physical-loan confirmation remains fail-closed until Phase-6 profile/agreement gates; no fabricated consent or physical return. Own bookings, cancellation, real operational projections and configuration are in Phase 5. Phase 6 requires a new review gate; no production authorization.

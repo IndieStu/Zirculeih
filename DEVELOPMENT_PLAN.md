@@ -58,3 +58,7 @@ Der Dashboard-Ausbau folgt den produktiven Domänen: Phase 5 Bookings/Heute, Pha
 ## Phase 4 — Owner-freigegeben 15.10.2026
 
 [Freigabenachweis](docs/OWNER_APPROVAL_PHASE_4.md): Phase 3 akzeptiert und als Main 25f3a4c gemerged. P4.1 Resource-/Type-/Unit-/Poolmodell, echte Unit-Identifier/XOR und permanente Zuordnung; P4.2 gemeinsame Services/Publikationsrechte/Privacy-/Race-Tests; P4.3 öffentlicher Katalog/Home/Galerie und operative Verwaltung; P4.4 Handbuch/ADRs/Migration-/Securitydokumentation, Regression, Docker/PostgreSQL-17-CI und responsive Browserabnahme. Keine produktive Buchung, Claims, Loans, Kalender/API oder Phase 5 vor neuer Review.
+
+## Phase 5 — authorized after Phase-4 merge
+
+[Owner authorization](docs/OWNER_APPROVAL_PHASE_5.md), base main 549ca27. P5.1 schema/PG guards; P5.2 shared time/schedule/policy/allocation services; P5.3 own bookings/cancellation and scoped configuration; P5.4 real dashboard/incident projection; P5.5 PostgreSQL concurrency/regression, browser checks, handbook/ADR/migration review and Linux/PostgreSQL-17 CI. Physical reservations wait fail-closed for Phase-6 borrower/contract gates; qualifications remain Phase 7. Owner review before any Phase 6 or production.

@@ -4,7 +4,7 @@
 
 Auf der Startseite kannst du einen Begriff eingeben und Enter drücken. „Entdecken“ zeigt veröffentlichte Angebote mit Suche nach Katalogtexten/Schlagworten und Filtern für Typ, Kategorie einschließlich Unterkategorien und öffentliche Ortsangabe. Öffne eine Karte für Beschreibung, Galerie, Ausstattung sowie Sicherheits-/Nutzungshinweise.
 
-Öffentliche Angebote sind ohne Konto lesbar. Interne veröffentlichte Angebote benötigen ein verifiziertes, freigegebenes Konto mit passenden Katalogrechten. Entwürfe und archivierte Angebote sind nicht im Katalog. Es gibt noch keine Online-Reservierung; die Detailseite erklärt dies ausdrücklich, ohne freie Zeiten zu behaupten.
+Öffentliche Angebote sind ohne Konto lesbar. Interne veröffentlichte Angebote benötigen ein verifiziertes, freigegebenes Konto mit passenden Katalogrechten. Entwürfe und archivierte Angebote sind nicht im Katalog. Bei eingerichteten Angeboten führt „Buchung prüfen“ zum [Buchungsablauf](bookings.md). Die Detailseite behauptet keine freie Zeit; die aktuelle Prüfung erfolgt für deinen Zeitraum und deine Rechte. Noch nicht eingerichtete Angebote bleiben ohne verbindliche Buchungszusage.
 
 ## Bilder vorbereiten
 
