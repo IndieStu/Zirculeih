@@ -548,3 +548,15 @@ def test_public_gallery_does_not_publish_existing_inventory_media(
     assert response.status_code == 200
     response.close()
     assert private.storage_name != public.storage_name
+
+
+def test_published_edit_actions_are_not_offered_without_publish_grant(editor, offer, client):
+    publish(editor, offer)
+    actor, _ = reader("resource.manage")
+    client.force_login(actor)
+    response = client.get(reverse("resource_manage", args=[offer.pk]))
+    assert response.status_code == 200
+    assert b"Stammdaten bearbeiten" not in response.content
+    assert "Katalogbild hinzufügen".encode() not in response.content
+    assert client.get(reverse("resource_edit", args=[offer.pk])).status_code == 404
+    assert client.get(reverse("resource_image_upload", args=[offer.pk])).status_code == 404

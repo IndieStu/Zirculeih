@@ -152,6 +152,8 @@ def can_manage(actor):
 @require_http_methods(["GET", "POST"])
 def edit(request, resource_id=None):
     resource = services.read_resource(request.user, resource_id) if resource_id else None
+    if resource and resource.published_at:
+        require(request.user, "resource.publish", services.resource_scope(resource))
     if not can_manage(request.user):
         raise PermissionDenied
     form = forms.ResourceForm(request.user, request.POST or None, instance=resource)
@@ -260,6 +262,8 @@ def pool_edit(request, resource_id, pool_id=None):
 @require_http_methods(["GET", "POST"])
 def image_upload(request, resource_id):
     resource = services.read_resource(request.user, resource_id)
+    if resource.published_at:
+        require(request.user, "resource.publish", services.resource_scope(resource))
     if request.method == "POST" and not take(
         request, "resource-upload", str(request.user.pk), limit=20
     ):
