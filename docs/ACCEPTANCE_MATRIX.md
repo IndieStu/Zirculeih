@@ -165,19 +165,19 @@ Nachweise in tests/test_bookings.py, [Review](PHASE_5_REVIEW.md). AC-03/04/09/17
 
 | ID | Nachweis | Testschwerpunkt | Status |
 | --- | --- | --- | --- |
-| P5-AC-01 | Eigene Bestätigung, konkrete Unit, Beleg ohne Loan | confirm_claim_and_adjacent_intervals | Implementiert; finale Nachweise im Review |
-| P5-AC-02 | Vollständige Grantprofile, Horizonte und Deny | grant_horizons_and_complete_profiles | Implementiert; finale Nachweise im Review |
-| P5-AC-03 | 20 gleichzeitige Anfragen, genau ein Gewinner | twenty_concurrent_requests_have_exactly_one_winner | Implementiert; finale Nachweise im Review |
-| P5-AC-04 | DST Gap/Fold, inklusive Tage und Nachbarschaft | time_rules / test_bookings | Implementiert; finale Nachweise im Review |
-| P5-AC-05 | Nutzung/Zugang/Öffnung getrennt, unbetreut nur Öffnung | unstaffed_does_not_bypass_usage_access_or_closure | Implementiert; finale Nachweise im Review |
-| P5-AC-06 | Datumsersatz einschließlich Nachtübertrag | schedule exceptions | Implementiert; finale Nachweise im Review |
-| P5-AC-07 | Puffer, Mindestdauer, Raster und Parallelgrenze | policy limits | Implementiert; finale Nachweise im Review |
-| P5-AC-08 | Idempotente parallele Wiederholung, Payloadkonflikt | parallel_idempotency_retries_return_one_booking | Implementiert; finale Nachweise im Review |
-| P5-AC-09 | Storno mit Revision/Frist, Historie und Claimfreigabe | cancel_releases_claim_and_preserves_history | Implementiert; finale Nachweise im Review |
-| P5-AC-10 | Harte Sperre gegen Bestätigung, Zusage mit Incident erhalten | block_and_confirmation_race_retains_or_prevents_promise | Implementiert; finale Nachweise im Review |
-| P5-AC-11 | PostgreSQL Exclusion, finite [start,end), deferred Statusguards | database constraints | Implementiert; finale Nachweise im Review |
-| P5-AC-12 | Fremde IDs, Admin ohne Betriebsgrant, Scopefilter und CSRF | UI/security tests | Implementiert; finale Nachweise im Review |
-| P5-AC-13 | Regeln/Zeitfenster/Ausnahmen/Sperren über berechtigte Formulare | policy_post_and_malformed_exception_are_safe | Implementiert; finale Nachweise im Review |
-| P5-AC-14 | Onsite-Statusjob ohne physische Rückgabe | advance_onsite_bookings | Implementiert; finale Nachweise im Review |
-| P5-AC-15 | Dashboard/Heute nur tatsächlich erlaubte Bookings | stale_cancel_and_scoped_operational_dashboard | Implementiert; finale Nachweise im Review |
-| P5-AC-16 | Physische Profil-/Vertrags-/Qualifikationsgates fail-closed | physical/qualification/agreement gates | Implementiert; finale Nachweise im Review |
+| P5-AC-01 | Eigene Bestätigung, konkrete Unit, Beleg ohne Loan | confirm_claim_and_adjacent_intervals | Lokal + Docker/PG17 bestanden; siehe Review |
+| P5-AC-02 | Vollständige Grantprofile, Horizonte und Deny | grant_horizons_and_complete_profiles | Lokal + Docker/PG17 bestanden; siehe Review |
+| P5-AC-03 | 20 gleichzeitige Anfragen, genau ein Gewinner | twenty_concurrent_requests_have_exactly_one_winner | Lokal + Docker/PG17 bestanden; siehe Review |
+| P5-AC-04 | DST Gap/Fold, inklusive Tage und Nachbarschaft | time_rules / test_bookings | Lokal + Docker/PG17 bestanden; siehe Review |
+| P5-AC-05 | Nutzung/Zugang/Öffnung getrennt, unbetreut nur Öffnung | unstaffed_does_not_bypass_usage_access_or_closure | Lokal + Docker/PG17 bestanden; siehe Review |
+| P5-AC-06 | Datumsersatz einschließlich Nachtübertrag | schedule exceptions | Lokal + Docker/PG17 bestanden; siehe Review |
+| P5-AC-07 | Puffer, Mindestdauer, Raster und Parallelgrenze | policy limits | Lokal + Docker/PG17 bestanden; siehe Review |
+| P5-AC-08 | Idempotente parallele Wiederholung, Payloadkonflikt | parallel_idempotency_retries_return_one_booking | Lokal + Docker/PG17 bestanden; siehe Review |
+| P5-AC-09 | Storno mit Revision/Frist, Historie und Claimfreigabe | cancel_releases_claim_and_preserves_history | Lokal + Docker/PG17 bestanden; siehe Review |
+| P5-AC-10 | Harte Sperre gegen Bestätigung, Zusage mit Incident erhalten | block_and_confirmation_race_retains_or_prevents_promise | Lokal + Docker/PG17 bestanden; siehe Review |
+| P5-AC-11 | PostgreSQL Exclusion, finite [start,end), deferred Statusguards | database constraints | Lokal + Docker/PG17 bestanden; siehe Review |
+| P5-AC-12 | Fremde IDs, Admin ohne Betriebsgrant, Scopefilter und CSRF | UI/security tests | Lokal + Docker/PG17 bestanden; siehe Review |
+| P5-AC-13 | Regeln/Zeitfenster/Ausnahmen/Sperren über berechtigte Formulare | policy_post_and_malformed_exception_are_safe | Lokal + Docker/PG17 bestanden; siehe Review |
+| P5-AC-14 | Onsite-Statusjob ohne physische Rückgabe | advance_onsite_bookings | Lokal + Docker/PG17 bestanden; siehe Review |
+| P5-AC-15 | Dashboard/Heute nur tatsächlich erlaubte Bookings | stale_cancel_and_scoped_operational_dashboard | Lokal + Docker/PG17 bestanden; siehe Review |
+| P5-AC-16 | Physische Profil-/Vertrags-/Qualifikationsgates fail-closed | physical/qualification/agreement gates | Lokal + Docker/PG17 bestanden; siehe Review |

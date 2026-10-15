@@ -1,6 +1,6 @@
 # Deelvo — Product & Engineering Specification
 
-**Version:** 0.6 · **Status:** Phase 4 accepted and merged; Phase 5 authorized and in progress · **Date:** 2026-10-15
+**Version:** 0.6 · **Status:** Phase 4 accepted and merged; Phase 5 implemented, pending owner review · **Date:** 2026-10-15
 **Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
