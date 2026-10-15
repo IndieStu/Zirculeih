@@ -1,0 +1,61 @@
+# Abhängigkeiten — Phase 1, geprüft 14.10.2026
+
+## Konkrete Aufnahmeprüfung
+
+Die folgenden Wheels wurden von PyPI heruntergeladen, gegen dort veröffentlichte SHA-256 geprüft und die enthaltenen Lizenzdateien/Metadaten gelesen. Konkrete Artefakte, Hashes, Quellen und Lizenzpfade: [Auditmanifest](docs/dependency-artifacts.json). Python-Locks enthalten vollständige Versionspins und erlaubte Wheelhashes für Linux/macOS; keine ungepinnten install-time Dependencies. Nicht alle Plattformwheels wurden einzeln heruntergeladen: das lokal geprüfte Artefakt ist im Manifest ausdrücklich bezeichnet. Vor Release ist das tatsächliche Linuximage zusätzlich zu prüfen.
+
+| Paket | Version | geprüfter SPDX-Ausdruck | Verwendung | Quelle |
+| --- | --- | --- | --- | --- |
+| Django | 5.2.18 | BSD-3-Clause | Runtime | [Release](https://pypi.org/project/Django/5.2.18/) |
+| asgiref | 3.12.1 | BSD-3-Clause | Runtime | [Release](https://pypi.org/project/asgiref/3.12.1/) |
+| sqlparse | 0.6.0 | BSD-3-Clause | Runtime | [Release](https://pypi.org/project/sqlparse/0.6.0/) |
+| psycopg | 3.3.6 | LGPL-3.0-only | Runtime | [Release](https://pypi.org/project/psycopg/3.3.6/) |
+| typing_extensions | 4.15.0 | PSF-2.0 | Runtime | [Release](https://pypi.org/project/typing_extensions/4.15.0/) |
+| gunicorn | 26.2.0 | MIT | Runtime | [Release](https://pypi.org/project/gunicorn/26.2.0/) |
+| pytest | 9.1.1 | MIT | Dev/CI | [Release](https://pypi.org/project/pytest/9.1.1/) |
+| pytest-django | 4.14.0 | BSD-3-Clause | Dev/CI | [Release](https://pypi.org/project/pytest-django/4.14.0/) |
+| iniconfig | 2.3.1 | MIT | Dev/CI | [Release](https://pypi.org/project/iniconfig/2.3.1/) |
+| pluggy | 1.6.0 | MIT | Dev/CI | [Release](https://pypi.org/project/pluggy/1.6.0/) |
+| packaging | 26.3 | Apache-2.0 OR BSD-2-Clause | Dev/CI | [Release](https://pypi.org/project/packaging/26.3/) |
+| pygments | 2.21.0 | BSD-2-Clause | Dev/CI | [Release](https://pypi.org/project/pygments/2.21.0/) |
+| ruff | 0.15.15 | MIT | Dev/CI | [Release](https://pypi.org/project/ruff/0.15.15/) |
+| mypy | 2.1.0 | MIT AND Apache-2.0 | Dev/CI | [Release](https://pypi.org/project/mypy/2.1.0/) |
+| mypy_extensions | 1.1.0 | MIT | Dev/CI | [Release](https://pypi.org/project/mypy_extensions/1.1.0/) |
+| pathspec | 1.0.4 | MPL-2.0 | Dev/CI | [Release](https://pypi.org/project/pathspec/1.0.4/) |
+| librt | 0.11.0 | MIT | Dev/CI | [Release](https://pypi.org/project/librt/0.11.0/) |
+| ast-serialize | 0.3.0 | MIT | Dev/CI | [Release](https://pypi.org/project/ast-serialize/0.3.0/) |
+| psycopg-binary | 3.3.6 | LGPL-3.0-only | nur lokaler Test | [Release](https://pypi.org/project/psycopg-binary/3.3.6/) |
+
+## Bedingungen und Kompatibilitätsbewertung
+
+MIT/BSD/PSF/Apache-Pakete erscheinen unter Erhalt ihrer Copyright-/Lizenz-/Notice-Texte mit der angestrebten AGPL-3.0-or-later-Veröffentlichung plausibel kombinierbar. Django enthält zusätzliche MIT-/BSD-Notices für vendorte Adminassets; Admin ist nicht aktiviert, Texte trotzdem im Wheel vorhanden. Mypy enthält zusätzlich Apache-2.0-Typeshed; erzeugter Anwendungscode übernimmt keine Stubquellen. Pathspec ist MPL-2.0, nicht MIT: nur unverändertes getrenntes Devtool, file-level Pflichten/Quellzugang beim Verteilen beibehalten; nicht in Runtime importiert.
+
+Psycopg 3.3.6 ist laut konkreter Wheel-Metadaten **LGPL-3.0-only**, nicht der frühere or-later-Kandidat. Unveränderte separate Pythonbibliothek und dynamisches system-libpq; keine statische Einbettung. Lizenztexte, Bibliotheksquellen/Änderungen und Austauschbarkeit bei Distribution sicherstellen. Eine mögliche AGPL-3.0-or-later-Lizenz des eigenen Anwendungscodes ändert diese Bibliothekslizenz nicht. Psycopg-binary wurde als mögliche lokale Testhilfe geprüft, aber nicht installiert oder verwendet; nicht in Runtime-/CI-Lock oder Dockerimage; gebündelte native Bibliotheken brauchen eigenen Releaseaudit, falls später aufgenommen. Keine definitive Rechtsmeinung oder Lizenzwahl für Zirculeih.
+
+## Interpreter und Container
+
+Python 3.12 statt der früheren 3.13-Shortlist als gemeinsame lokale/Container-Baseline; Sicherheitsupdates und Support bei Upgrades verfolgen. Offizielle Python- und PostgreSQL-17-Images per Registry-Digest gepinnt (siehe Dockerfile/Compose), abgefragt am 14.10.2026. Python unter PSF-2.0 plus mitgelieferten Notices; PostgreSQL/libpq unter PostgreSQL-Lizenz. Debian/libpq5 werden dynamisch bezogen, apt-Pakete noch nicht snapshot-gepinnt. Vollständiger OS-/Container-SBOM und Schwachstellenscan bleiben vor Produktion erforderlich. Keine Images lokal gebaut, solange Docker fehlt.
+
+## Noch nicht aufgenommen
+
+HTMX, Tailwind, Allauth, DRF, Dateutil, Kalender, QR und Notificationpakete bleiben Kandidaten für spätere Phasen, nicht installiert. Einfache CSS-/Templategrundlage benötigt noch keinen JS-/Nodebuild. Redis/Celery/SPA nicht eingeführt. Endgültige Projektlizenz bleibt Owner-Releasegate.
+
+## Prozess
+
+Neue oder aktualisierte Pakete: konkretes Releaseartefakt samt Transitives und Extras prüfen, SPDX/Quellen/Hash/Verwendungsart erfassen, Hashlock aktualisieren, Tests und Securityprüfung ausführen. Unbekannte Lizenz oder Wechsel erfordert Review. Vor Release tatsächliche Linuxartefakte, Imagebestandteile, SBOM, THIRD_PARTY_NOTICES und Quelltext-/Noticepflichten prüfen. Der heutige Audit ersetzt keinen vollständigen Vulnerabilityscan.
+
+Historische Shortlist: [Phase-0-Archiv](docs/history/phase-0/DEPENDENCIES.md).
+
+
+## Ausschließlich lokale PostgreSQL-Testwerkzeuge
+
+Die vorhandene Umgebung hat kein Docker/PostgreSQL. Für echte lokale Tests werden nur in .local/ extrahierte Binärdateien aus pgserver 0.1.4 (Wrapper Apache-2.0, PostgreSQL-Binaries PostgreSQL-Lizenz) und eine passende Homebrew-btree_gist-Binärdatei unter PostgreSQL-Lizenz verwendet. Der pgserver-Pythonwrapper und seine Pythonabhängigkeiten werden nicht installiert. Quellen und geprüfte SHA-256: [lokales Testmanifest](docs/local-postgres-test-artifacts.json). Keine dieser Dateien gehört zum Runtimeimage oder Downloadpaket; die portable Referenz bleibt PostgreSQL 17 in Compose/CI. Die alte lokale PostgreSQL-Version ist nur eine abgeschottete synthetische Testinstanz ohne TCP, keine empfohlene Betriebsdistribution.
+
+Die PyPI-Release-Metadaten der ausgewählten Pythonversionen meldeten am 14.10.2026 keine Einträge im Feld vulnerabilities. Dies ist eine punktuelle Indexprüfung, kein vollständiger Securityscan des Systems oder Images.
+
+
+CI-Action: actions/checkout Commit `11d5960a326750d5838078e36cf38b85af677262` (aufgelöster v4-Ref), MIT; [konkret geprüfter Lizenztext](https://raw.githubusercontent.com/actions/checkout/11d5960a326750d5838078e36cf38b85af677262/LICENSE). Nur Checkout im CI, permissions contents:read. GitHub Actions ist eine optionale Entwicklungsplattform; die Anwendung und Tests können ohne diesen SaaS lokal betrieben werden. Docker Engine/Compose sind Open Source; Docker Desktop ist keine verpflichtende Projektkomponente.
+
+## Scanner-Ergänzung — 15.10.2026
+
+Die erste Scannerunterstützung basiert auf HID-Keyboard-Eingabe mit Enter und demselben Formular wie manuelle Codeeingabe. Dafür wird jetzt weder eine proprietäre Scanner-SDK-Abhängigkeit noch ein neues Runtimepaket aufgenommen. Kamera-/Barcode-Decoder, Labelgeneratoren und optionale Audiofunktionen werden erst bei tatsächlicher Implementierung gegen konkrete Releaseartefakte/Lizenzen geprüft. Kein externer Scan-/Cloudauflösungsdienst und keine zusätzliche Offline-Synchronisationsinfrastruktur.

@@ -1,0 +1,38 @@
+name: Foundation and PostgreSQL integrity
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  foundation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4, resolved 2026-10-14
+      - name: Check documentation
+        run: python3 scripts/verify_docs.py
+      - name: Create disposable development configuration
+        run: python3 scripts/dev_env.py
+      - name: Validate and build Compose
+        run: |
+          docker compose config --quiet
+          docker compose build web test
+      - name: Lint and types
+        run: |
+          docker compose run --rm test python -m ruff check .
+          docker compose run --rm test python -m ruff format --check .
+          docker compose run --rm test python -m mypy
+      - name: PostgreSQL integration and concurrency
+        run: docker compose run --rm test python -m pytest --junitxml=/tmp/results.xml
+      - name: Bootstrap and health smoke test
+        run: |
+          docker compose run --rm migrate
+          docker compose run --rm static
+          docker compose up -d --wait web
+          curl --fail --retry 3 http://localhost:8000/health/live/
+          curl --fail --retry 3 http://localhost:8000/health/ready/
+          curl --fail http://localhost:8000/
+      - name: Disposable cleanup
+        if: always()
+        run: docker compose down --volumes --remove-orphans

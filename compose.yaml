@@ -1,0 +1,66 @@
+name: zirculeih-dev
+x-app: &app
+  build:
+    context: .
+    dockerfile: deploy/Dockerfile
+    target: base
+  env_file: .env
+  environment:
+    POSTGRES_HOST: db
+    MEDIA_ROOT: /app/media
+  depends_on:
+    db:
+      condition: service_healthy
+  init: true
+  security_opt: ["no-new-privileges:true"]
+  cap_drop: ["ALL"]
+  pids_limit: 128
+  mem_limit: 512m
+  cpus: 1.0
+
+services:
+  db:
+    image: postgres:17-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?Generate .env first}
+      POSTGRES_USER: ${POSTGRES_USER:?Generate .env first}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Generate .env first}
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+    mem_limit: 768m
+    cpus: 1.0
+  web:
+    <<: *app
+    ports: ["127.0.0.1:8000:8000"]
+    volumes: ["media:/app/media", "static:/app/backend/staticfiles"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready/', timeout=6)"]
+      interval: 10s
+      timeout: 8s
+      retries: 6
+  migrate:
+    <<: *app
+    profiles: ["tools"]
+    command: ["python", "backend/manage.py", "migrate", "--noinput"]
+  static:
+    <<: *app
+    profiles: ["tools"]
+    volumes: ["static:/app/backend/staticfiles"]
+    command: ["python", "backend/manage.py", "collectstatic", "--noinput"]
+  test:
+    <<: *app
+    profiles: ["tools"]
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+      target: test
+    command: ["python", "-m", "pytest"]
+
+volumes:
+  postgres_data:
+  media:
+  static:

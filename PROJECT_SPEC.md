@@ -1,6 +1,6 @@
 # Zirculeih — Product & Engineering Specification
 
-**Version:** 0.1 · **Status:** Draft for architecture review · **Date:** 2026-10-14  
+**Version:** 0.2 · **Status:** Phase-0 owner review incorporated; Phase-1 foundation; kiosk extension incorporated · **Date:** 2026-10-15  
 **Working title:** Zirculeih · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
@@ -63,9 +63,9 @@ No fees, invoices, payment gateway, deposits, fines, donation processing, procur
 ## 3. Domain model — authoritative boundaries
 
 ### 3.1 Identity and access
-**User** (stable ID, email unique normalized, verification status, display name, local credential presence, active state, locale, consent timestamps, optional OIDC identities). **Group** (admin-defined name, description, status). **GroupMembership** (user, group, assignment history). **PermissionGrant** (group, action, scope, optional restrictions). **QualificationType**, **UserQualification** (user, type, issued/expiry, issuer, evidence), **AuditEvent**. Use explicit system-admin status separate from employee marker; never allow public signup to assign groups or admin status.
+**User** (stable ID, email unique normalized, verification status, display name, local credential presence, active state, locale, consent timestamps, optional OIDC identities). **Group** (admin-defined name, description, status). **GroupMembership** (user, group, assignment history). **PermissionGrant** (group, action, scope, optional restrictions). **QualificationType**, **UserQualification** (user, type, issued (no expiry or individual revocation in the initial installation), issuer, evidence), **AuditEvent**. Use explicit system-admin status separate from employee marker; never allow public signup to assign groups or admin status.
 
-**External contacts:** walk-in loans without full account may be supported via a restricted administrative BorrowerContact entity. Keep data minimal, require staff authorization, avoid fake email accounts; define retention and conversion to a registered account in an ADR. Not essential to initial MVP if unresolved.
+**Physical borrowers:** registered accounts only; no BorrowerContact or accountless lending. Full borrower profile before binding physical-loan reservation; ID checked at first checkout without storing document data. See owner review.
 
 ### 3.2 Inventory
 **Asset** represents a physical identifiable item: UUID, human inventory ID, title, description, category, tags, maker/model, serial number, acquisition date/value (optional and restricted), condition, lifecycle state, primary location, custodian, images, attachments, maintenance notes, custom field values. Inventory-only assets need no resource record.
@@ -89,7 +89,7 @@ No fees, invoices, payment gateway, deposits, fines, donation processing, procur
 Use a deterministic **PolicyResolver** with explicit precedence and explainable output. Proposed default: explicit security/resource denial wins; group grants union for eligibility; most permissive applicable horizon may apply unless overridden by a restrictive resource rule; qualifications are additional mandatory conditions; administrator override requires separate permission and reason, cannot silently bypass technical conflicts. Document exact policy algebra in an ADR and tests before implementation.
 
 ### 3.5 Reservations and loans
-**Booking**: immutable identity, creator, beneficiary, resource, allocated unit(s), requested interval, status, approval actor/reason, timestamps, policy snapshot/reference, source, recurrence membership. **BookingAllocation** explicitly claims one or more exclusive units / room / machine / bundle components for a time interval. **Loan**: booking link optional for walk-in, borrower, issue/expected-return/actual-return, checkout/return actor, condition and accessory checklist, overdue status. **LoanLine** binds individual assets and quantities. **RecurrenceSeries** contains rule, timezone, start/end or count, approval state; occurrences are first-class bookings linked to series. **BookingEvent / LoanEvent** capture audit transitions.
+**Booking**: immutable identity, creator, beneficiary, resource, allocated unit(s), requested interval, status, approval actor/reason, timestamps, policy snapshot/reference, source, recurrence membership. **BookingAllocation** explicitly claims one or more exclusive units / room / machine / bundle components for a time interval. **Loan**: registered borrower, issue/expected-return/actual-return, checkout/return actor, condition and accessory checklist, overdue status. **LoanBooking** preserves links to one or more original bookings; **LoanLine** binds each physical asset and its booking/allocation, with independent return status. Spontaneous checkout creates Booking/Allocation and Loan atomically; reservation pickup reuses the existing Booking (owner addition 2026-10-15). **RecurrenceSeries** contains rule, timezone, start/end or count, approval state; occurrences are first-class bookings linked to series. **BookingEvent / LoanEvent** capture audit transitions.
 
 A room or machine normally uses booking lifecycle only. A physical lendable item uses booking and loan lifecycles. Inventory-only assets use neither. Do not derive checkout status solely from reservation start time.
 
@@ -109,7 +109,7 @@ A room or machine normally uses booking lifecycle only. A physical lendable item
 ### 4.3 State machines
 Booking: `draft`, `requested`, `confirmed`, `active`, `completed`, `cancelled`, `rejected`, `no_show`. A new auto-confirmed room booking may start at `confirmed`; state transitions must be explicit and validated. A booking in `requested` does not necessarily hold inventory: make hold policy configurable and documented, with default non-blocking request unless a defined temporary hold is created. Confirmed/active allocations block overlapping bookings. Cancelled/rejected/completed allocations release future capacity as appropriate, but a still checked-out item must remain unavailable until physically returned.
 
-Loan: `reserved`, `ready_for_pickup`, `checked_out`, `returned`, `overdue`, `lost`, `damaged` (consider separating terminal condition flags from workflow state in Phase 0). Overdue is derived from due time and active checkout, not just a manually writable status. A loan may extend beyond its booking; actual checkout blocks asset availability until returned. Staff must resolve conflicts before promising future bookings.
+Loan: `reserved`, `ready_for_pickup`, `checked_out`, `returned`, `overdue`, `lost`, `damaged` (consider separating terminal condition flags from workflow state in Phase 0). Overdue is derived from due time and active checkout, not just a manually writable status. A loan may extend beyond its booking; actual checkout forbids a second physical checkout until returned. Future reservations after expected return are allowed if reservation intervals do not overlap. Overdue custody flags existing following bookings for explicit staff resolution.
 
 ### 4.4 Recurrences
 Ordinary users may **request** recurrence; every occurrence must be checked and the whole series requires manual approval. Authorized editors/admins may directly create/approve series. Prevent unlimited horizon, require end date or count and cap occurrences. Show all conflicts and choose an explicit all-or-nothing default on approval; no silent partial approval. Support exceptions: edit/cancel one occurrence, edit this-and-following if feasible, or whole series; preserve audit history. Approval must recheck availability transactionally. A requested series must not silently reserve time without a documented hold policy.
@@ -152,7 +152,7 @@ Home with hero/search, featured categories and featured resources; catalog grid/
 Select dates/time → see live eligibility and availability → optional unit/accessories → review terms and pickup/return information → submit → immediate confirmation or approval pending → manage from My Bookings. Show friendly validation and timezone. Do not falsely promise an available slot before transaction commits. Support cancellations and permitted extensions.
 
 ### 6.3 User account
-Profile, verified email, own bookings (upcoming/past/requested), loans and due dates, cancellation, recurrence requests, relevant qualifications and their validity, notifications preferences, personal data export/deletion request. Never expose other users' personal data.
+Profile, verified email, own bookings (upcoming/past/requested), loans and due dates, cancellation, recurrence requests, relevant unexpired-by-design qualifications, notifications preferences, personal data export/deletion request. Never expose other users' personal data.
 
 ### 6.4 Administrative UX
 Separate admin navigation: Dashboard, Calendar, Bookings, Checkout/Returns, Resources, Assets, Locations, Categories, Users, Groups/Permissions, Qualifications, Maintenance, Reports, Settings. Admin calendar filters by type/location/resource; rapid actions; mobile QR scan via camera where supported with manual fallback; batch edits and CSV import/export; clear audit history. Include accessible keyboard interactions, contrast, focus indicators, descriptive errors and empty states. German first, translation-ready (English later). Avoid an IT-only look: imagery and friendly language suit a makerspace.
@@ -181,13 +181,13 @@ Search/filter by condition, category, location, availability, last inspection; C
 - Return: scan/select asset, verify returned components, condition, damage, time; close loan and release custody; if damaged, create maintenance block.
 - Extensions: check future capacity and policies before confirmation; staff override requires explicit permission, reason and conflict visibility.
 - Overdue: background task derives overdue, sends configurable reminders, displays dashboard queue; do not automatically mark returned.
-- Walk-in checkout without prior booking: optional authorized flow; must still atomically claim capacity and capture borrower identity in privacy-minimal form.
+- Spontaneous checkout without prior online booking is required in the scanner-supported loan phase: registered beneficiary and all ordinary rules; Booking/Allocation and Loan created atomically at explicit confirmation. No accountless lending.
 - No-show: staff-marked or policy-driven after grace period; release reserved capacity and audit.
 - Provide receipt/summary page; PDF printout optional later. Digital signature is not required in v1.
 
 ## 9. Notifications, calendars and reporting
 
-**Email:** verify address, reset password, booking confirmed/requested/approved/rejected/cancelled, pickup reminder, return reminder, overdue notice, maintenance impact, qualification expiry if configured. Template editing/localization, delivery retries and logs, user opt-out only for non-essential messages; SMTP configured by environment. Avoid sensitive details in public email subject lines.
+**Email:** verify address, reset password, booking confirmed/requested/approved/rejected/cancelled, pickup reminder, return reminder, overdue notice, maintenance impact, qualification issuance if configured (no qualification expiry in the initial installation). Template editing/localization, delivery retries and logs, user opt-out only for non-essential messages; SMTP configured by environment. Avoid sensitive details in public email subject lines.
 
 **Calendars:** personal booking calendar, admin resource calendar, optional private iCal feed with revocable token and minimal data; public calendar never reveals borrower identities. Recurrences rendered accurately. Later CalDAV/Nextcloud integration only after separate design.
 
@@ -299,7 +299,7 @@ Threat-model registration, password reset, OIDC linking, privileged group edits,
 
 **AC-21 Idempotency:** double-click/retry on booking confirmation creates one booking.
 
-**AC-22 Permission changes:** revoked qualification prevents new machine bookings; handling of existing bookings follows documented policy.
+**AC-22 Permission changes:** account suspension prevents new bookings and checkouts; existing loans remain returnable and traceable. Qualifications neither expire nor get individually revoked in the initial installation (OD-07).
 
 **AC-23 Series conflicts:** one conflicting occurrence blocks all-or-nothing series approval and displays conflicting dates; no partial hidden series.
 
@@ -395,3 +395,38 @@ You are the principal software architect and implementation agent for **Zirculei
 - Rapla: resource scheduling, repeat bookings and fine-grained permissions; https://rapla.org/
 
 Research sources must not be copied into Zirculeih without independent license and attribution review. This specification records requirements, not legal approval to reuse source code.
+
+
+
+## 18. Owner clarification — 2026-10-14
+
+The confirmed requirements in [docs/OWNER_DECISIONS.md](docs/OWNER_DECISIONS.md) supersede conflicting earlier draft options:
+
+- All physical loans require a registered borrower with full name, postal address, email and phone number. BorrowerContact/accountless lending is excluded.
+- Staff inspect identity documentation at the first checkout. Store checker and timestamp, not identity-document number or copy.
+- The borrower must declare existing liability insurance.
+- Administrators author general lending and additional item-specific agreements in the app. Multiple agreements can apply to one item; acceptance is once per immutable published version, with renewed acceptance after a version change.
+- Qualifications in the initial installation neither expire nor get individually revoked. Account suspension is the operational restriction. AC-22 is replaced accordingly: a suspended account cannot create bookings or receive new checkouts; existing loans remain returnable and traceable.
+- Scoped group configuration permits resource use outside staffed opening hours. Resource usage windows, hard closures and pickup/return windows remain distinct.
+
+Implementation recommendations and remaining review gates are in docs/adr/. These owner clarifications do not authorize Phase 1 before Phase 0 review approval.
+
+
+## 19. Binding Phase-0 review and Phase-1 approval — 2026-10-14
+
+[Original owner review](docs/OWNER_REVIEW_PHASE_0.md) supersedes contrary draft recommendations. All ADR-001–010 accepted with the amendments recorded therein. Future reservations during open custody are allowed after expected return with no overlapping reservation claims; physical double checkout remains forbidden. Insurance declaration is accepted once per required text version, initially without expiry; optional future time validity. Signup only email/password; full borrower profile before binding physical-loan reservation, not ordinary room/machine slots. Series default 52 is configurable. Phase 1 technical foundation and real PostgreSQL concurrency prototype authorized after documentation update; no production deployment, real personal data, full domain implementation or automatic Phase 2.
+
+## 20. Binding owner addition: Kiosk, scanner and inventory workflows — 2026-10-15
+
+[Full original owner requirement](docs/OWNER_REQUIREMENT_KIOSK.md), [workflow architecture](docs/KIOSK_SCANNER.md), [ADR-011](docs/adr/011.md), and KIOSK-AC-01–22 in [acceptance matrix](docs/ACCEPTANCE_MATRIX.md) form the traceable extension. Earlier owner decisions remain binding.
+
+- Scanner identification is read-only and workflow-independent. Assets remain identifiable without a Resource, Booking or Loan. Multiple opaque or validated legacy identifiers can resolve to one Asset or relevant Unit; internal UUID and visible code remain separate.
+- HID-keyboard USB/Bluetooth scanners with Enter and manual entry are the first supported input path, without a proprietary SDK. Camera recognition and offline inventory are later optional designs.
+- Staffed checkout, reservation pickup, spontaneous loans, returns/partial returns, inventory and lookup use the same centralized authorization and domain services as web/API/admin. Actor, Beneficiary, Device and Mode are distinct. No Kiosk permission bypass or unreviewed Self-Service authentication.
+- Scans prepare checkout/return. A deliberate final confirmation triggers transactional writes, with current profile, agreements, insurance, first identity check, qualifications, schedules, policy and custody validation. Multiple scanned objects can belong to one Loan with independent LoanLines and preserved links to multiple original Bookings.
+- Spontaneous loans require a registered account and create Booking/Allocation plus Loan atomically; existing reservations are reused. Actual custody and future reservation rules from the prior owner review remain unchanged.
+- Inventory Runs have a defined scope, expected set, location observations, actor/time and reports. Duplicate and unknown scans have clear feedback. Inventory-only assets participate. Scanning never silently changes master-data location; discrepancies need explicit authorized resolution. Actual loan status is considered, so legitimately borrowed assets are not automatically treated as missing.
+- Public/shared kiosks minimize displayed personal data and reset transaction context; future Self-Service needs server-side session reset, inactivity timeout and protection against previous-user data. No offline booking/checkout/return writes or blind later replay.
+- Phase 1: architecture/identifier boundaries and PostgreSQL constraints documented, no full kiosk UI or domain migrations. Phase 3 implements identifier model/manual lookup; Phase 6 adds HID-supported loan workflows; Phase 10 implements scanner inventory and a separately gated kiosk UI increment before pilot. Self-Service activation requires later explicit authentication/privacy decision.
+
+The new scenarios are planned, not implemented or passed. Phase-1 Docker/PostgreSQL-17 and GitHub-CI verification gates remain open as previously reported; this owner addition does not authorize Phase 2.
