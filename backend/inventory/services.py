@@ -3,7 +3,7 @@ import secrets
 from dataclasses import dataclass
 from uuid import UUID
 
-from accounts.authorization import Scope, allowed, authorization_write, bump, require
+from accounts.authorization import Scope, allowed, allowed_many, authorization_write, bump, require
 from accounts.services import audit
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
@@ -46,12 +46,34 @@ def asset_snapshot(asset):
 
 
 def visible_assets(actor, action="asset.read"):
-    """Filter authorization before pagination/export/search, then recheck detail/service writes."""
-    ids = [
-        a.pk
-        for a in Asset.objects.select_related("location", "category")
-        if allowed(actor, action, asset_scope(a))
+    """Central batch resolver: scope-filter before pagination, without per-asset auth queries."""
+    locations = dict(Location.objects.values_list("id", "parent_id"))
+    categories = dict(Category.objects.values_list("id", "parent_id"))
+
+    def context(kind, pk, tree):
+        ancestors, seen, current = [], {pk}, tree[pk]
+        while current is not None:
+            if current in seen:
+                raise ValidationError("Zyklische Hierarchie.")
+            seen.add(current)
+            ancestors.append(current)
+            current = tree[current]
+        return Scope(kind, pk, tuple(ancestors))
+
+    assets = list(Asset.objects.only("id", "location_id", "category_id"))
+    scopes = [
+        Scope(
+            "asset",
+            a.pk,
+            related=(
+                context("location", a.location_id, locations),
+                context("category", a.category_id, categories),
+            ),
+        )
+        for a in assets
     ]
+    decisions = allowed_many(actor, action, scopes)
+    ids = [asset.pk for asset, permitted in zip(assets, decisions, strict=True) if permitted]
     return Asset.objects.filter(pk__in=ids).select_related("location", "category")
 
 

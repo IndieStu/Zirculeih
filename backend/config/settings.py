@@ -97,6 +97,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "inventory.context_processors.navigation",
             ]
         },
     }
@@ -171,3 +172,7 @@ if OIDC_ENABLED:
             )
     if not OIDC_CLIENT_ID or not OIDC_CLIENT_SECRET:
         raise ImproperlyConfigured("OIDC client credentials required when enabled")
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 6 * 1024 * 1024
+FILE_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024
+FILE_UPLOAD_PERMISSIONS = 0o600

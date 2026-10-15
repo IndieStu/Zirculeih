@@ -101,45 +101,23 @@ def bump(revision):
 ORGANIZATION = Scope()
 
 
-def allowed(actor, action, scope=ORGANIZATION, *, horizon_days=None, duration_minutes=None):
-    if not getattr(actor, "is_authenticated", False) or action not in ACTIONS:
-        return False
-    user = User.objects.filter(pk=actor.pk, is_active=True, email_verified_at__isnull=False).first()
-    if user is None:
-        return False
+def _grants_allow(grants, scope, horizon_days, duration_minutes):
     contexts = (scope, *scope.related)
     if any(
         s.kind not in SCOPE_KINDS or (s.kind == "organization") != (s.id is None) for s in contexts
     ):
         return False
-    if action in SYSTEM_ACTIONS:
-        return user.is_system_admin
-    grants = Grant.objects.filter(
-        group__is_active=True,
-        group__archived_at__isnull=True,
-        group__membership__user=user,
-        group__membership__removed_at__isnull=True,
-        action=action,
-    )
     applicable = [
         g
         for g in grants
-        if (
-            g.scope_kind == "organization"
-            or (
-                any(
-                    g.scope_kind == s.kind
-                    and (
-                        g.scope_id == s.id
-                        or (
-                            g.inherit
-                            and s.kind in {"location", "category"}
-                            and g.scope_id in s.ancestors
-                        )
-                    )
-                    for s in contexts
-                )
+        if g.scope_kind == "organization"
+        or any(
+            g.scope_kind == s.kind
+            and (
+                g.scope_id == s.id
+                or (g.inherit and s.kind in {"location", "category"} and g.scope_id in s.ancestors)
             )
+            for s in contexts
         )
     ]
     if any(g.effect == "deny" for g in applicable):
@@ -156,6 +134,41 @@ def allowed(actor, action, scope=ORGANIZATION, *, horizon_days=None, duration_mi
         )
         for g in applicable
     )
+
+
+def allowed_many(actor, action, scopes, *, horizon_days=None, duration_minutes=None):
+    """One fresh actor/grant read for an authorized list; never cache between requests/writes."""
+    scopes = list(scopes)
+    if not getattr(actor, "is_authenticated", False) or action not in ACTIONS:
+        return [False] * len(scopes)
+    user = User.objects.filter(pk=actor.pk, is_active=True, email_verified_at__isnull=False).first()
+    if user is None:
+        return [False] * len(scopes)
+    if action in SYSTEM_ACTIONS:
+        return [
+            user.is_system_admin
+            and all(
+                c.kind in SCOPE_KINDS and ((c.kind == "organization") == (c.id is None))
+                for c in (s, *s.related)
+            )
+            for s in scopes
+        ]
+    grants = list(
+        Grant.objects.filter(
+            group__is_active=True,
+            group__archived_at__isnull=True,
+            group__membership__user=user,
+            group__membership__removed_at__isnull=True,
+            action=action,
+        )
+    )
+    return [_grants_allow(grants, scope, horizon_days, duration_minutes) for scope in scopes]
+
+
+def allowed(actor, action, scope=ORGANIZATION, *, horizon_days=None, duration_minutes=None):
+    return allowed_many(
+        actor, action, [scope], horizon_days=horizon_days, duration_minutes=duration_minutes
+    )[0]
 
 
 def require(actor, action, scope=ORGANIZATION, **restrictions):

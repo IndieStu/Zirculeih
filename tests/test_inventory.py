@@ -2,7 +2,7 @@ from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier
 
 import pytest
-from accounts.models import AuditEvent, AuthorizationRevision, Grant, Group, Membership, User
+from accounts.models import AuditEvent, Grant, Group, Membership, User
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import IntegrityError, close_old_connections, connection, transaction
 from django.db.models.deletion import ProtectedError
@@ -11,74 +11,12 @@ from inventory import services
 from inventory.models import (
     Asset,
     AssetMovement,
-    Category,
     Identifier,
     IdentifierNamespace,
     Location,
 )
 
 pytestmark = [pytest.mark.django_db, pytest.mark.postgres]
-
-
-@pytest.fixture
-def staff():
-    AuthorizationRevision.objects.get_or_create(pk=1)
-    for key in ("deelvo", "inventory"):
-        IdentifierNamespace.objects.get_or_create(
-            key=key, defaults={"name": key, "normalization": "exact-v1"}
-        )
-    user = User.objects.create_user(
-        "inventory@example.test",
-        "Quiet-River-8941!Cloud",
-        email_verified_at=timezone.now(),
-        privacy_version="test",
-    )
-    group = Group.objects.create(name="Inventory test")
-    Membership.objects.create(user=user, group=group)
-    for action in (
-        "asset.read",
-        "asset.manage",
-        "asset.move",
-        "asset.archive",
-        "asset.read_sensitive",
-        "asset.read_financial",
-        "identifier.resolve",
-        "identifier.assign",
-        "identifier.retire",
-        "location.read",
-        "location.manage",
-        "category.read",
-        "category.manage",
-        "identifier.namespace_manage",
-        "custom_field.manage",
-        "asset.import",
-        "asset.export",
-        "asset.attach",
-    ):
-        Grant.objects.create(group=group, action=action, effect="allow")
-    return user
-
-
-@pytest.fixture
-def registry(staff):
-    root = services.save_tree(staff, Location, {"name": "Werkstatt", "is_active": True})
-    shelf = services.save_tree(
-        staff, Location, {"name": "Regal A", "parent": root, "is_active": True}
-    )
-    category = services.save_tree(staff, Category, {"name": "Freie Kategorie", "is_active": True})
-    asset = services.save_asset(
-        staff,
-        {
-            "inventory_number": "0001-a",
-            "name": "Inventar-Mischpult",
-            "location": shelf,
-            "category": category,
-            "serial_number": "PRIVATE-SERIAL",
-            "internal_notes": "PRIVATE-NOTE",
-            "acquisition_value": "100.00",
-        },
-    )
-    return root, shelf, category, asset
 
 
 def test_inventory_only_and_multiple_identifiers(staff, registry):

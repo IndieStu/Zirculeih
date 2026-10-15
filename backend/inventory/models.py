@@ -82,7 +82,7 @@ class Asset(models.Model):
         LOST = "lost", "Verloren"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    inventory_number = models.CharField(max_length=80, unique=True)
+    inventory_number = models.CharField(max_length=80, unique=True, db_collation="C")
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, max_length=10000)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
@@ -155,7 +155,7 @@ class Identifier(models.Model):
     asset = models.ForeignKey(Asset, on_delete=models.PROTECT, related_name="identifiers")
     kind = models.CharField(max_length=20, choices=Kind.choices)
     raw_value = models.CharField(max_length=128)
-    canonical_value = models.CharField(max_length=128)
+    canonical_value = models.CharField(max_length=128, db_collation="C")
     source = models.CharField(max_length=200, blank=True)
     is_active = models.BooleanField(default=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
@@ -277,6 +277,7 @@ class AssetMedia(models.Model):
     content_type = models.CharField(max_length=50)
     size = models.PositiveIntegerField()
     is_image = models.BooleanField(default=False)
+    is_sensitive = models.BooleanField(default=True)
     uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     created_at = models.DateTimeField(default=timezone.now)
     archived_at = models.DateTimeField(null=True, blank=True)
