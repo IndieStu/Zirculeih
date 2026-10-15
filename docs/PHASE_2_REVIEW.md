@@ -11,13 +11,13 @@ Neue Dateien hauptsächlich backend/accounts/ (Modelle, drei Migrationen, Authba
 ## Tatsächlich ausgeführt
 
 - Lokales PostgreSQL 16.2 mit Unix-Socket ohne TCP gestartet; eigene synthetische Datenbank. Python 3.12.14 / Django 5.2.18, keine SQLite-Ersatztests.
-- Vollständige pytest-Suite einschließlich Audit- und Browser-Origin-Regression: **65 bestanden in 9,89 s**. [JUnit](test-results/phase-2-local.xml).
+- Vollständige pytest-Suite einschließlich Audit- und Browser-Origin-Regression: **65 bestanden in 9,98 s**. [JUnit](test-results/phase-2-local.xml).
 - Ruff lint/format, Mypy und Django-Systemcheck bestanden; Migrationen 0001/0002 lokal erfolgreich, 0003 (Auditdetails und explizit nullable Datenschutzkenntnisnahme bei Operator-Provisionierung) anschließend ebenfalls erfolgreich. Abschließender Makemigrations-Driftcheck ohne Änderungen, Systemcheck und collectstatic (7 lokale CSS-/Font-/Lizenzdateien) bestanden.
 - OIDC-Tests verwenden echte synthetische RSA-Signaturen, transportieren keine produktiven Tokens. Negativtests für Signatur/Algorithmus/issuer/audience/azp/nonce/Ablauf/state, Subjectübernahme, keine E-Mail-Autoverknüpfung, keine Claimrechte und Providerfehler.
 - Kontentests: Signup-Eskalation, E-Mail-DB-Unique, Verify/Reset-Replay/Expiry, Passwortänderung und globale Sitzungsinvalidierung, CSRF/POST-Logout, Rate Limits, fremde Profile/Gruppe-IDOR, sichere Baseline, explizite Denies, vollständige Grantprofile, Scopevererbung, beschränkte Delegation, parallele Mitgliedschaftszuteilung und serialisierter Rechteentzug. Sperre kann nicht durch ein veraltetes Passwortänderungsobjekt aufgehoben werden.
 - Markenprüfung: originale lokale WOFF2/Hashes/OFL, keine externen Fonts, Deelvo in öffentlicher UI, WCAG-AA-Kontraste für die verwendeten Textkombinationen und mindestens 3:1 für Fokus/Eingaberänder.
 
-Vorläufige Testfehler (Testpasswort war E-Mail zu ähnlich; CSRF-Zufallswerte bei generischem HTML-Vergleich) wurden korrigiert, Schutzregeln blieben aktiv. Zusätzlich in der Browserprüfung zu strenge no-referrer-Policy erkannt, durch same-origin ersetzt und als Origin-/CSRF-Regressionsfall aufgenommen. Testserver und PostgreSQL werden nach Prüfung gestoppt.
+Vorläufige Testfehler (Testpasswort war E-Mail zu ähnlich; CSRF-Zufallswerte bei generischem HTML-Vergleich) wurden korrigiert, Schutzregeln blieben aktiv. Zusätzlich in der Browserprüfung zu strenge no-referrer-Policy erkannt, durch same-origin ersetzt und als Origin-/CSRF-Regressionsfall aufgenommen. Testserver und PostgreSQL wurden nach Prüfung sauber gestoppt.
 
 ## Manuelle Abnahme
 
@@ -40,4 +40,6 @@ SMTP-Ausfall führt zu generischer Antwort und minimalem Fehlerlog; Wiederholung
 
 [Konkrete Anleitung](ACCOUNTS.md): additive Tabellen, Baseline/Lockseed, Auditdetails; kein automatischer DB-/Volume-Rename beim Branding. Bestehende .env behalten; vorhandenes Composevolume über bisheriges COMPOSE_PROJECT_NAME erhalten. Phase-1-App kann bei gestoppten Writes mit zusätzlichen Tabellen zurückgestartet werden. Schema-zero löscht Kontendaten und ist kein sicherer Rollback. Vor Echtbetrieb Backup/Restore.
 
-Reviewbranch review/phase-2-accounts-authentik. GitHub-CI-Stand wird nach Push ergänzt. Phase 3 (Inventar/Orte/Identifier) erst nach ausdrücklicher Owner-Freigabe gemäß AGENTS.md.
+Reviewbranch review/phase-2-accounts-authentik. [GitHub-CI erfolgreich](https://github.com/IndieStu/Zirculeih/actions/runs/38715476545) für Implementierungscommit d8c76ac0147ca7c4df0e0412052dff5fe09dbae0: Linux/Python 3.12.15, Django 5.2.18, PostgreSQL-17-Image gemäß Compose-Digest; **65 Tests in 24,71 s bestanden**. Dokumente, Compose-/Imagebuild, Ruff/Format/Mypy, System-/Migrationsdriftcheck, pytest, echter Migrations-/Static-Bootstrap, HTTP-Health-/Startseite und Cleanup erfolgreich. [Maschinenlesbarer CI-Nachweis](test-results/phase-2-ci.json). Die PostgreSQL-Minorversion wurde im Job nicht separat ausgegeben.
+
+Reviewbranch erfolgreich per SSH gepusht. PR-Erstellung über den Connector weiterhin 403 („Resource not accessible by integration“); [direkter PR-Erstellungslink](https://github.com/IndieStu/Zirculeih/pull/new/review/phase-2-accounts-authentik). Kein PR als angelegt behauptet, kein Merge oder Deployment. Phase 3 (Inventar/Orte/Identifier) erst nach ausdrücklicher Owner-Freigabe gemäß AGENTS.md.
