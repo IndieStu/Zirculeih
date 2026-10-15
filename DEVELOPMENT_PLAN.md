@@ -1,6 +1,6 @@
 # Entwicklungsplan
 
-Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phase 2 ist akzeptiert und gemerged; Phase 3 wurde am 15.10.2026 ausdrücklich freigegeben und ist in Arbeit. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
+Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phase 2 ist akzeptiert und gemerged; Phase 3 ist akzeptiert und gemerged; Phase 4 wurde am 15.10.2026 ausdrücklich freigegeben und ist in Arbeit. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
 
 | Phase | Kleine Lieferinkremente / Abhängigkeiten | Gate |
 | --- | --- | --- |
@@ -54,3 +54,7 @@ P3.1 Inventaridentität/Baum-/Namespaceintegrität; P3.2 gemeinsame Services, Sc
 Ab Phase 3 ist ein Feature erst vollständig mit Implementierung, automatisierten und Autorisierungs-/Securitytests, aktualisiertem Handbuch, relevanter API-Dokumentation und Architektur/ADRs. Das Handbuch entsteht jetzt für Konten/Gruppen/Inventar und wächst mit jeder Phase, nicht erst in Phase 12. DASH-/DOC-Szenarien gelten in Phase 3; API-/CAL-Szenarien bleiben nachvollziehbar geplant bis Phase 11/9.
 
 Der Dashboard-Ausbau folgt den produktiven Domänen: Phase 5 Bookings/Heute, Phase 6 Abholung/Rückgabe/Überziehung, Phase 7 Wartungs-/Qualifikationsbedarf ohne initiale Qualifikationsabläufe, Phase 8 Genehmigungen, Phase 10 Inventurabweichungen. Alle Projektionen bleiben rollen-/scopeabhängig. Keine dieser Roadmapergänzungen startet Phase 4 oder Produktion.
+
+## Phase 4 — Owner-freigegeben 15.10.2026
+
+[Freigabenachweis](docs/OWNER_APPROVAL_PHASE_4.md): Phase 3 akzeptiert und als Main 25f3a4c gemerged. P4.1 Resource-/Type-/Unit-/Poolmodell, echte Unit-Identifier/XOR und permanente Zuordnung; P4.2 gemeinsame Services/Publikationsrechte/Privacy-/Race-Tests; P4.3 öffentlicher Katalog/Home/Galerie und operative Verwaltung; P4.4 Handbuch/ADRs/Migration-/Securitydokumentation, Regression, Docker/PostgreSQL-17-CI und responsive Browserabnahme. Keine produktive Buchung, Claims, Loans, Kalender/API oder Phase 5 vor neuer Review.

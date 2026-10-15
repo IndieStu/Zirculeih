@@ -59,6 +59,8 @@ ACTIONS = (
     )
 )
 INVENTORY_ACTIONS = {
+    "resource.publish": "Angebote veröffentlichen oder zurückziehen",
+    "resource.type_manage": "Angebotstypen konfigurieren",
     "asset.archive": "Inventar archivieren oder ausmustern",
     "asset.read_sensitive": "Seriennummern und interne Inventarnotizen ansehen/bearbeiten",
     "asset.import": "Inventar per CSV importieren",

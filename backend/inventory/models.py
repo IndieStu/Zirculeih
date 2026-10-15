@@ -152,7 +152,16 @@ class Identifier(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     namespace = models.ForeignKey(IdentifierNamespace, on_delete=models.PROTECT)
-    asset = models.ForeignKey(Asset, on_delete=models.PROTECT, related_name="identifiers")
+    asset = models.ForeignKey(
+        Asset, null=True, blank=True, on_delete=models.PROTECT, related_name="identifiers"
+    )
+    unit = models.ForeignKey(
+        "resources.ResourceUnit",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="identifiers",
+    )
     kind = models.CharField(max_length=20, choices=Kind.choices)
     raw_value = models.CharField(max_length=128)
     canonical_value = models.CharField(max_length=128, db_collation="C")
@@ -165,6 +174,11 @@ class Identifier(models.Model):
 
     class Meta:
         constraints = [
+            models.CheckConstraint(
+                condition=Q(asset__isnull=False, unit__isnull=True)
+                | Q(asset__isnull=True, unit__isnull=False),
+                name="identifier_exactly_one_target",
+            ),
             models.UniqueConstraint(
                 fields=["namespace", "canonical_value"], name="identifier_namespace_unique"
             ),

@@ -137,3 +137,24 @@ Bisherige AC-/KIOSK-Fälle bleiben verbindlich. AC-13 ist jetzt für die produkt
 ## Phase-3-Prüfstand 15.10.2026
 
 P3-/DASH-Szenarien werden durch 56 neue Phase-3-Testfälle zusätzlich zu 65 bestehenden Fällen abgedeckt: 121 lokal und 121 in Docker/PostgreSQL 17 bestanden auf Anwendungscode `29d232e`. [Review und exakte Grenzen](PHASE_3_REVIEW.md), [JUnit](test-results/phase-3-local.xml), [CI](test-results/phase-3-ci.json). DOC-Struktur/Links geprüft und zwölf tatsächliche Handbuchkapitel vorhanden; sachliche Owner-Abnahme bleibt offen. API-/CAL-Laufzeitfälle bleiben geplant. Echte HID-Hardware und umfassende A11y-Abnahme sind noch nicht bestanden.
+
+## Phase 4 — Ressourcen und Katalog
+
+| Szenario | Erwartung | Phase | Nachweis |
+| --- | --- | --- | --- |
+| P4-AC-01 | Angebote unabhängig von Assets, frei benannte Typen | 4 | Ressourcenservices, logische/physische Units |
+| P4-AC-02 | Asset höchstens eine permanente Unit, auch nach Deaktivierung | 4 | Service/SQL/parallel genau ein Gewinner |
+| P4-AC-03 | Units/Pools bleiben im selben Angebot, kein editierbarer Kapazitätszähler | 4 | Pool-Service/DB-Guard, abgeleitete Einsatzfähigkeit |
+| P4-AC-04 | Identifier additive echte Unit-FK/XOR, alte Assetcodes erhalten | 4 | Migrationen, SQL-Negativtests |
+| P4-AC-05 | physische Aliase kanonisieren Asset; logische Units ohne Asset | 4 | Resolver-/Scope-/UI-Tests |
+| P4-AC-06 | Veröffentlichung ausdrücklich, Entwurf/internal/archive kein Gastzugriff | 4 | Publishing/IDOR/Denies/Admin-Negativtests |
+| P4-AC-07 | öffentlicher Katalog enthält keine privaten Inventardaten/-pfade | 4 | Home/List/Detail-Leaktests |
+| P4-AC-08 | Suche/Typ/Kategorie/Ort/Pagination nur sichtbare Angebote | 4 | Katalogfilter-/Formulartests |
+| P4-AC-09 | Galerie getrennt, geprüft, autorisiert, Widerruf wirksam | 4 | Upload/Download/Withdraw-Negativtests |
+| P4-AC-10 | veröffentlichte Änderungen brauchen Publikationsrecht | 4 | Service-/UI-Berechtigungsprüfung |
+| P4-AC-11 | Baumänderung verschiebt Ressourcenscope nicht unberechtigt | 4 | alte/neue Scopeguards, Published-Negativtest |
+| P4-AC-12 | Revision, CSRF, Feldallowlist, escaped Texte, reale Scopeauswahl | 4 | Stale-/IDOR-/CSRF-/Formular-/SQL-Tests |
+| P4-AC-13 | operative UI und responsive öffentliche Seiten ohne Fakebooking | 4 | Browser/Desktop/Mobil/Enter und Screenshots |
+| P4-AC-14 | Handbuch/ADR/Security/Migrationen aktuell, neue Dependencies geprüft | 4 | Dokumentationsprüfung/Review; keine neue Abhängigkeit |
+
+Phase-4-Prüfstand 15.10.2026: 148 Tests (121 bestehende + 27 Ressourcenfälle) lokal und in Docker/PostgreSQL 17 bestanden für Anwendungscode `0c27a8d`. [Review mit Grenzen](PHASE_4_REVIEW.md), [JUnit](test-results/phase-4-local.xml), [CI-Nachweis](test-results/phase-4-ci.json). Manuelle Abnahme: Home/Enter-Suche/Katalog/Detail/Verwaltung und 320px ohne horizontalen Überlauf. Vollständige A11y-/Hardware-/Produktionsabnahme bleibt offen; P4-Ownerreview steht aus.

@@ -60,6 +60,7 @@ def test_original_local_fonts_and_license():
 
 
 @override_settings(SECURE_SSL_REDIRECT=False, PRIVACY_NOTICE_TEXT="Synthetischer Test")
+@pytest.mark.django_db
 def test_public_pages_use_deelvo_and_local_branding(client):
     for url in ("/", "/konto/anmelden/", "/konto/registrieren/"):
         response = client.get(url)

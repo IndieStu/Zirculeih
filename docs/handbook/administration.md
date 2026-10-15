@@ -30,3 +30,9 @@ Ein Mitarbeitendenmarker, eine Geräteidentität oder Systemadminstatus ersetzt 
 Verwendete Zusatzfeldtypen und Auswahlwerte werden nicht nachträglich neu interpretiert. Diese Version bietet bewusst kein generisches Regelsystem oder unbegrenzten Schemaeditor. Kostenstelle/Spenderhinweis und ähnliche Angaben gehören bei Bedarf in ein ausdrücklich vertrauliches Feld, nicht in neue organisationsspezifische Datenbankspalten.
 
 Für Erstadmin, SMTP, Datenschutzhinweise und Authentik benötigt die Systemadministration die tatsächliche Betreiberkonfiguration. Nutzer müssen dafür keine Servergeheimnisse ins Handbuch oder in Chats schreiben.
+
+## Angebotsverwaltung
+
+`resource.manage` erlaubt Angebote/Units/Pools im Scope zu verwalten; `resource.publish` ist zusätzlich für Veröffentlichung, Rücknahme/Archivierung und Änderungen bereits veröffentlichter Inhalte nötig. `resource.type_manage` ist ein organisationsweites Konfigurationsrecht für frei benannte Angebotstypen. Interne veröffentlichte Angebote lesen braucht `catalog.view_private`; weder Employee- noch Systemadminstatus ersetzt dies.
+
+Die Gruppenkonfiguration bietet jetzt reale Angebote als Scopeziele, gefiltert nach eigener Verwaltungsberechtigung. Für physische Unitzuordnung zusätzlich `asset.read` und `asset.manage`, für Standort-/Kategorieauswahl deren Leserechte einrichten. Unitcodes brauchen Identifierrechte im Angebots- und bei physischer Verknüpfung im Assetscope. Standort-/Kategoriebäume mit Angeboten lassen sich nicht ohne passende Ressourcenrechte in andere Berechtigungskontexte verschieben. Veröffentlichung ist eine bewusste redaktionelle Entscheidung; siehe [Katalog](catalog.md).

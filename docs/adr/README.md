@@ -34,3 +34,11 @@ Phase 2 ist akzeptiert und gemerged; ADR-012/013 bleiben verbindliche Grundlage.
 | --- | --- | --- | --- |
 | ADR-014 | [Inventaridentität, Bäume und Registry](014.md) | Phase-3-Implementierungsentscheidung zur Review | Integritäts-/Berechtigungsnachweise, UI-Abnahme, Owner-Review |
 | ADR-015 | [Dashboard, Integrationen und lebendes Handbuch](015.md) | Owner-Anforderungen verbindlich; konkrete Architektur zur Review | Dashboard/Handbuch Phase 3; ICS Phase 9; produktive API Phase 11 |
+
+## Phase 4
+
+Phase 3 accepted and merged; ADR-014/015 form its accepted implementation basis. [Owner authorization](../OWNER_APPROVAL_PHASE_4.md).
+
+| ADR | Thema | Status | Gate |
+| --- | --- | --- | --- |
+| ADR-016 | [Ressourcen, Einheiten und ausdrückliche Veröffentlichung](016.md) | Phase 4 autorisiert, konkrete Umsetzung zur Abnahme | Privacy-/Identity-/Race-/Katalogtests, responsive Abnahme, Ownerreview vor Phase 5 |

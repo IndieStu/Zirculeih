@@ -6,7 +6,10 @@ from django.views.decorators.http import require_safe
 
 @require_safe
 def home(request: HttpRequest) -> HttpResponse:
-    return render(request, "foundation.html")
+    from resources.services import catalog_card, visible_resources
+
+    featured = visible_resources(request.user).filter(is_featured=True)[:6]
+    return render(request, "foundation.html", {"cards": [catalog_card(r) for r in featured]})
 
 
 @require_safe

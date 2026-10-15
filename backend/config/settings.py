@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "accounts",
     "inventory",
+    "resources",
 ]
 AUTH_USER_MODEL = "accounts.User"
 AUTHENTICATION_BACKENDS = ["accounts.backends.EmailBackend"]
@@ -98,6 +99,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "inventory.context_processors.navigation",
+                "resources.context_processors.navigation",
             ]
         },
     }

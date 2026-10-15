@@ -188,7 +188,10 @@ def validate_grant(group, data):
         raise ValidationError("Kontoscope gilt nur für die Kontosperre.")
     if action == "account.suspend" and kind not in {"organization", "user"}:
         raise ValidationError("Kontosperren benötigen Organisations- oder Kontoscope.")
-    if action in {"identifier.namespace_manage", "custom_field.manage"} and kind != "organization":
+    if (
+        action in {"identifier.namespace_manage", "custom_field.manage", "resource.type_manage"}
+        and kind != "organization"
+    ):
         raise ValidationError("Diese Konfiguration benötigt Organisationsscope.")
     if data.get("inherit") and kind not in {"location", "category"}:
         raise ValidationError("Vererbung ist nur für Orte und Kategorien vorgesehen.")
