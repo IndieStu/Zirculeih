@@ -58,7 +58,22 @@ ACTIONS = (
         }
     )
 )
-SCOPE_KINDS = frozenset({"organization", "group", "user", "resource", "category", "location"})
+INVENTORY_ACTIONS = {
+    "asset.archive": "Inventar archivieren oder ausmustern",
+    "asset.read_sensitive": "Seriennummern und interne Inventarnotizen ansehen/bearbeiten",
+    "asset.import": "Inventar per CSV importieren",
+    "asset.attach": "Inventarbilder und Textdokumente hochladen",
+    "location.read": "Standorte ansehen",
+    "location.manage": "Standorte verwalten",
+    "category.read": "Inventarkategorien ansehen",
+    "category.manage": "Inventarkategorien verwalten",
+    "identifier.namespace_manage": "Inventar-Code-Namensräume verwalten",
+    "custom_field.manage": "Zusatzfelder konfigurieren",
+}
+ACTIONS = ACTIONS | frozenset(INVENTORY_ACTIONS)
+SCOPE_KINDS = frozenset(
+    {"organization", "group", "user", "asset", "resource", "category", "location"}
+)
 
 
 @dataclass(frozen=True)
@@ -198,3 +213,5 @@ ACTION_LABELS = {
     "inventory_run.complete": "Inventur abschließen",
     "inventory_discrepancy.resolve": "Inventurabweichungen entscheiden",
 }
+
+ACTION_LABELS.update(INVENTORY_ACTIONS)
