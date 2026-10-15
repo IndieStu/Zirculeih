@@ -52,5 +52,6 @@ for chapter in (
 if errors:
     raise SystemExit("\n".join(errors))
 print(
-    f"PASS: {len(files)} Markdown files, links/fences, AC/KIOSK/P3/DASH/API/CAL/DOC coverage, handbook"
+    f"PASS: {len(files)} Markdown files, links/fences, "
+    "AC/KIOSK/P3/DASH/API/CAL/DOC coverage, handbook"
 )

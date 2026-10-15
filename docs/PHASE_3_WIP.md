@@ -1,6 +1,6 @@
 # Phase 3 — gesicherter Zwischenstand
 
-Stand: 15.10.2026. Auf ausdrücklichen Wunsch des Owners vorübergehend unterbrochen. Branch: `review/phase-3-inventory-identifiers`. Dieser Stand ist WIP, keine abgeschlossene Phase-3-Freigabe. Phase 4 wurde nicht begonnen.
+Historischer Sicherungspunkt: 15.10.2026, WIP-Commit `10b1153`. Die Pause wurde anschließend vom Owner aufgehoben; Phase 3 wird auf demselben Branch fortgesetzt. Die folgenden Angaben beschreiben den damaligen Sicherungsstand, nicht den neuesten Prüfstatus. Branch: `review/phase-3-inventory-identifiers`. Dieser Stand ist WIP, keine abgeschlossene Phase-3-Freigabe. Phase 4 wurde nicht begonnen.
 
 ## Bereits implementiert
 

@@ -1,4 +1,4 @@
-# Datenmodell — konzeptionell, keine Migrationen
+# Datenmodell — produktive Grundlage und spätere Fachdomänen
 
 Alle Fachobjekte besitzen stabile UUIDs, Erstellzeit und geeignete Änderungsrevision. Löschregeln sind ausdrücklich festzulegen; historische Ausleihen, Zustimmungen und Versionen werden nicht durch Cascade gelöscht.
 
@@ -75,7 +75,7 @@ Vor Migrationen: Claim-Constraints und Gewahrsamstrategie per PostgreSQL-Prototy
 
 ## Identifier, Scanner und Inventur — konzeptionelle Erweiterung 15.10.2026
 
-Die neuen Tabellen sind Designvorschläge für Phase 3/4/6/10, keine bereits erzeugten Django-Modelle. [ADR-011](docs/adr/011.md) trennt bindende Owner-Anforderungen von technischen Empfehlungen. Im ERD gilt für Identifier eine XOR-Zielbeziehung, die das Diagramm allein nicht ausdrückt.
+Die folgenden Tabellen beschreiben das Gesamtziel für Phase 3/4/6/10. Asset-Identifier und Namespaces sind in Phase 3 implementiert; ResourceUnit, InventoryRun und Loan bleiben spätere Fachmodelle. [ADR-011](docs/adr/011.md) trennt bindende Owner-Anforderungen von technischen Empfehlungen. Im ERD gilt für Identifier eine XOR-Zielbeziehung, die das Diagramm allein nicht ausdrückt.
 
 | Entität | Felder und vorgeschlagene Constraints |
 | --- | --- |
@@ -101,3 +101,15 @@ Vor Fachmigrationen: Namespace-/Parserkontrakt und Bestandsmigration vorhandener
 
 
 Phasenfähige Migration: Phase 3 implementiert zunächst die Asset-Identifier mit echter Asset-FK und NOT NULL. Sobald ResourceUnit in Phase 4 vorhanden ist, wird die Registry additiv um die Unit-FK und den XOR-CHECK erweitert; keine freie UUID auf eine noch nicht existierende Tabelle und keine vorgezogene vollständige Ressourcenimplementierung. Namespace und kanonischer Code behalten ihren bisherigen Unique-Schlüssel. Textvergleich und Resolver verwenden dieselbe deterministische Vergleichssemantik; Normalisierungsänderungen brauchen Kollisionspreview und explizite Datenmigration, kein stilles Neuinterpretieren vorhandener Codes.
+
+## Phase-3-Schema und Migrationen
+
+Produktiv implementierte Grundlage: Location und Category mit optionalem parent-PROTECT, Name/Beschreibung/Aktivstatus/Revision; Asset mit UUID, permanenter Inventarnummer, Name/Beschreibung, Kategorie, Tags, Hersteller/Modell, Seriennummer, Anschaffungsdatum/-wert, Standort, getrenntem Zustand/Lebenszyklus, internen Notizen und Archivzeit. Zustand: good/worn/damaged/inspection; Lebenszyklus: active/unavailable/maintenance/retired/lost. Die begrenzten technischen Zustände sind in ADR-014 begründet; frei benannte Kategorien und Tags bleiben konfigurierbar.
+
+Identifier hat derzeit genau eine echte NOT-NULL-Asset-FK. Unique(namespace, canonical_value) gilt auch für stillgelegte Codes. C-Kollation und versionierte ASCII-Normalisierung bewahren führende Nullen und unterscheiden Groß-/Kleinschreibung im exact-v1-Namespace. UsedNamespace und Ziel/Code eines Identifiers bleiben unveränderlich; Löschen, Reaktivierung und Wiedervergabe sind ausgeschlossen. Deelvo-Codes bestehen aus `DLV-` und 96 zufälligen Bits. Standardnamespaces `deelvo` und `inventory` werden migriert.
+
+AssetMovement hält Actor, Grund, Zeitpunkt, Quell-/Ziel-FK sowie damalige Pfade. CustomFieldDefinition definiert text/number/date/boolean/enum/url, Optionen und sensible Sichtbarkeit; CustomFieldValue enthält genau eine typgerechte Wertspalte je Asset/Definition. DB-Trigger sichern Typen und verhindern nachträgliche Umdeutung verwendeter Definitionen. AssetMedia enthält private zufällige Speicherreferenz, Typ/Größe, sensible Sichtbarkeit (Standard), Actor und Archivierung. ImportPreview gehört einer Person, enthält validierte Zeilen, eine Stunde Ablauf sowie nach Bestätigung erzeugte IDs; keine Vorschau erzeugt Assets.
+
+Migrationen: inventory 0001 initiale Modelle, 0002 Bäume/Identifier-Integrität und Standardnamespaces, 0003 Mediensichtbarkeit/C-Kollation, 0004 Registry-Lock und typisierte Werte. PostgreSQL-Advisory-Locks sichern direkte SQL-Baum-/Registryänderungen zusätzlich zum zentralen Service-Autorisierungslock. Keine Datenmigration existierender produktiver Inventare behauptet; neue Migrationen wurden lokal mit synthetischen Daten geprüft. Vor Produktion sind Backup/Restore und PostgreSQL-17-CI erforderlich. Rücknahme der Inventartabellen verliert Daten; daher kein destruktives `migrate inventory zero` als Betriebsrollback. Forward-Fix oder abgestimmter Restore von DB und Medien.
+
+Nicht implementiert: AssetRelation/Template, Wartungsplanung, Resources/Units, Buchungen/Ausleihen, Inventurläufe und Feed-/API-Tokenmodelle. Das konzeptionelle ERD zeigt diese Zielstruktur, keinen aktuellen vollständigen Migrationsstand.

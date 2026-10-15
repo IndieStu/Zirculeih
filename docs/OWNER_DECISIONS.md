@@ -39,3 +39,9 @@ Technische FK-/Namespace-/Snapshotvorschläge in [ADR-011](adr/011.md) werden vo
 - Phase 2 nach Merge ausdrücklich freigegeben; Phase 3 bleibt getrenntes Gate.
 - Authentik ist eine erforderliche Komfortoption für Mitarbeitende und bereits in Phase 2 umzusetzen. Normale Nutzer registrieren sich lokal; Sicherheitsgrenzen aus ADR-009 bleiben bestehen.
 - Produktname Deelvo, technische neue Bezeichner deelvo; frühere Arbeitsnamen abgelöst. Inter selbst hosten (SIL OFL 1.1, 400/500/600/700), Ownerpalette und zentrale Tokens, Barrierefreiheit vorrangig. Kein finales Logo: reine Textwortmarke. Vollständige Umsetzung: [ADR-013](adr/013.md).
+
+## Phase-3-Freigabe und Ergänzungen — 15.10.2026
+
+[Originalfreigabe](OWNER_APPROVAL_PHASE_3.md): Phase 2 akzeptiert/gemerged, Phase 3 Inventar/Orte/Assets/Identifier ausdrücklich autorisiert. [Originalergänzungen](OWNER_ADDITION_DASHBOARD_API_HANDBOOK.md): operative, scopeabhängige Übersicht mit echten Daten und erlaubten Aktionen; versionierte gemeinsame-Service-API; standardsbasierte ICS/Nextcloud-Subscription mit Privacy/Widerruf; fortlaufendes aufgabenorientiertes Handbuch als Definition of Done.
+
+Phase 3 implementiert vorhandene Inventar-Dashboardteile und Handbuch für Phase 2/3, dokumentiert API und Kalenderarchitektur. Produktive API in Phase 11, ICS nach Bookings in Phase 9. Keine fiktiven Feeds, kein CalDAV, keine Vorwegnahme von Phase 4. OD-07 ohne Ablauf/individuellen Entzug von Einweisungen bleibt maßgeblich. [ADR-014](adr/014.md), [ADR-015](adr/015.md), [Integrationsplanung](INTEGRATIONS.md).

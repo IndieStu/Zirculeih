@@ -1,4 +1,4 @@
-# Phase 1 lokal starten
+# Deelvo lokal starten
 
 Voraussetzungen: Docker Engine/Desktop mit Compose v2 (`--wait`), Python 3.12+ nur für die Erzeugung der .env. Kein PostgreSQL am Host nötig. Docker wird nicht durch dieses Projekt installiert. Alle Daten synthetisch; kein Produktionsdeployment.
 
@@ -17,7 +17,7 @@ docker compose run --rm test python -m ruff format --check .
 docker compose run --rm test python -m mypy
 ```
 
-Startseite unter http://localhost:8000. Sie zeigt nur den technischen Entwicklungsstand; noch keine Anmeldung, Buchung oder Inventarverwaltung. Gunicorn bedient keine statischen Dateien: für sichtbares Stylesheet im lokalen Browser optional lokaler Reverse Proxy; die semantische Grundseite bleibt nutzbar. `static` sammelt die Dateien in das Volume für einen vorhandenen Proxy. Kein CDN und noch kein Frontendbuild/HTMX-Paket, solange keine Interaktion es benötigt.
+Startseite unter http://localhost:8000. Konten/Gruppen und Phase-3-Inventar sind implementiert; Inventarzugriff benötigt ausdrückliche operative Grants. Katalog, Buchungen und Ausleihen sind noch nicht implementiert. Gunicorn bedient keine statischen Dateien: für sichtbares Stylesheet im lokalen Browser optional lokaler Reverse Proxy; die semantische Grundseite bleibt nutzbar. `static` sammelt die Dateien in das Volume für einen vorhandenen Proxy. Kein CDN und noch kein Frontendbuild/HTMX-Paket, solange keine Interaktion es benötigt.
 
 ## Konfiguration
 
@@ -39,7 +39,7 @@ Der Allocation-Prototyp erzeugt pro Test ein zufälliges Schema innerhalb der di
 
 ## Migration und Upgrade
 
-Phase 1 hat keine Fachmodelle und keine Fachmigrationen. `migrate` bleibt ein expliziter einmaliger Releasebefehl, nie automatisch in jedem Webcontainer. Dockerbuilds installieren ausschließlich gehashte Locks. Upgrades werden als kleine Reviewänderung mit neuem Lizenz-/Sicherheitsscan und PostgreSQL-Tests durchgeführt.
+Konten- und Inventarmigrationen liegen unter backend/accounts/migrations und backend/inventory/migrations. `migrate` bleibt ein expliziter einmaliger Releasebefehl, nie automatisch in jedem Webcontainer. Dockerbuilds installieren ausschließlich gehashte Locks. Upgrades werden als kleine Reviewänderung mit neuem Lizenz-/Sicherheitsscan und PostgreSQL-Tests durchgeführt.
 
 ## GitHub-Zugang dieses Projekts
 
@@ -48,3 +48,9 @@ Der Projektordner ist seit 15.10.2026 ein Git-Checkout. Primärer Git-Zugang ist
 ## Phase 2 / Deelvo
 
 [Konten, Authentik, SMTP und Migrations-/Rollbackanleitung](ACCOUNTS.md). Neue Compose-Projekte heißen deelvo-dev; vorhandene .env-DB-Namen behalten und bei vorhandenem früherem Devvolume COMPOSE_PROJECT_NAME=zirculeih-dev setzen. Kein automatisches Umbenennen bestehender DBs/Volumes. Repositoryadresse bleibt bis separater Owner-Umbenennung unverändert.
+
+## Phase 3
+
+Nach `docker compose run --rm migrate` sind Standort-/Kategoriebäume und Inventar verfügbar. Ein Bootstrap-Admin hat keine impliziten Inventarrechte: operative Gruppen und passende Grants ausdrücklich einrichten. Die [Handbuchverwaltung](handbook/administration.md) beschreibt Rechte und [Inventar](handbook/inventory.md) die Bedienung. Standardnamespaces werden migriert. PostgreSQL 17 bleibt Ziel-/CI-Version.
+
+Abgelaufene private CSV-Vorschauen regelmäßig über `docker compose run --rm web python backend/manage.py purge_inventory_previews` entfernen. Dieser Befehl löscht nur abgelaufene Vorschauen, keine Assets oder Dateien. Das Medienvolume zusammen mit der DB sichern; keine öffentliche `/media/`-Freigabe einrichten. Hinweise zu Rollback und noch offenen Betriebsnachweisen stehen im [Datenmodell](../DATA_MODEL.md) und [Backuphandbuch](handbook/backup-restore.md).

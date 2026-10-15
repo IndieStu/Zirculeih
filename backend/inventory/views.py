@@ -12,6 +12,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.views.decorators.http import require_http_methods, require_POST
 
 from . import csvio, extensions, forms, services
@@ -79,7 +80,7 @@ def any_action(actor, action):
 
 def navigation(actor):
     return {
-        "can_create": any_action(actor, "asset.manage"),
+        "can_create": any_action(actor, "asset.manage") and any_action(actor, "asset.read"),
         "can_lookup": any_action(actor, "identifier.resolve"),
         "can_locations": any_action(actor, "location.read") or any_action(actor, "location.manage"),
         "can_categories": any_action(actor, "category.read")
@@ -565,6 +566,12 @@ def csv_preview(request, preview_id):
     preview = ImportPreview.objects.get(pk=preview_id, actor=request.user)
     if not any_action(request.user, "asset.import"):
         raise PermissionDenied
+    if not preview.committed_at and preview.expires_at <= timezone.now():
+        return render(
+            request,
+            "inventory/preview.html",
+            {"error": "Die Vorschau ist abgelaufen. Bitte erneut hochladen."},
+        )
     if request.method == "GET":
         try:
             if preview.committed_at:

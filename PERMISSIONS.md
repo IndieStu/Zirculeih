@@ -26,7 +26,7 @@ Beispiel: Grant A erlaubt 90 Tage, max. 2 Stunden; B 30 Tage, max. 8 Stunden. 62
 | resource.use_unstaffed | scoped Grant im Gruppeneditor; nur Nutzung, keine Erweiterung von Abhol-/Rückgabezeiten |
 | loan.checkout / return / inspect_identity | delegierter Ort/Resource; Rückgabe auch bei gesperrtem Borrower möglich |
 | borrower.read_contact | getrennt von Inventarleserechten, nur betrieblicher Bedarf |
-| asset.read / manage / read_financial / export | getrennte Sichtbarkeit von Kosten/Seriennummern |
+| asset.read / manage / read_sensitive / read_financial / export | Stammdaten, Bearbeitung, Seriennummern/Notizen und Kosten getrennt |
 | resource.manage / maintenance.manage | scoped, Änderungen über Services |
 | qualification.issue | erteilt unbefristete Einweisung; kein Entzugsworkflow im Pilot |
 | agreement.edit / publish / assign | Textentwurf vs Veröffentlichung getrennt; Zuordnung zu verwaltbaren Items |
@@ -69,3 +69,23 @@ Lookupfelder einzeln schützen: asset.read für Stammdaten, passende Resource-/B
 Inventurerfassung auch bei nicht buchbaren Assets. Ein außerhalb Scope gefundenes Asset darf nicht heimlich Scope oder Standort verändern; Funderfassung nur mit erlaubtem Lese-/Beobachtungsrecht. Identifierzuordnung oder Asset-Neuanlage aus unbekanntem Scan verlangt die jeweiligen Verwaltungsrechte. Alle Aktionen über dieselben Domain Services wie Web/Admin/API, inklusive CSRF, Autorisierungsrevisionen, auditierter Änderungen und unveränderter Hard Constraints.
 
 Phase-2-Implementierung, Delegationsobergrenze, Scopevertrag und Revisionslock: [ADR-012](docs/adr/012.md), [Betrieb](docs/ACCOUNTS.md).
+
+## Phase-3-Aktionen und Oberflächen
+
+| Aktion | Implementierte Grenze |
+| --- | --- |
+| asset.read / manage | vorhandener Asset- oder Organisations-/Ort-/Kategoriescope; Neuanlage gegen Zielscope |
+| asset.read_sensitive | Seriennummer, interne Notizen, sensible Zusatzfelder und sensible Medien; Schreiben benötigt zusätzlich manage bzw. attach |
+| asset.read_financial | Anschaffungswert; Schreiben zusätzlich manage |
+| asset.move | sowohl bisheriger als auch neuer Standort-/Kategoriescope; Grund und aktuelle Revision |
+| asset.archive | Ausmustern/Archivieren und Zuweisung lifecycle retired |
+| asset.attach | Upload/Medienarchivierung; Datei lesen zusätzlich asset.read und bei sensibler Datei read_sensitive |
+| asset.import | Vorschau/Übernahme je Zielasset, zusätzlich manage und passende sensible/finanzielle Rechte |
+| asset.export | je exportiertem Asset zusätzlich read; private Spalten einzeln geprüft |
+| location.read / manage, category.read / manage | eigener Baumknoten und ausdrücklich vererbte Nachfahren; Reparenting prüft alte/neue Kontexte und betroffene Assets |
+| identifier.resolve / assign / retire | Zielscope, minimale Auflösung, ausdrückliche Aliasverwaltung |
+| identifier.namespace_manage, custom_field.manage | ausschließlich organisationsweit konfigurierbar |
+
+Gruppeneditor bietet tatsächliche Standort-/Kategorie-/Assetauswahl; auswählbare Inventarziele werden nach Leserecht gefiltert. Die Delegationsobergrenze wird weiterhin im Service durchgesetzt. Admin-/Mitarbeitendenstatus ersetzt keine Inventargrants. `allowed_many` prüft Listen mit derselben Deny-/Profilalgebra, vor Pagination und ohne Rechtecache über Requests. Dashboardzahlen und Aufmerksamkeit folgen denselben Scopes; private Daten stehen nicht im Suchindex.
+
+API- und Kalenderrechte sind [architektonisch geplant](docs/INTEGRATIONS.md): Tokenrechte sind Schnitt mit aktuellen Owner-/Clientrechten und begrenztem Scope; private Feeds sind widerrufbare Credentials und kein Ersatz für Autorisierung. Keine produktiven Endpunkte oder Feedtokens in Phase 3. Das [Handbuch](docs/handbook/administration.md) erklärt die operativen Rechte unabhängig von Systemadministration.

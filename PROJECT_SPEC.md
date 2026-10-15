@@ -1,6 +1,6 @@
 # Deelvo — Product & Engineering Specification
 
-**Version:** 0.3 · **Status:** Phase 1 merged; Phase 2 owner-approved; Deelvo branding confirmed · **Date:** 2026-10-15
+**Version:** 0.4 · **Status:** Phase 2 accepted and merged; Phase 3 authorized and in progress · **Date:** 2026-10-15
 **Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
@@ -382,7 +382,7 @@ You are the principal software architect and implementation agent for **Deelvo**
 
 **For approved later phases:** work in small reviewable changes; state scope and plan; implement domain services and tests before polishing UI; verify with actual commands; do not claim tests passed unless executed; update docs; create concise commit/PR summaries; never force-push or deploy to production without explicit instruction. Preserve existing data and migrations; never modify production databases directly. If you discover a conflict between requirements, record it and ask for resolution rather than silently picking one.
 
-**Definition of done:** acceptance criteria met, negative permission tests present, relevant concurrency tests pass, no unreviewed dependency, docs updated, migration/rollback documented, and reviewer approval obtained.
+**Definition of done:** implementation and automated tests complete; authorization/security implications tested; acceptance criteria met and relevant concurrency tests pass; no unreviewed dependency; relevant user/admin handbook updated; API documentation updated for externally exposed capabilities; architecture/ADRs updated for architectural changes; migration/rollback documented; reviewer approval obtained. Applies to Phase 3 and all later phases.
 
 ---
 
@@ -437,4 +437,16 @@ Owner explicitly approved Phase 2 after Phase-1 merge. Authentik/OIDC is a requi
 
 Product name Deelvo; new technical identifiers use deelvo where appropriate. Superseded working names remain only in historical sources/ADRs and existing repository/data identifiers whose migration is separate. Inter, self-hosted under SIL OFL 1.1, weights 400/500/600/700. Brand palette: Blue #5590BF (primary), Orange #F79007 (deliberate accent), Ink #11140F, Charcoal #272B24, Graphite #43483E, Muted #74786F, Line #D9D9CE, Warm Paper #F6F3E9, White #FFFFFF. WCAG 2.2 AA takes precedence; darker accessible variants allowed. No approved logo mark: only plain Deelvo text in Ink on light surfaces or white/light neutral on dark. Centralized brand tokens, no external font runtime dependency. [Binding branding decision](docs/adr/013.md).
 
-Phase 3 still requires its own owner approval; no production deployment is authorized.
+Phase 3 was subsequently authorized by the owner; see section 22. No production deployment is authorized.
+
+## 22. Binding Phase-3 approval and additional requirements — 2026-10-15
+
+[Phase-3 approval](docs/OWNER_APPROVAL_PHASE_3.md) accepts merged Phase 2 and authorizes the inventory foundation. [Additional owner requirements](docs/OWNER_ADDITION_DASHBOARD_API_HANDBOOK.md) are binding. Phase 3 preserves Asset ≠ Resource ≠ ResourceUnit, implements arbitrary location/category trees, permanent asset identity, namespaced aliases and read-only HID/manual lookup. Typed custom fields, restrained local media and preview/commit CSV belong to this phase. Productive resources, bookings, loans, inventory runs, full kiosk and camera scanning remain outside it. [ADR-014](docs/adr/014.md) documents concrete identity/integrity decisions.
+
+The operational dashboard prioritizes real actionable information and permitted quick actions before counts. Phase 3 uses asset condition/lifecycle and location information only, filtered by current scopes. No fake pickups, returns, approvals, timelines or maintenance schedules. Non-operational users use their personal account area. Later phases extend attention queues and a cross-resource Today view as those domains become productive. Initial qualifications remain non-expiring: the dashboard example of expiring qualifications does not override OD-07.
+
+The integration API uses explicit `/api/v1/` contracts, shared domain services and existing authorization. API tokens are scoped and revocable, stored hashed and bounded by the current owner's/client's rights; no global permanent key or raw model CRUD authorization bypass. Authentication, pagination, filters, errors, timestamps and rate limits are documented in [integration architecture](docs/INTEGRATIONS.md). Productive API/OpenAPI implementation is Phase 11; no API dependency is introduced in Phase 3.
+
+Phase 9 delivers standards-compliant subscribable ICS after Booking exists: stable event UIDs, update/cancellation semantics, IANA timezone/DST correctness, privacy-aware minimal content and revocable hashed private feed credentials. Nextcloud Calendar is an acceptance client for one-way subscription, not a proprietary runtime dependency. No fake feeds or CalDAV in Phase 3. CAL acceptance scenarios remain planned until implementation.
+
+The living [handbook](docs/handbook/README.md) is a first-class deliverable, separate from architecture, integration and deployment documents. Phase 2 account/group functionality and implemented Phase 3 operations must have actual task-oriented instructions. Feature completion requires its relevant handbook, security tests, API documentation if exposed and ADR updates. Phase 3 stops for owner review before Phase 4.

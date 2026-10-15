@@ -96,3 +96,13 @@ Lookup zeigt erlaubte Namen, Inventar-ID, Kategorie, Bild, Ort, Zustand, Resourc
 Kioskprivacy: nach Abschluss/Abbruch Personendaten und Korb leeren; Staffsession nach Betriebsvorgabe sperren, künftige Self-Service-Session vollständig zurücksetzen. Inaktivitätstimeout, serverseitiger Schutz vor alten Vorgängen und Back-/Cacheprüfung vor Pilot. Netzwerkfehler nie als erfolgreiche Ausgabe darstellen; Ergebnis mit ursprünglichem Idempotenzkey prüfen. Keine Offline-Ausgabe oder lokale Speicherung von Borrowerdaten.
 
 Spätere manuelle Abnahme: echter HID-Scanner und manuelle Tastatur, Keyboard-only, Touch, schnelle Folge-/Doppelscans, falscher Code, Fokus beim Bearbeiten, Screenreader-Status, 320px, Netzverlust und voriger Benutzer nach Reset. Kamera-/Self-Service-Tests erst nach deren explizitem Inkrement; kein bestandener Hardwaretest in dieser Dokumentaktualisierung.
+
+## Implementierte Phase-3-Oberfläche
+
+`/inventar/` bietet Inventarliste mit Suche, Filtern, Nachfahrenauswahl und Pagination. Detail zeigt Stammdaten, erlaubte private Felder, Identifier, typisierte Zusatzwerte, autorisierte Medien und Bewegungen. Anlegen/Bearbeiten, Standortwechsel und Archivieren sind getrennte Formulare. Standort-/Kategoriebäume zeigen Pfade und explizite Bearbeitung. CSV wird zunächst geprüft und erst bewusst übernommen; private Spalten sind kein allgemeiner Exportstandard.
+
+`/inventar/uebersicht/` priorisiert beschädigte/zu prüfende und nicht verfügbare Assets sowie relevante inaktive Orte. Quick Actions erscheinen nur für implementierte, erlaubte Vorgänge. Bestandszahlen folgen darunter. Keine leeren Charts, fiktiven Ausleihtermine oder universelle Organisationssicht. Ohne operative Rechte führt der Einstieg zum persönlichen Konto. Später erweitert ein echter Heute-Bereich Buchung, Abholung und Rückgabe über verschiedene Ressourcentypen; unbefristete Einweisungen erhalten keine erfundenen Ablaufwarnungen.
+
+`/inventar/lookup/` verwendet Namensraumauswahl, begrenztes fokussiertes Codefeld und Enter-Submit. Nach Ergebnis bleibt der Namensraum erhalten und das Feld ist für die nächste Eingabe leer. Ergebnis ist minimal; Detailverknüpfung benötigt Leserecht. Kein Kamera-SDK und keine Ausgabe durch Scan. Der jetzige Lookup ist kein vollständiges gemeinsam genutztes Kioskterminal.
+
+Zentrale Deelvo-Tokens, lokales Inter und Textwordmark bleiben maßgeblich. Handbuchtexte unter [docs/handbook](docs/handbook/README.md) beschreiben tatsächliche Schritte für Nutzer, Personal, Organisations- und Systemadministration; zukünftige Buchungs-/Kalenderanleitungen entstehen erst mit funktionierender UI. Browser-, Tastatur-, Mobil- und Screenreaderprüfung sind getrennt vom automatisierten Testnachweis zu dokumentieren.

@@ -289,3 +289,73 @@ def test_privilege_field_injection_does_not_overwrite_hidden_values(staff, regis
     assert (
         str(registry[3].acquisition_value) == "100.00" and registry[3].location_id == registry[1].pk
     )
+
+
+def test_preview_expires_without_exposing_rows_or_allowing_commit(staff, registry, client):
+    from datetime import timedelta
+
+    from inventory import csvio
+    from inventory.models import ImportPreview
+
+    preview = csvio.preview_import(staff, csv_upload(registry))
+    ImportPreview.objects.filter(pk=preview.pk).update(
+        expires_at=timezone.now() - timedelta(seconds=1)
+    )
+    client.force_login(staff)
+    for method in (client.get, client.post):
+        response = method(reverse("csv_preview", args=[preview.pk]))
+        assert response.status_code == 200 and b"abgelaufen" in response.content
+        assert b"CSV-1" not in response.content and b"verbindlich" not in response.content
+    assert not Asset.objects.filter(inventory_number="CSV-1").exists()
+
+
+def test_preview_rechecks_current_rights_on_read(staff, registry, client):
+    from inventory import csvio
+
+    preview = csvio.preview_import(staff, csv_upload(registry))
+    Grant.objects.filter(group__membership__user=staff, action="asset.manage").delete()
+    client.force_login(staff)
+    response = client.get(reverse("csv_preview", args=[preview.pk]))
+    assert response.status_code == 404 and b"CSV-1" not in response.content
+
+
+def test_grant_form_inventory_targets_are_read_scoped(staff, registry):
+    from accounts.forms import GrantForm
+
+    user, group = limited_user(registry[0])
+    Grant.objects.create(
+        group=group,
+        action="location.read",
+        effect="allow",
+        scope_kind="location",
+        scope_id=registry[0].pk,
+        inherit=True,
+    )
+    hidden = services.save_tree(staff, Location, {"name": "Hidden", "is_active": True})
+    data = {
+        "action": "asset.read",
+        "effect": "allow",
+        "scope_kind": "location",
+        "scope_location": registry[1].pk,
+        "inherit": True,
+    }
+    form = GrantForm(data, actor=user)
+    assert form.is_valid(), form.errors
+    assert form.cleaned_data["scope_id"] == registry[1].pk
+    assert form.cleaned_data["inherit"] is True
+    assert not GrantForm({**data, "scope_location": hidden.pk}, actor=user).is_valid()
+    assert not GrantForm({**data, "scope_asset": registry[3].pk}, actor=user).is_valid()
+    assert not GrantForm(data).is_valid()
+
+
+def test_lookup_rate_limit_blocks_before_resolution(staff, registry, client):
+    from accounts.models import RateBucket
+
+    client.force_login(staff)
+    ns = IdentifierNamespace.objects.get(key="inventory")
+    url = reverse("identifier_lookup")
+    data = {"namespace": ns.pk, "code": registry[3].inventory_number}
+    assert client.post(url, data).status_code == 200
+    RateBucket.objects.update(count=600)
+    response = client.post(url, data)
+    assert response.status_code == 429 and registry[3].name.encode() not in response.content
