@@ -31,6 +31,7 @@ def test_ready_failure_does_not_leak_database_details(client):
 
 
 @override_settings(SECURE_SSL_REDIRECT=False)
+@pytest.mark.django_db
 def test_foundation_and_request_id(client):
     response = client.get("/")
     assert response.status_code == 200

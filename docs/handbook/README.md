@@ -12,3 +12,7 @@ Deelvo verwaltet gemeinsam nutzbare Ressourcen und deren Inventar. Aktuell verf�
 - **Systemadministration:** [Installation/Betrieb und Datensicherung](backup-restore.md), [Fehlersuche](troubleshooting.md). Serverzugang ist etwas anderes als die fachliche Rolle im Tool.
 
 Das Handbuch wird gemeinsam mit Funktionen geändert und versioniert. Neue Kapitel entstehen erst mit der jeweiligen produktiven Funktion. Architektur und Zukunftsplanung sind davon getrennt: [Integrationsplanung](../INTEGRATIONS.md), [Entwicklungsplan](../../DEVELOPMENT_PLAN.md).
+
+## Ressourcen und Katalog — Phase 4
+
+Der Katalog mit eigener Veröffentlichung ist jetzt implementiert: [Angebote, Einheiten und Pools verwalten](resources.md), [entdecken, Galerie und Veröffentlichung](catalog.md). Buchungen, Ausleihen, Kalender und API folgen weiterhin später. Interne Inventardaten bleiben vom Katalog getrennt.

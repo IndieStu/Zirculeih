@@ -91,11 +91,14 @@ class GrantForm(forms.Form):
         from inventory.forms import NodeChoice, permitted_nodes
         from inventory.models import Asset, Category, Location
         from inventory.services import visible_assets
+        from resources.models import Resource
+        from resources.services import visible_resources
 
         self.fields["scope_kind"].choices += [
             ("location", "Ein Standort"),
             ("category", "Eine Kategorie"),
             ("asset", "Ein Asset"),
+            ("resource", "Ein Angebot"),
         ]
         self.fields["scope_location"] = NodeChoice(
             label="Zielstandort",
@@ -119,12 +122,21 @@ class GrantForm(forms.Form):
         self.fields["inherit"] = forms.BooleanField(
             label="Auch untergeordnete Standorte/Kategorien", required=False
         )
+        self.fields["scope_resource"] = forms.ModelChoiceField(
+            label="Zielangebot",
+            required=False,
+            queryset=visible_resources(actor, management=True)
+            if actor
+            else Resource.objects.none(),
+        )
 
     def clean(self):
         data = super().clean()
         group, email = data.pop("scope_group", None), data.pop("scope_email", "")
         kind = data.get("scope_kind")
-        targets = {k: data.pop("scope_" + k, None) for k in ("location", "category", "asset")}
+        targets = {
+            k: data.pop("scope_" + k, None) for k in ("location", "category", "asset", "resource")
+        }
         if kind in targets:
             target = targets[kind]
             if target is None or group or email or any(v for k, v in targets.items() if k != kind):

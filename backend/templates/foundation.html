@@ -1,6 +1,1 @@
-{% extends "accounts/base.html" %}
-{% block title %}Willkommen{% endblock %}
-{% block content %}<h1>Gemeinsam nutzen.<br>Einfach ausleihen.</h1>
-<p>Willkommen bei Deelvo. Dein Ort für gemeinsam genutzte Gegenstände, Räume und Werkstätten.</p>
-{% if user.is_authenticated %}<p><a href="{% url 'account' %}">Zu deinem Konto</a></p>{% else %}<p><a href="{% url 'signup' %}">Konto erstellen</a> · <a href="{% url 'login' %}">Anmelden</a></p>{% endif %}
-<p>Die Anwendung befindet sich in Entwicklung. Der Katalog wird in einem späteren Schritt ergänzt.</p>{% endblock %}
+{% extends "resources/base.html" %}{% block title %}Gemeinsam nutzen{% endblock %}{% block content %}<section class="hero"><p class="eyebrow">Deelvo</p><h1>Gemeinsam nutzen.<br>Einfach ausleihen.</h1><p>Gegenstände, Räume und Werkstätten entdecken – für deine nächste Idee.</p><form action="{% url 'catalog' %}" method="get"><label class="visually-hidden" for="home-search">Angebote suchen</label><input id="home-search" name="q" placeholder="Was möchtest du nutzen?"><button>Entdecken</button></form></section>{% if cards %}<section><h2>Entdecke unsere Angebote</h2>{% include 'resources/cards.html' %}</section>{% endif %}<p><a href="{% url 'catalog' %}">Alle Angebote ansehen</a></p><p>Der Katalog wird aufgebaut. Online-Reservierungen folgen in einem späteren Schritt.</p>{% endblock %}

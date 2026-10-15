@@ -23,6 +23,7 @@ for prefix, count in (
     ("AC", 31),
     ("KIOSK-AC", 22),
     ("P3-AC", 16),
+    ("P4-AC", 14),
     ("DASH", 4),
     ("API", 4),
     ("CAL", 6),
@@ -43,6 +44,8 @@ for chapter in (
     "dashboard",
     "administration",
     "imports-and-media",
+    "resources",
+    "catalog",
     "backup-restore",
     "troubleshooting",
 ):

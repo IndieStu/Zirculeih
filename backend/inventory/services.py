@@ -3,7 +3,7 @@ import secrets
 from dataclasses import dataclass
 from uuid import UUID
 
-from accounts.authorization import Scope, allowed, allowed_many, authorization_write, bump, require
+from accounts.authorization import Scope, allowed_many, authorization_write, bump, require
 from accounts.services import audit
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
@@ -131,7 +131,11 @@ def save_tree(actor, model, data, *, node_id=None, expected_revision=None):
         structural = node_id and (
             node.parent_id != (parent.pk if parent else None) or node.is_active != data["is_active"]
         )
+        from resources.integrity import affected_resources, check_tree_change
+
+        resource_ids = [r.pk for r in affected_resources(model, branch)] if structural else []
         if structural:
+            check_tree_change(actor, resource_ids)
             for child in model.objects.filter(pk__in=branch):
                 require(actor, action, tree_scope(child))
             for asset in affected:
@@ -144,6 +148,7 @@ def save_tree(actor, model, data, *, node_id=None, expected_revision=None):
         node.full_clean()
         node.save()
         if structural:
+            check_tree_change(actor, resource_ids)
             for child in model.objects.filter(pk__in=branch):
                 require(actor, action, tree_scope(child))
             for previous in affected:
@@ -161,6 +166,7 @@ def save_tree(actor, model, data, *, node_id=None, expected_revision=None):
                 "active": node.is_active,
                 "parent_id": str(node.parent_id) if node.parent_id else None,
                 "affected_assets": before if structural else {},
+                "affected_resources": [str(pk) for pk in resource_ids],
             },
         )
         bump(revision)
@@ -427,6 +433,9 @@ class Resolution:
     asset_id: UUID | None = None
     name: str = ""
     inventory_number: str = ""
+    unit_id: UUID | None = None
+    resource_id: UUID | None = None
+    resource_name: str = ""
 
 
 def resolve_identifier(actor, namespace_id, raw):
@@ -443,9 +452,12 @@ def resolve_identifier(actor, namespace_id, raw):
         .select_related("asset__location", "asset__category")
         .first()
     )
-    if row is None or not allowed(actor, "identifier.resolve", asset_scope(row.asset)):
+    if row is None:
         return Resolution("unknown")
-    return Resolution("found", row.asset_id, row.asset.name, row.asset.inventory_number)
+    # Thin projection adapter only; inventory models remain independent of resource services.
+    from resources.identification import project_identifier
+
+    return project_identifier(actor, row)
 
 
 def save_namespace(actor, key, name, normalization):

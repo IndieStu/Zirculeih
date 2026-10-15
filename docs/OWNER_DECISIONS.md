@@ -45,3 +45,7 @@ Technische FK-/Namespace-/Snapshotvorschläge in [ADR-011](adr/011.md) werden vo
 [Originalfreigabe](OWNER_APPROVAL_PHASE_3.md): Phase 2 akzeptiert/gemerged, Phase 3 Inventar/Orte/Assets/Identifier ausdrücklich autorisiert. [Originalergänzungen](OWNER_ADDITION_DASHBOARD_API_HANDBOOK.md): operative, scopeabhängige Übersicht mit echten Daten und erlaubten Aktionen; versionierte gemeinsame-Service-API; standardsbasierte ICS/Nextcloud-Subscription mit Privacy/Widerruf; fortlaufendes aufgabenorientiertes Handbuch als Definition of Done.
 
 Phase 3 implementiert vorhandene Inventar-Dashboardteile und Handbuch für Phase 2/3, dokumentiert API und Kalenderarchitektur. Produktive API in Phase 11, ICS nach Bookings in Phase 9. Keine fiktiven Feeds, kein CalDAV, keine Vorwegnahme von Phase 4. OD-07 ohne Ablauf/individuellen Entzug von Einweisungen bleibt maßgeblich. [ADR-014](adr/014.md), [ADR-015](adr/015.md), [Integrationsplanung](INTEGRATIONS.md).
+
+## Phase 4 — 15.10.2026
+
+Phase-3-Review akzeptiert („freigegeben“), anschließende Bestätigung „phase 3 ist merged“. [Originalformulierungen und Gesprächskontext](OWNER_APPROVAL_PHASE_4.md). Ressourcen/Katalog gemäß bestehendem Plan autorisiert, Main 25f3a4c integriert. Keine Phase 5 oder Produktionsfreigabe. [ADR-016](adr/016.md) konkretisiert die Umsetzung, keine Änderung der bestätigten Ausleih-/Qualifikations-/Markenregeln.

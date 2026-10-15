@@ -68,6 +68,12 @@ def any_action(actor, action):
         return False
     if allowed(actor, action):
         return True
+    if action.startswith("resource.") or action.startswith("identifier."):
+        from resources.models import Resource
+        from resources.services import resource_scope
+
+        if any(allowed(actor, action, resource_scope(r)) for r in Resource.objects.all()):
+            return True
     return any(
         allowed(actor, action, services.tree_scope(n))
         for model in (Location, Category)
@@ -305,15 +311,30 @@ def lookup(request):
                 request.user, form.cleaned_data["namespace"].pk, form.cleaned_data["code"]
             )
     can_read_result = False
+    can_manage_resource = False
     if result and result.asset_id:
         identified = Asset.objects.get(pk=result.asset_id)
         can_read_result = allowed(request.user, "asset.read", services.asset_scope(identified))
+    if result and result.resource_id:
+        from resources.models import Resource
+        from resources.services import resource_scope
+
+        can_manage_resource = allowed(
+            request.user,
+            "resource.manage",
+            resource_scope(Resource.objects.get(pk=result.resource_id)),
+        )
     if result is not None:
         form = forms.LookupForm(initial={"namespace": request.POST.get("namespace")})
     return render(
         request,
         "inventory/lookup.html",
-        {"form": form, "result": result, "can_read_result": can_read_result},
+        {
+            "form": form,
+            "result": result,
+            "can_read_result": can_read_result,
+            "can_manage_resource": can_manage_resource,
+        },
     )
 
 

@@ -89,3 +89,11 @@ Phase-2-Implementierung, Delegationsobergrenze, Scopevertrag und Revisionslock: 
 Gruppeneditor bietet tatsächliche Standort-/Kategorie-/Assetauswahl; auswählbare Inventarziele werden nach Leserecht gefiltert. Die Delegationsobergrenze wird weiterhin im Service durchgesetzt. Admin-/Mitarbeitendenstatus ersetzt keine Inventargrants. `allowed_many` prüft Listen mit derselben Deny-/Profilalgebra, vor Pagination und ohne Rechtecache über Requests. Dashboardzahlen und Aufmerksamkeit folgen denselben Scopes; private Daten stehen nicht im Suchindex.
 
 API- und Kalenderrechte sind [architektonisch geplant](docs/INTEGRATIONS.md): Tokenrechte sind Schnitt mit aktuellen Owner-/Clientrechten und begrenztem Scope; private Feeds sind widerrufbare Credentials und kein Ersatz für Autorisierung. Keine produktiven Endpunkte oder Feedtokens in Phase 3. Das [Handbuch](docs/handbook/administration.md) erklärt die operativen Rechte unabhängig von Systemadministration.
+
+## Phase 4 — Angebotsscope und Veröffentlichung
+
+resource.manage prüft alte/neue Resource-, Standort- und Kategorie-Kontexte; resource.publish wird getrennt für Veröffentlichung/Zurücknahme/Archiv und Änderungen veröffentlichter Texte/Bilder verlangt. resource.type_manage ist organisationsweit. Kein Admin-/Employee-Bypass. Physische Unitzuordnung verlangt zusätzlich Assetlesen/-verwalten. Unitcodes brauchen identifier.assign/retire im Resource- und ggf. Assetscope; Auflösung schützt beide Identitäten. Ein Assetcode offenbart keine Resourceprojektion ohne deren Resolvegrant.
+
+Öffentliche veröffentlichte Angebote sind bewusst freigegebene Daten und ohne Konto lesbar. Das ist keine Inventarlesefreigabe. Private veröffentlichte Angebote benötigen catalog.view_private mit aktuellen Grants/Denies. Entwürfe sind nur in der Verwaltung; Archiv ist nicht im Katalog. Ein gesperrtes Konto verliert private/operative Rechte und kann weiterhin öffentliche Informationen wie ein Gast lesen. Echte Angebote erscheinen als Scopeauswahl im Gruppeneditor; keine freie Resource-UUID-Eingabe nötig.
+
+Baum-Reparenting/Aktivstatusänderung muss alle betroffenen Resources im alten/neuen Scope verwalten dürfen, bei veröffentlichten Angeboten zusätzlich publizieren. So kann location.manage/category.manage keine Ressourcenrechte indirekt verschieben. [ADR-016](docs/adr/016.md).

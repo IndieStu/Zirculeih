@@ -36,7 +36,7 @@ class AccountPrivacyMiddleware:
 
     def __call__(self, request):
         response = self.get_response(request)
-        if request.path.startswith(("/konto/", "/inventar/")):
+        if request.path == "/" or request.path.startswith(("/konto/", "/inventar/", "/entdecken/")):
             response["Cache-Control"] = "no-store, private"
             response["Referrer-Policy"] = "same-origin"
             response["Content-Security-Policy"] = (

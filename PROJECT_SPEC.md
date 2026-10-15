@@ -1,6 +1,6 @@
 # Deelvo — Product & Engineering Specification
 
-**Version:** 0.4 · **Status:** Phase 2 accepted and merged; Phase 3 authorized and in progress · **Date:** 2026-10-15
+**Version:** 0.5 · **Status:** Phase 3 accepted and merged; Phase 4 authorized and in progress · **Date:** 2026-10-15
 **Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
@@ -450,3 +450,9 @@ The integration API uses explicit `/api/v1/` contracts, shared domain services a
 Phase 9 delivers standards-compliant subscribable ICS after Booking exists: stable event UIDs, update/cancellation semantics, IANA timezone/DST correctness, privacy-aware minimal content and revocable hashed private feed credentials. Nextcloud Calendar is an acceptance client for one-way subscription, not a proprietary runtime dependency. No fake feeds or CalDAV in Phase 3. CAL acceptance scenarios remain planned until implementation.
 
 The living [handbook](docs/handbook/README.md) is a first-class deliverable, separate from architecture, integration and deployment documents. Phase 2 account/group functionality and implemented Phase 3 operations must have actual task-oriented instructions. Feature completion requires its relevant handbook, security tests, API documentation if exposed and ADR updates. Phase 3 stops for owner review before Phase 4.
+
+## 23. Phase-3 acceptance and Phase-4 authorization — 2026-10-15
+
+The owner accepted the delivered Phase-3 review with “freigegeben” after the explicit next-phase gate, then confirmed Phase 3 is merged. [Conversation record](docs/OWNER_APPROVAL_PHASE_4.md). Phase 4 resources/catalog is authorized, based on Main 25f3a4c. [ADR-016](docs/adr/016.md) concretizes independent authored Resource content, configurable types, permanent optional Asset-to-Unit identity, same-resource pools, additive Unit identifiers/XOR and scoped publication.
+
+Public catalog/Home/search/detail/gallery use explicitly published Resource fields and separate sanitized catalog images; inventory metadata and internal location paths stay private. Internal published offers require current private-catalog grants; drafts and archive are not public. A public location label is separately authored. Publication and edits to published content require explicit resource.publish alongside manage. Tree changes cannot shift Resource scopes without corresponding management/publication rights. Units/pools are configuration; no booking engine, availability promise or dummy booking action before Phase 5. The handbook covers actual resources/catalog workflows now. No new dependency is needed; existing reviewed Pillow validates separate gallery uploads. Phase 4 stops for owner review before Phase 5.

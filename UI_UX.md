@@ -106,3 +106,9 @@ Spätere manuelle Abnahme: echter HID-Scanner und manuelle Tastatur, Keyboard-on
 `/inventar/lookup/` verwendet Namensraumauswahl, begrenztes fokussiertes Codefeld und Enter-Submit. Nach Ergebnis bleibt der Namensraum erhalten und das Feld ist für die nächste Eingabe leer. Ergebnis ist minimal; Detailverknüpfung benötigt Leserecht. Kein Kamera-SDK und keine Ausgabe durch Scan. Der jetzige Lookup ist kein vollständiges gemeinsam genutztes Kioskterminal.
 
 Zentrale Deelvo-Tokens, lokales Inter und Textwordmark bleiben maßgeblich. Handbuchtexte unter [docs/handbook](docs/handbook/README.md) beschreiben tatsächliche Schritte für Nutzer, Personal, Organisations- und Systemadministration; zukünftige Buchungs-/Kalenderanleitungen entstehen erst mit funktionierender UI. Browser-, Tastatur-, Mobil- und Screenreaderprüfung sind getrennt vom automatisierten Testnachweis zu dokumentieren.
+
+## Phase 4 — Entdecken und Angebote pflegen
+
+Startseite mit Suchfeld/Enter und echten hervorgehobenen Angeboten, `/entdecken/` mit Suche/Typ/Kategorie/öffentlicher Ortsangabe, Karten und Pagination; Detail mit separater Galerie, Ausstattung/Sicherheits-/Nutzungstexten. Keine erfundene Verfügbarkeit und kein funktionsloser Buchungsbutton: Hinweis, dass Online-Reservierung folgt. Entwürfe/private Daten erscheinen nicht bei Gästen.
+
+Angebotsverwaltung ist eigene operative UI: Entwurf bearbeiten, permanente Units, Pools, Typen, eigene Katalogbilder und bewusste Sichtbarkeitsaktion mit Grund/Revision. Interner Standortpfad und separate öffentliche Ortsangabe werden ausdrücklich unterschieden. Systemadmin- und Publikationsrechte ersetzen keine anderen Grants. Zentralisierte Marke/Inter/Textwordmark unverändert; keine neue Frontendabhängigkeit. Anleitungen in [Ressourcen](docs/handbook/resources.md) und [Katalog](docs/handbook/catalog.md).
