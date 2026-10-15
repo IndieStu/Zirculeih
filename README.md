@@ -2,12 +2,13 @@
 
 Selbst gehostete Inventarverwaltung, Ressourcenreservierung und Ausleihe für Makerspaces.
 
-Stand: 15.10.2026. Phase 2 ist akzeptiert und gemerged. Phase 3 ist freigegeben und in Arbeit: Inventar, Standort-/Kategoriebäume, Identifier und HID-Lookup, Zusatzfelder, private Medien, CSV und operative Übersicht. Die abschließende Phase-3-Prüfung steht aus. Katalog, Buchungen und Ausleihen folgen in eigenen Phasen.
+Stand: 15.10.2026. Phase 2 ist akzeptiert und gemerged. Phase 3 ist freigegeben und in Arbeit: Inventar, Standort-/Kategoriebäume, Identifier und HID-Lookup, Zusatzfelder, private Medien, CSV und operative Übersicht. Lokale und Docker-/PostgreSQL-17-Prüfungen sind bestanden; Phase 3 steht zur Owner-Review. Katalog, Buchungen und Ausleihen folgen in eigenen Phasen.
 
 ## Start und Review
 
 - [Benutzer- und Administratorhandbuch](docs/handbook/README.md)
-- [Phase-3-Zwischenstand und Wiedereinstieg](docs/PHASE_3_WIP.md)
+- [Phase-3-Review mit Tests und Screenshots](docs/PHASE_3_REVIEW.md)
+- [Historischer WIP-Sicherungspunkt](docs/PHASE_3_WIP.md)
 - [API-/Kalenderarchitektur und Phasenzuordnung](docs/INTEGRATIONS.md)
 
 - [Phase-2-Review](docs/PHASE_2_REVIEW.md) und [Konten-/Authentik-Konfiguration](docs/ACCOUNTS.md)

@@ -133,3 +133,7 @@ Originalaufträge: [Phase 3](OWNER_APPROVAL_PHASE_3.md), [Dashboard/API/Handbuch
 | DOC-04 | Handbuch/API/ADRs mit Featureänderung Teil der Definition of Done | 3+ | Ownerentscheidung, AGENTS/Plan/CI, menschliche Feature-Review |
 
 Bisherige AC-/KIOSK-Fälle bleiben verbindlich. AC-13 ist jetzt für die produktive Inventargrundlage erfüllt (Bild/serielle/Standortfelder, keine Resourcepflicht); Wartungs-/Garantie-Fachprozesse bleiben ihren Phasen zugeordnet. KIOSK-AC für aktive Ausgabe/Rücknahme/Inventurläufe bleiben geplant. API-/CAL-Konzeptdokumente sind kein Laufzeitnachweis der späteren Features.
+
+## Phase-3-Prüfstand 15.10.2026
+
+P3-/DASH-Szenarien werden durch 56 neue Phase-3-Testfälle zusätzlich zu 65 bestehenden Fällen abgedeckt: 121 lokal und 121 in Docker/PostgreSQL 17 bestanden auf Anwendungscode `29d232e`. [Review und exakte Grenzen](PHASE_3_REVIEW.md), [JUnit](test-results/phase-3-local.xml), [CI](test-results/phase-3-ci.json). DOC-Struktur/Links geprüft und zwölf tatsächliche Handbuchkapitel vorhanden; sachliche Owner-Abnahme bleibt offen. API-/CAL-Laufzeitfälle bleiben geplant. Echte HID-Hardware und umfassende A11y-Abnahme sind noch nicht bestanden.

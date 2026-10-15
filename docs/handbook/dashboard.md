@@ -13,3 +13,9 @@ Inaktive sichtbare Standorte erscheinen separat. Sie können keine neuen Gegenst
 Je nach Rechten erscheinen Code nachschlagen, Asset finden/anlegen, Standorte, Kategorien sowie CSV-Import/-Export. Unter „Inventar konfigurieren“ findest du bei entsprechender Berechtigung Namensräume, Zusatzfelder und Schlagworte. Es gibt keine leeren Ausgabe-, Rücknahme- oder Buchungsschaltflächen.
 
 Bestandszahlen stehen nach den Arbeitshinweisen. Die Übersicht enthält keine erfundenen Buchungen, Ausleihen, Wartungsaufträge oder Inventurläufe. Ein Lebenszyklus „Wartung“ ist ein vorhandener Assetstatus, noch kein geplanter Wartungstermin.
+
+## Beispielansicht
+
+Synthetische Daten, Phase 3 (15.10.2026): Hinweise und Schnellaktionen vor Bestandszahlen. Deine sichtbaren Einträge hängen von deinen Rechten ab.
+
+![Deelvo-Betriebsübersicht mit Inventarhinweisen](../screenshots/phase-3-dashboard.jpg)
