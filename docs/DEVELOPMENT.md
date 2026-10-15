@@ -17,7 +17,7 @@ docker compose run --rm test python -m ruff format --check .
 docker compose run --rm test python -m mypy
 ```
 
-Startseite unter http://localhost:8000. Konten/Gruppen und Phase-3-Inventar sind implementiert; Inventarzugriff benötigt ausdrückliche operative Grants. Katalog, Buchungen und Ausleihen sind noch nicht implementiert. Gunicorn bedient keine statischen Dateien: für sichtbares Stylesheet im lokalen Browser optional lokaler Reverse Proxy; die semantische Grundseite bleibt nutzbar. `static` sammelt die Dateien in das Volume für einen vorhandenen Proxy. Kein CDN und noch kein Frontendbuild/HTMX-Paket, solange keine Interaktion es benötigt.
+Startseite unter http://localhost:8000. Konten/Gruppen und Phase-3-Inventar sind implementiert; Inventarzugriff benötigt ausdrückliche operative Grants. Der Ressourcen-/Katalogbereich ist in Phase 4 implementiert; Buchungen und Ausleihen folgen später. Gunicorn bedient keine statischen Dateien: für sichtbares Stylesheet im lokalen Browser optional lokaler Reverse Proxy; die semantische Grundseite bleibt nutzbar. `static` sammelt die Dateien in das Volume für einen vorhandenen Proxy. Kein CDN und noch kein Frontendbuild/HTMX-Paket, solange keine Interaktion es benötigt.
 
 ## Konfiguration
 
@@ -54,3 +54,7 @@ Der Projektordner ist seit 15.10.2026 ein Git-Checkout. Primärer Git-Zugang ist
 Nach `docker compose run --rm migrate` sind Standort-/Kategoriebäume und Inventar verfügbar. Ein Bootstrap-Admin hat keine impliziten Inventarrechte: operative Gruppen und passende Grants ausdrücklich einrichten. Die [Handbuchverwaltung](handbook/administration.md) beschreibt Rechte und [Inventar](handbook/inventory.md) die Bedienung. Standardnamespaces werden migriert. PostgreSQL 17 bleibt Ziel-/CI-Version.
 
 Abgelaufene private CSV-Vorschauen regelmäßig über `docker compose run --rm web python backend/manage.py purge_inventory_previews` entfernen. Dieser Befehl löscht nur abgelaufene Vorschauen, keine Assets oder Dateien. Das Medienvolume zusammen mit der DB sichern; keine öffentliche `/media/`-Freigabe einrichten. Hinweise zu Rollback und noch offenen Betriebsnachweisen stehen im [Datenmodell](../DATA_MODEL.md) und [Backuphandbuch](handbook/backup-restore.md).
+
+## Phase 4
+
+Nach den neuen Migrationen können berechtigte Gruppen über „Angebote verwalten“ Angebote, Units und Pools anlegen. Veröffentlichung braucht zusätzlich resource.publish; Typen brauchen resource.type_manage. `/entdecken/` zeigt nur veröffentlichte berechtigte Inhalte; neue Entwürfe sind privat. Eigene Ressourcenbilder liegen ebenfalls im Medienvolume. [Handbuch](handbook/resources.md), [Publikation](handbook/catalog.md), [Migration-/Rollbackgrenzen und Nachweise](PHASE_4_REVIEW.md). Kein Rollback auf Phase-3-Code nach produktiver Nutzung logischer Unitcodes ohne abgestimmten Restore.

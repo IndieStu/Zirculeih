@@ -156,3 +156,5 @@ P3-/DASH-Szenarien werden durch 56 neue Phase-3-Testfälle zusätzlich zu 65 bes
 | P4-AC-12 | Revision, CSRF, Feldallowlist, escaped Texte, reale Scopeauswahl | 4 | Stale-/IDOR-/CSRF-/Formular-/SQL-Tests |
 | P4-AC-13 | operative UI und responsive öffentliche Seiten ohne Fakebooking | 4 | Browser/Desktop/Mobil/Enter und Screenshots |
 | P4-AC-14 | Handbuch/ADR/Security/Migrationen aktuell, neue Dependencies geprüft | 4 | Dokumentationsprüfung/Review; keine neue Abhängigkeit |
+
+Phase-4-Prüfstand 15.10.2026: 148 Tests (121 bestehende + 27 Ressourcenfälle) lokal und in Docker/PostgreSQL 17 bestanden für Anwendungscode `0c27a8d`. [Review mit Grenzen](PHASE_4_REVIEW.md), [JUnit](test-results/phase-4-local.xml), [CI-Nachweis](test-results/phase-4-ci.json). Manuelle Abnahme: Home/Enter-Suche/Katalog/Detail/Verwaltung und 320px ohne horizontalen Überlauf. Vollständige A11y-/Hardware-/Produktionsabnahme bleibt offen; P4-Ownerreview steht aus.

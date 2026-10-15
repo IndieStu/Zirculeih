@@ -1,8 +1,8 @@
 # Deelvo-Handbuch
 
-Stand: Phase 3, 15.10.2026. Dieses Handbuch beschreibt die tatsächlich vorhandene Oberfläche. Die Anwendung befindet sich vor dem Echtbetrieb; Beispiele verwenden synthetische Daten.
+Stand: Phase 4, 15.10.2026. Dieses Handbuch beschreibt die tatsächlich vorhandene Oberfläche. Die Anwendung befindet sich vor dem Echtbetrieb; Beispiele verwenden synthetische Daten.
 
-Deelvo verwaltet gemeinsam nutzbare Ressourcen und deren Inventar. Aktuell verfügbar: Konten, Gruppenrechte, Inventar, Standorte, Kategorien, Identifier und Inventar-Betriebsübersicht. Buchungen/Ausleihen, Inventurläufe, Kalenderabos und Integrations-API folgen später; dafür enthält dieses Handbuch noch keine Bedienungsanleitungen.
+Deelvo verwaltet gemeinsam nutzbare Ressourcen und deren Inventar. Aktuell verfügbar: Konten, Gruppenrechte, Inventar, Standorte, Kategorien, Identifier, Inventar-Betriebsübersicht sowie Ressourcen, Einheiten, Pools und veröffentlichter Katalog. Buchungen/Ausleihen, Inventurläufe, Kalenderabos und Integrations-API folgen später; dafür enthält dieses Handbuch noch keine Bedienungsanleitungen.
 
 ## Dein Einstieg
 

@@ -60,7 +60,7 @@ Abgedeckt: unabhängige logische/physische Units, permanente OneToOne-Identität
 
 Manuell im Browser mit rein synthetischen Daten: anonyme Startseite, Suchfeld mit Enter, gefilterter Katalog, Detail/Hinweise, Katalog und Detail bei 320px mit scrollWidth=innerWidth=320, lokale Anmeldung, operative Ressourcenliste und Detail mit logischer Unit/Publikationsaktion. [Startseite](screenshots/phase-4-home.jpg), [Katalog](screenshots/phase-4-catalog.jpg), [Detail](screenshots/phase-4-detail.jpg), [Mobil](screenshots/phase-4-mobile.jpg), [Verwaltung](screenshots/phase-4-management.jpg). Kein umfassendes Screenreader-/WCAG-Zertifikat oder echter HID-Hardwaretest. Galerie-/Publikationswrites und negative Rollenfälle sind automatisiert geprüft.
 
-CI-Ergebnis des finalen Anwendungscodes wird nach Abschluss ausdrücklich ergänzt; kein laufender Run wird als bestanden bezeichnet.
+Finaler Anwendungscode `0c27a8d`: [GitHub Actions 38777967246](https://github.com/IndieStu/Zirculeih/actions/runs/38777967246) erfolgreich abgeschlossen. **148 Tests bestanden in 70,49 Sekunden** in Linux/Docker/PostgreSQL 17. Build, Lint/Typen, Modell-/Migrationsprüfung, PostgreSQL-Integrität/Konkurrenz, Bootstrap/Health und Cleanup erfolgreich. [Gesicherter CI-Nachweis](test-results/phase-4-ci.json). Nachfolgende Review-/Nachweiscommits ändern keinen Anwendungscode; deren separate CI ist vom ausdrücklich belegten Codecommit zu unterscheiden.
 
 ## Geänderte Bereiche und Dokumentation
 
@@ -74,4 +74,4 @@ Keine Buchungsengine, Zeiten/Policies/Claims, Loan-/Checkout-/Return, Qualifikat
 
 Große Kataloge sind noch nicht lastgetestet; die zentrale Scopefilterung lädt Resource-/Baumkontexte in Requestspeicher. Umfassende Accessibility-/Screenreader-, echte Scannerhardware-, Backup/Restore-, native Dependency-/Container-/Privacy-/Retentionprüfungen bleiben Pilot-/Releasegates. Keine realen personenbezogenen Daten.
 
-Kein Merge/Main-Push durch diesen Phase-4-Lauf. Phase 5 erst nach Owner-Review. PR-Erstellung bzw. konkrete Connectorgrenze werden bei Übergabe mit dem verifizierten Ergebnis ergänzt.
+Kein Merge/Main-Push durch diesen Phase-4-Lauf. Phase 5 erst nach Owner-Review. PR-Erstellung über den GitHub-Connector versucht: `403 Resource not accessible by integration`. SSH-Push funktioniert, es wird kein existierender PR behauptet. [Vergleich und PR-Anlage](https://github.com/IndieStu/Zirculeih/compare/main...review/phase-4-resources-catalog).
