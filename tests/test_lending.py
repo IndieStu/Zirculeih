@@ -612,3 +612,25 @@ def test_own_acceptance_and_configuration_denied_to_borrower(lending_setup, clie
     assert client.get(reverse("agreement_admin")).status_code == 404
     assert client.post(reverse("agreement_assignment"), {}).status_code == 404
     assert not AgreementAssignment.objects.exists()
+
+
+def test_resource_qualification_is_rechecked_at_checkout(lending_setup, monkeypatch):
+    from resources import requirements
+
+    actor, resource, _, _, user, _, _, pickup, _, _ = lending_setup
+    reserved = reserve(lending_setup)
+    group = actor.membership_set.get(removed_at=None).group
+    Grant.objects.create(group=group, action="qualification.issue", effect="allow")
+    Grant.objects.create(group=group, action="booking.override_policy", effect="allow")
+    q = requirements.create_type(actor, "Fiktive Fahrzeugeinweisung")
+    requirements.configure(actor, resource.pk, [], [q.pk])
+    services.identity_check(actor, user.pk)
+    monkeypatch.setattr(timezone, "now", lambda: pickup + timedelta(minutes=1))
+    checks = {str(reserved.pk): {"condition": "good", "accessories_checked": True}}
+    with pytest.raises(ValidationError):
+        services.checkout(actor, user.pk, [reserved.pk], uuid4(), checks=checks)
+    assert not Loan.objects.exists()
+    requirements.issue(actor, user.pk, q.pk)
+    assert (
+        services.checkout(actor, user.pk, [reserved.pk], uuid4(), checks=checks).lines.count() == 1
+    )

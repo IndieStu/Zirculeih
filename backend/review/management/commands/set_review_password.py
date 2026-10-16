@@ -9,14 +9,13 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.management.base import BaseCommand, CommandError
 
 from review.models import ReviewDataset
-from review.seed import ROLES
 
 
 class Command(BaseCommand):
     help = "Set fictional review account passwords locally; no password argument or logging."
 
     def add_arguments(self, parser):
-        parser.add_argument("--role", choices=[*ROLES, "all"], required=True)
+        parser.add_argument("--role", required=True)
         parser.add_argument(
             "--password-file", help="Optional private mode-0600 file for automation"
         )
@@ -35,7 +34,9 @@ class Command(BaseCommand):
                 raise CommandError("Passwords differ")
         with authorization_write():
             row = ReviewDataset.objects.get(pk=1)
-            roles = list(ROLES) if options["role"] == "all" else [options["role"]]
+            roles = list(row.accounts) if options["role"] == "all" else [options["role"]]
+            if any(key not in row.accounts for key in roles):
+                raise CommandError("Unknown review role")
             users = [User.objects.get(pk=row.accounts[key]) for key in roles]
             for user in users:
                 validate_password(password, user)

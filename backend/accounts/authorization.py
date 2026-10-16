@@ -41,6 +41,7 @@ ACTIONS = (
             "resource.manage",
             "maintenance.manage",
             "qualification.issue",
+            "user.invite",
             "agreement.edit",
             "agreement.publish",
             "agreement.assign",
@@ -194,6 +195,7 @@ def require_beneficiary(actor, beneficiary, action, scope, **restrictions):
 
 
 ACTION_LABELS = {
+    "user.invite": "Personen einladen",
     "catalog.view_public": "Öffentlichen Katalog ansehen",
     "catalog.view_private": "Internen Katalog ansehen",
     "booking.create_own": "Eigene Reservierungen erstellen",

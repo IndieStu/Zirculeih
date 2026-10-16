@@ -27,3 +27,12 @@ Mit booking.read_all zeigt „Heute“ reale bestätigte/aktive/abgeschlossene B
 ## Ausleihen — Phase 6
 
 Mit passenden loan-Rechten zeigt die Übersicht sichtbare überfällige Positionen und heutige erwartete Abholungen/Rückgaben; begrenzt auf 20 Einträge pro Dashboardabschnitt. Der [Ausleihbetrieb](loans.md) bietet tatsächliche Ausgabe-/Rücknahmepfade. Ein noch ausgegebener Gegenstand bleibt offen, auch wenn expected_return überschritten ist. Ohne alle enthaltenen Lesescopes wird ein fremder Mehrpositionsloan nicht als Gesamtbeleg angezeigt. Kein öffentlicher Borrowerfeed.
+
+## Navigation im UX-Korrekturstand
+
+Mitarbeitende mit Betriebsrechten landen nach lokaler Anmeldung oder Authentik auf
+**Dashboard**. Die linke Navigation gruppiert Betrieb, Bestand, Organisation und
+Einstellungen; auf schmalen Bildschirmen lässt sie sich über „Verwaltung“ schließen.
+Abholungen, Rückgaben, überfällige Rückgaben, heutige Buchungen und offene Hinweise
+stammen aus den tatsächlichen Vorgängen im berechtigten Bereich. Schnellaktionen
+führen direkt zu Ausgabe/Rückgabe, Inventar, Ressourcen und Personen/Gruppen.

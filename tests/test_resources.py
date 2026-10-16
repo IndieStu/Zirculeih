@@ -244,7 +244,7 @@ def test_logical_resolution_and_no_resource_or_asset_scope_leak(editor, offer, r
     assert inventory.resolve_identifier(actor, ns.pk, "PHYSICAL").status == "unknown"
     client.force_login(actor)
     response = client.post(reverse("identifier_lookup"), {"namespace": ns.pk, "code": "LOGICAL"})
-    assert response.status_code == 200 and b"Einheit erkannt" in response.content
+    assert response.status_code == 200 and b"Platz erkannt" in response.content
     assert b"Assetdetails" not in response.content
 
 
@@ -263,8 +263,7 @@ def test_catalog_search_filters_escape_and_does_not_search_inventory(
         == 1
     )
     assert (
-        client.get(reverse("catalog"), {"location": "invalid"}).context["page_obj"].paginator.count
-        == 0
+        client.get(reverse("catalog"), {"area": "invalid"}).context["page_obj"].paginator.count == 0
     )
     Resource.objects.filter(pk=offer.pk).update(description="<script>alert(1)</script>")
     response = client.get(reverse("resource_detail", args=[offer.slug]))

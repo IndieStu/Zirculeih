@@ -22,3 +22,13 @@ footer{margin-top:2rem;font-weight:var(--weight-medium)}
 @media(max-width:600px){main{margin:1rem .6rem;padding:1rem}header{padding:1rem}h1{font-size:1.6rem}nav{gap:.6rem}}
 
 .review-indicator { margin:0; padding:.5rem 1rem; background:var(--color-ink, #11140F); color:#fff; font-size:.875rem; overflow-wrap:anywhere; }
+
+.operational-shell{display:grid;grid-template-columns:14rem minmax(0,1fr);gap:1.25rem;max-width:100rem;margin:0 auto;padding:1rem}
+.operational-shell main{width:100%;max-width:none;min-width:0;margin:0;padding:1.25rem;border-radius:.35rem}
+.sidebar{background:var(--charcoal);color:var(--white);padding:1rem;align-self:start;border-radius:.35rem}
+.sidebar summary{font-weight:600;cursor:pointer}.sidebar nav{display:block}.sidebar a{display:block;color:var(--white);padding:.3rem 0}.sidebar h2{font-size:.8rem;text-transform:uppercase;color:var(--line);margin:1rem 0 .25rem}
+.table-scroll{overflow:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:.45rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}th{font-weight:600}
+@media(min-width:801px){.sidebar summary{display:none}}
+@media(max-width:800px){.operational-shell{display:block;padding:.6rem}.sidebar{margin-bottom:.6rem}.operational-shell main{padding:1rem}.sidebar nav{display:flex;gap:.6rem}.sidebar h2{width:100%}}
+.availability-slots {display:grid; grid-template-columns:repeat(auto-fit,minmax(11rem,1fr)); gap:.5rem; padding:0; list-style:none}
+.availability-slots li {padding:.5rem; border:1px solid var(--line,#D9D9CE); border-radius:.25rem}

@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods, require_POST
 from inventory import extensions
 from inventory.forms import IdentifierForm, ReasonForm
-from inventory.models import Category, Identifier, IdentifierNamespace, Location
+from inventory.models import Category, Identifier, IdentifierNamespace
 from inventory.services import descendants
 
 from . import forms, services
@@ -66,7 +66,7 @@ def catalog_query(request):
             | Q(tags__name__icontains=query)
             | Q(specifications__icontains=query)
         )
-    for field, model in (("category", Category), ("location", Location)):
+    for field, model in (("category", Category),):
         if request.GET.get(field):
             try:
                 node = model.objects.get(pk=request.GET[field])
@@ -74,6 +74,8 @@ def catalog_query(request):
                 qs = qs.filter(**{key: descendants(model, node.pk)})
             except (ValidationError, ValueError, model.DoesNotExist):
                 qs = qs.none()
+    if request.GET.get("area"):
+        qs = qs.filter(catalog_area=request.GET["area"][:100])
     if request.GET.get("type"):
         try:
             qs = qs.filter(type_id=request.GET["type"])
@@ -89,8 +91,11 @@ def catalog(request):
     query = request.GET.copy()
     query.pop("page", None)
     # Filter labels derive solely from visible resources; never enumerate private inventory paths.
-    locations = dict(
-        visible.exclude(location_label="").values_list("location_id", "location_label")
+    areas = list(
+        visible.exclude(catalog_area="")
+        .values_list("catalog_area", flat=True)
+        .distinct()
+        .order_by("catalog_area")
     )
     return render(
         request,
@@ -100,7 +105,7 @@ def catalog(request):
             "page_obj": page,
             "categories": Category.objects.filter(resource__in=visible).distinct(),
             "types": ResourceType.objects.filter(resource__in=visible).distinct(),
-            "locations": sorted(locations.items(), key=lambda p: (p[1], str(p[0]))),
+            "areas": areas,
             "pagination_query": query.urlencode() + "&" if query else "",
         },
     )
@@ -109,12 +114,26 @@ def catalog(request):
 @require_http_methods(["GET"])
 def detail(request, slug):
     resource = get_object_or_404(services.visible_resources(request.user), slug=slug)
+    from .calendar import calendar
+    from .models import QualificationType
+    from .requirements import required_agreements
+
+    try:
+        requirement_versions = required_agreements(resource)
+    except ValidationError:
+        requirement_versions = []
+
     # Only explicitly authored catalog fields, never the inventory models or unit names.
     return render(
         request,
         "resources/detail.html",
         {
             "card": services.catalog_card(resource),
+            "calendar": calendar(resource, request.GET.get("day")),
+            "requirement_versions": requirement_versions,
+            "required_qualifications": QualificationType.objects.filter(
+                resourcequalification__resource=resource
+            ),
             "description": resource.description,
             "specifications": resource.specifications,
             "safety_notes": resource.safety_notes,
@@ -137,7 +156,7 @@ def management(request):
         "resources/manage_list.html",
         {
             "resources": rows,
-            "can_create": can_manage(request.user),
+            "can_create": allowed(request.user, "resource.manage"),
             "can_types": allowed(request.user, "resource.type_manage"),
         },
     )
@@ -184,6 +203,13 @@ def manage_detail(request, resource_id):
             "resource": resource,
             "units": resource.units.select_related("asset"),
             "pools": pools,
+            "can_requirements": allowed(
+                request.user, "booking.configure", services.resource_scope(resource)
+            )
+            and allowed(request.user, "agreement.assign", services.resource_scope(resource)),
+            "can_hours": allowed(
+                request.user, "booking.configure", services.resource_scope(resource)
+            ),
             "can_publish": allowed(
                 request.user, "resource.publish", services.resource_scope(resource)
             ),
@@ -311,19 +337,24 @@ def image_archive(request, image_id):
 
 @operation
 @require_http_methods(["GET", "POST"])
-def type_create(request):
+def type_create(request, type_id=None):
     require(request.user, "resource.type_manage")
-    form = forms.TypeForm(request.POST or None)
+    row = get_object_or_404(ResourceType, pk=type_id) if type_id else None
+    form = forms.TypeForm(request.POST or None, instance=row)
     if request.method == "POST" and form.is_valid():
         try:
-            services.save_type(request.user, form.cleaned_data)
+            services.save_type(request.user, form.cleaned_data, type_id=type_id)
             return redirect("resource_types")
         except ValidationError as exc:
             form.add_error(None, exc)
     return render(
         request,
         "resources/form.html",
-        {"title": "Angebotstyp anlegen", "form": form, "types": ResourceType.objects.all()},
+        {
+            "title": "Art bearbeiten" if row else "Art anlegen",
+            "form": form,
+            "types": ResourceType.objects.all(),
+        },
     )
 
 
@@ -355,4 +386,84 @@ def unit_code(request, resource_id, unit_id, identifier_id=None):
         "Einheitscode stilllegen" if identifier_id else "Einheitscode zuordnen",
         save,
         resource,
+    )
+
+
+@operation
+@require_http_methods(["GET", "POST"])
+def requirements_edit(request, resource_id):
+    from lending.models import AgreementAssignment
+
+    from . import requirements
+
+    resource = get_object_or_404(Resource, pk=resource_id)
+    require(request.user, "booking.configure", services.resource_scope(resource))
+    require(request.user, "agreement.assign", services.resource_scope(resource))
+    form = forms.RequirementsForm(
+        request.POST or None,
+        initial={
+            "agreements": AgreementAssignment.objects.filter(resource=resource).values_list(
+                "agreement_id", flat=True
+            ),
+            "qualifications": resource.qualifications.values_list("qualification_id", flat=True),
+        },
+    )
+    if request.method == "POST" and form.is_valid():
+        try:
+            requirements.configure(
+                request.user,
+                resource.pk,
+                [r.pk for r in form.cleaned_data["agreements"]],
+                [r.pk for r in form.cleaned_data["qualifications"]],
+            )
+            messages.success(request, "Voraussetzungen gespeichert.")
+            return redirect("resource_manage", resource_id=resource.pk)
+        except ValidationError as exc:
+            form.add_error(None, exc)
+    return render(
+        request,
+        "resources/form.html",
+        {"form": form, "title": resource.title + ": Voraussetzungen"},
+    )
+
+
+@operation
+@require_http_methods(["GET", "POST"])
+def qualifications_admin(request):
+    from . import requirements
+    from .models import QualificationType, UserQualification
+
+    require(request.user, "qualification.issue")
+    type_form = forms.QualificationForm(
+        request.POST if request.POST.get("operation") == "type" else None
+    )
+    issue_form = forms.IssueQualificationForm(
+        request.POST if request.POST.get("operation") == "issue" else None
+    )
+    if request.method == "POST":
+        form = type_form if request.POST.get("operation") == "type" else issue_form
+        if form.is_valid():
+            try:
+                data = form.cleaned_data
+                if form is type_form:
+                    requirements.create_type(request.user, data["name"], data["description"])
+                else:
+                    requirements.issue(
+                        request.user, data["user"].pk, data["qualification"].pk, data["note"]
+                    )
+                messages.success(request, "Einweisung gespeichert.")
+                return redirect("qualifications_admin")
+            except ValidationError as exc:
+                form.add_error(None, exc)
+    return render(
+        request,
+        "resources/qualifications.html",
+        {
+            "type_form": type_form,
+            "issue_form": issue_form,
+            "types": QualificationType.objects.all(),
+            "issuances": UserQualification.objects.select_related("user", "qualification").order_by(
+                "-issued_at"
+            )[:100],
+        },
     )

@@ -469,3 +469,19 @@ Owner confirmed “freigegeben und merged” following the Phase-5 review/next-p
 ## 26. Owner/team UX review gate — 2026-10-16
 
 The owner confirmed Phase 6 is merged but not accepted. [Binding review gate](docs/review/OWNER_UX_REVIEW_GATE.md) authorizes an isolated fictional NCtest/Tailscale review instance, explicit seed, role accounts and review material, not a speculative redesign. [Deployment](docs/deployment/REVIEW_INSTANCE.md), [team tasks](docs/review/UX_REVIEW_PHASE_6.md). Phase 7 remains blocked until explicit owner approval after team feedback. No production or real personal data is authorized.
+
+## 27. Owner UX correction before team review — 2026-10-16
+
+[Binding correction](docs/review/OWNER_UX_CORRECTION.md), [owner notes](docs/review/OWNER_UX_NOTES.md)
+and [ADR-020](docs/adr/020.md) authorize the correction of navigation, terminology,
+visible availability, scheduling administration and resource-specific agreements/
+qualifications within the Phase-6 review gate. The owner confirmed one visible
+Admin role, preserving protected authority and explicit operational permissions.
+MyTurn is evidence for operational presentation only: its item/check-out model,
+membership types, fragmented scheduling and consent-like induction labels must not
+replace Deelvo's established models. Owner feedback prevails.
+
+Only additive migration and fictional review-data enhancement are authorized on
+NCtest. Existing review records, passwords and media must survive. Full regression
+and review-instance verification precede the actual team review. Stop there;
+Phase 7 remains unauthorized.

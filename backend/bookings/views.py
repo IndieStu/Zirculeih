@@ -29,9 +29,7 @@ MESSAGES = {
     "physical_unit_required": "Eine physische Einheit muss eingerichtet sein.",
     "pickup_unavailable": "Abholtermin außerhalb eines erlaubten Abholfensters oder Zeitraums.",
     "return_unavailable": "Der Rückgabetermin liegt nicht in einem erlaubten Rückgabefenster.",
-    "available": (
-        "Der Zeitraum ist derzeit frei. Erst der erfolgreiche Abschluss bestätigt die Buchung."
-    ),
+    "available": ("Der Zeitraum ist frei."),
     "permission_denied": "Für diesen Zeitraum fehlt eine erforderliche Berechtigung.",
     "reserved": "Der Zeitraum ist inzwischen belegt.",
     "capacity_exhausted": "Keine geeignete aktive Einheit vorhanden.",
@@ -52,7 +50,7 @@ MESSAGES = {
         "Physische Ausleihreservierungen sind für dieses Angebot noch nicht "
         "freigeschaltet. Bitte beim Team melden."
     ),
-    "qualification_required": "Die erforderliche Einweisungsprüfung ist noch nicht freigeschaltet.",
+    "qualification_required": "Die erforderliche Einweisung fehlt. Bitte wende dich an das Team.",
     "agreement_required": "Bitte die erforderlichen aktuellen Vereinbarungen bestätigen.",
 }
 
@@ -95,7 +93,27 @@ def create(request, resource_id):
             "bookings/unavailable.html",
             {"resource": resource, "message": MESSAGES["not_configured"]},
         )
-    form = forms.BookingForm(policy, request.POST or None)
+    from django import forms as django_forms
+    from lending import agreements
+    from resources.requirements import outstanding
+
+    try:
+        missing_versions, missing_qualifications = outstanding(request.user, resource)
+    except ValidationError:
+        missing_versions, missing_qualifications = [], []
+    initial = {
+        key: request.GET[key]
+        for key in ("start", "end", "pickup_at", "return_at")
+        if key in request.GET
+    }
+    form = forms.BookingForm(policy, request.POST or None, initial=initial)
+    requirement_fields = []
+    for version in missing_versions:
+        key = "agreement_" + str(version.pk)
+        form.fields[key] = django_forms.BooleanField(
+            label="Ich akzeptiere " + version.agreement.title + ".", required=False
+        )
+        requirement_fields.append((version, form[key]))
     result = None
     if request.method == "POST":
         if not take(request, "booking-submit", str(request.user.pk), limit=120):
@@ -107,6 +125,10 @@ def create(request, resource_id):
                 if policy.use_mode == "physical_loan":
                     kwargs.update(pickup_at=data["pickup_at"], return_at=data["return_at"])
                 if request.POST.get("action") == "confirm":
+                    if any(not data["agreement_" + str(v.pk)] for v in missing_versions):
+                        raise ValidationError("Bitte die erforderlichen Vereinbarungen bestätigen.")
+                    if missing_versions:
+                        agreements.accept(request.user, [v.pk for v in missing_versions])
                     booking = services.confirm(
                         request.user, resource.pk, data["start"], data["end"], data["key"], **kwargs
                     )
@@ -124,6 +146,9 @@ def create(request, resource_id):
             "policy": policy,
             "form": form,
             "result": result,
+            "requirement_fields": requirement_fields,
+            "missing_qualifications": missing_qualifications,
+            "booking_fields": [f for f in form if not f.name.startswith("agreement_")],
             "result_message": MESSAGES.get(result.code) if result else None,
         },
     )
@@ -132,13 +157,15 @@ def create(request, resource_id):
 @page
 @require_http_methods(["GET"])
 def own(request):
-    rows = services.visible_bookings(request.user)
+    rows = services.visible_bookings(request.user).select_related(
+        "loan_line__loan", "loan_line__asset"
+    )
     return render(
         request,
         "bookings/list.html",
         {
             "page_obj": Paginator(rows, 30).get_page(request.GET.get("page")),
-            "title": "Meine Buchungen",
+            "title": "Meine Vorgänge",
         },
     )
 
@@ -213,14 +240,18 @@ def operations(request):
         w
         for w in ScheduleWindow.objects.all()
         if allowed(
-            request.user, "booking.configure", services.schedule_scope(w.resource_id, w.location_id)
+            request.user,
+            "booking.configure",
+            services.schedule_scope(w.resource_id, w.location_id, w.category_id, w.organization),
         )
     ]
     exceptions = [
         w
         for w in ScheduleException.objects.all()
         if allowed(
-            request.user, "booking.configure", services.schedule_scope(w.resource_id, w.location_id)
+            request.user,
+            "booking.configure",
+            services.schedule_scope(w.resource_id, w.location_id, w.category_id, w.organization),
         )
     ]
     incidents = BookingIncident.objects.filter(booking__in=rows, is_open=True).select_related(
@@ -286,11 +317,21 @@ def schedule_add(request, exception=False):
     if not any_action(request.user, "booking.configure"):
         raise PermissionDenied
     form = (forms.ExceptionForm if exception else forms.WindowForm)(
-        request.user, request.POST or None
+        request.user, request.POST or None, initial={"resource": request.GET.get("resource")}
     )
     if request.method == "POST" and form.is_valid():
         try:
-            services.save_schedule(request.user, form.cleaned_data, exception=exception)
+            data = dict(form.cleaned_data)
+            through = data.pop("through", None)
+            from accounts.authorization import authorization_write
+
+            with authorization_write():
+                services.save_schedule(request.user, data, exception=exception)
+                if exception and through:
+                    day = data["date"] + timedelta(days=1)
+                    while day <= through:
+                        services.save_schedule(request.user, {**data, "date": day}, exception=True)
+                        day += timedelta(days=1)
             return redirect("booking_operations")
         except ValidationError as exc:
             form.add_error(None, exc)
@@ -301,7 +342,9 @@ def schedule_add(request, exception=False):
             "title": "Datumsbezogene Ausnahme" if exception else "Wochenzeitfenster hinzufügen",
             "form": form,
             "text": (
-                "Genau ein Angebot oder einen Standort wählen. Ausnahmen ersetzen "
+                "Genau einen Bereich wählen: Organisation, Kategorie, Standort oder Artikel / Raum."
+                " "
+                "Ausnahmen ersetzen "
                 "Wochenzeiten am Datum. Ende am Folgetag erlaubt höchstens 24 "
                 "Stunden; 00:00 bis 00:00 am Folgetag ist ein ganzer Tag."
             ),
@@ -389,5 +432,42 @@ def incident_resolve(request, incident_id):
                 "Tatsächliche Maßnahmen vorher durchführen und im Grund "
                 "dokumentieren."
             ),
+        },
+    )
+
+
+@page
+@require_http_methods(["GET"])
+def hours_admin(request):
+    from inventory.views import any_action
+
+    if not any_action(request.user, "booking.configure"):
+        raise PermissionDenied
+
+    def permitted(row):
+        return allowed(
+            request.user,
+            "booking.configure",
+            services.schedule_scope(
+                row.resource_id, row.location_id, row.category_id, row.organization
+            ),
+        )
+
+    return render(
+        request,
+        "bookings/hours.html",
+        {
+            "windows": [
+                r
+                for r in ScheduleWindow.objects.select_related("resource", "location", "category")
+                if permitted(r)
+            ],
+            "exceptions": [
+                r
+                for r in ScheduleException.objects.select_related(
+                    "resource", "location", "category"
+                )
+                if permitted(r)
+            ],
         },
     )

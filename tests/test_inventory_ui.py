@@ -143,12 +143,12 @@ def test_lookup_manual_hid_enter_reset_and_scope(staff, registry, client):
             {"namespace": ns.pk, "code": registry[3].inventory_number + "\r\n"},
         )
         assert response.context["result"].status == "found"
-        assert b"Asset erkannt" in response.content
+        assert b"Gegenstand erkannt" in response.content
         assert response.context["form"].initial["namespace"] == str(ns.pk)
         assert not response.context[
             "form"
         ].is_bound  # next scanner input starts in an empty focused field.
-        assert b"Assetdetails" in response.content
+        assert b"Details" in response.content
     assert (
         client.post(reverse("identifier_lookup"), {"namespace": ns.pk, "code": "unknown"})
         .context["result"]
@@ -179,7 +179,7 @@ def test_lookup_manual_hid_enter_reset_and_scope(staff, registry, client):
     response = client.post(
         reverse("identifier_lookup"), {"namespace": ns.pk, "code": registry[3].inventory_number}
     )
-    assert response.context["result"].status == "found" and b"Assetdetails" not in response.content
+    assert response.context["result"].status == "found" and b"Details" not in response.content
     assert client.get(reverse("asset_detail", args=[registry[3].pk])).status_code == 404
 
 

@@ -38,4 +38,7 @@ class Command(BaseCommand):
             )
             audit(None, "admin.bootstrapped", subject=user, reason="Protected operator command")
             bump(revision)
-        self.stdout.write("Recovery administrator created. No operational grants assigned.")
+        from accounts.admin_access import compose_admin
+
+        compose_admin(user.pk)
+        self.stdout.write("Administrator created with protected and operational access.")

@@ -116,6 +116,9 @@ def dashboard(request):
         and not assets.exists()
         and not booking_can_operate
         and not loan_can_operate
+        and not allowed(request.user, "permissions.manage")
+        and not allowed(request.user, "user.invite")
+        and not allowed(request.user, "qualification.issue")
     ):
         return redirect("account")
     from datetime import datetime, time, timedelta

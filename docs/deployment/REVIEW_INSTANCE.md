@@ -132,3 +132,26 @@ Mailablage und privater Bindung. Statische Dateien werden im Review aus dem
 schreibgeschützt gemounteten `STATIC_ROOT` bedient; private Uploads behalten ihre
 bestehenden autorisierten Views. Normaler Produktivbetrieb nutzt weiterhin den
 bestehenden Proxyansatz. Kein neues Infrastrukturpaket, kein Buchungs-Sonderweg.
+
+## Owner UX correction: data-preserving update
+
+Back up the running review DB/media before upgrading. Deploy the tested correction
+commit with `scripts/review-deploy`, then explicitly run:
+
+```sh
+scripts/review-stack exec -T web python backend/manage.py enhance_review_ux
+```
+
+The command requires the existing fictional marker, runs transactionally and is
+idempotent. It adds requirement scenarios and separate printers, composes the
+existing fictional Admin access, and leaves existing passwords/bookings/loans/media
+intact. Only unchanged original fixture caveats are corrected; owner-edited text is
+preserved. Four new accounts start with unusable passwords; provision only those
+roles (`ux_ready`, `ux_old`, `ux_noqualification`, `ux_neither`) explicitly with
+`set_review_password`. Do not use `--role all` during this upgrade.
+
+Migrations add fields/tables and replace schedule owner checks to include category
+and organization. Existing resource/location rows remain valid. Qualification
+evidence is protected by a PostgreSQL immutable trigger. Rollback requires the
+backup and matching application revision; do not reverse schema after new evidence
+has been recorded. No volume reset or destructive restore is part of this update.

@@ -27,6 +27,7 @@ class Resource(models.Model):
     description = models.TextField(max_length=20000, blank=True)
     safety_notes = models.TextField(max_length=10000, blank=True)
     pickup_notes = models.TextField(max_length=10000, blank=True)
+    catalog_area = models.CharField(max_length=100, blank=True)
     location_label = models.CharField(max_length=160, blank=True)
     specifications = models.TextField(max_length=10000, blank=True)
     type = models.ForeignKey(ResourceType, on_delete=models.PROTECT)
@@ -116,3 +117,42 @@ class ResourceImage(models.Model):
 
     class Meta:
         ordering = ["position", "created_at", "id"]
+
+
+class QualificationType(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=120, unique=True)
+    description = models.TextField(max_length=2000, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+
+class ResourceQualification(models.Model):
+    resource = models.ForeignKey(Resource, on_delete=models.PROTECT, related_name="qualifications")
+    qualification = models.ForeignKey(QualificationType, on_delete=models.PROTECT)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["resource", "qualification"], name="resource_qualification_unique"
+            )
+        ]
+
+
+class UserQualification(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    qualification = models.ForeignKey(QualificationType, on_delete=models.PROTECT)
+    issued_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="issued_qualifications"
+    )
+    issued_at = models.DateTimeField(default=timezone.now)
+    note = models.CharField(max_length=500, blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "qualification"], name="user_qualification_unique"
+            )
+        ]

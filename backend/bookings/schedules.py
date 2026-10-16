@@ -8,9 +8,13 @@ from .models import ScheduleException, ScheduleWindow
 from .time_rules import local_instant, zone
 
 
-def owner_filter(resource):
+def owner_filter(resource, *, calendar=False):
     location_ids = [n.pk for n in resource.location.lineage]
-    return Q(resource=resource) | Q(location_id__in=location_ids)
+    result = Q(resource=resource) | Q(location_id__in=location_ids)
+    if calendar:
+        categories = {n.pk for c in resource.categories.all() for n in c.lineage}
+        result |= Q(category_id__in=categories) | Q(organization=True)
+    return result
 
 
 def subtract(segments, start, end):
@@ -37,25 +41,41 @@ def segment(row, day, tz):
         return []  # Never shift invalid local schedule boundaries.
 
 
-def covers(resource, policy, purpose, start, end):
+def covers(resource, policy, purpose, start, end, *, window_rows=None, exception_rows=None):
     """Intersect owner schedules; date exceptions also replace overnight carry-over."""
     tz = zone(policy.timezone)
     first = start.astimezone(tz).date() - timedelta(days=1)
     last = end.astimezone(tz).date()
-    windows = list(ScheduleWindow.objects.filter(owner_filter(resource), purpose=purpose))
-    exceptions = list(
-        ScheduleException.objects.filter(
-            owner_filter(resource), purpose=purpose, date__gte=first, date__lte=last
+    windows = (
+        list(ScheduleWindow.objects.filter(owner_filter(resource, calendar=True), purpose=purpose))
+        if window_rows is None
+        else [r for r in window_rows if r.purpose == purpose]
+    )
+    exceptions = (
+        list(
+            ScheduleException.objects.filter(
+                owner_filter(resource, calendar=True),
+                purpose=purpose,
+                date__gte=first,
+                date__lte=last,
+            )
         )
+        if exception_rows is None
+        else [r for r in exception_rows if r.purpose == purpose and first <= r.date <= last]
     )
     owners: dict[tuple, dict[str, list]] = defaultdict(lambda: {"windows": [], "exceptions": []})
     for kind, rows in (("windows", windows), ("exceptions", exceptions)):
         for row in rows:
-            owners[(row.resource_id, row.location_id)][kind].append(row)
-    if not owners or (purpose == "usage" and not any(rid == resource.pk for rid, _ in owners)):
+            owners[(row.resource_id, row.location_id, row.category_id, row.organization)][
+                kind
+            ].append(row)
+    if not owners or (
+        purpose == "usage"
+        and not any(rid == resource.pk or cid or org for rid, _, cid, org in owners)
+    ):
         return False
     for data in owners.values():
-        segments = []
+        segments = [] if data["windows"] else [(start, end)]
         day = first
         while day <= last:
             for row in data["windows"]:

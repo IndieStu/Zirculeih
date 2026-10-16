@@ -12,7 +12,7 @@ from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.forms.models import model_to_dict
 from django.utils import timezone
-from inventory.models import Location
+from inventory.models import Category, Location
 from inventory.services import tree_scope
 from psycopg.types.range import Range
 from resources.models import Resource, ResourceUnit
@@ -88,20 +88,30 @@ def save_policy(actor, resource_id, data, expected_revision=None):
         return policy
 
 
-def schedule_scope(resource_id, location_id):
-    if bool(resource_id) == bool(location_id):
+def schedule_scope(resource_id, location_id, category_id=None, organization=False):
+    if sum(map(bool, (resource_id, location_id, category_id, organization))) != 1:
         raise ValidationError("Bitte genau ein Angebot oder einen Standort wählen.")
+    if organization:
+        from accounts.authorization import ORGANIZATION
+
+        return ORGANIZATION
+    if category_id:
+        return tree_scope(Category.objects.get(pk=category_id))
     if resource_id:
         return resource_scope(Resource.objects.get(pk=resource_id))
     return tree_scope(Location.objects.get(pk=location_id))
 
 
-def affected_bookings(resource_id=None, location_id=None):
+def affected_bookings(resource_id=None, location_id=None, category_id=None, organization=False):
     rows = Booking.objects.filter(status__in=["confirmed", "active"])
     if resource_id:
         return rows.filter(resource_id=resource_id)
     from inventory.services import descendants
 
+    if organization:
+        return rows
+    if category_id:
+        return rows.filter(resource__categories__in=descendants(Category, category_id)).distinct()
     return rows.filter(resource__location_id__in=descendants(Location, location_id))
 
 
@@ -115,7 +125,13 @@ def save_schedule(actor, data, *, exception=False):
         data = dict(data)
         resource_id = getattr(data.get("resource"), "pk", None)
         location_id = getattr(data.get("location"), "pk", None)
-        require(actor, "booking.configure", schedule_scope(resource_id, location_id))
+        category_id = getattr(data.get("category"), "pk", None)
+        organization = data.get("organization", False)
+        require(
+            actor,
+            "booking.configure",
+            schedule_scope(resource_id, location_id, category_id, organization),
+        )
         model = ScheduleException if exception else ScheduleWindow
         fields = {f.name for f in model._meta.fields} - {"id"}
         if set(data) - fields:
@@ -126,7 +142,10 @@ def save_schedule(actor, data, *, exception=False):
             raise ValidationError("Ein Zeitfenster darf höchstens 24 Stunden umfassen.")
         row.save()
         # Existing promises survive configuration changes and are made visible for review.
-        flag_incidents(affected_bookings(resource_id, location_id), "schedule_changed")
+        flag_incidents(
+            affected_bookings(resource_id, location_id, category_id, organization),
+            "schedule_changed",
+        )
         audit(
             actor,
             "booking.schedule_exception_added" if exception else "booking.schedule_added",
@@ -140,8 +159,15 @@ def remove_schedule(actor, row_id, *, exception=False):
     with authorization_write():
         model = ScheduleException if exception else ScheduleWindow
         row = model.objects.get(pk=row_id)
-        require(actor, "booking.configure", schedule_scope(row.resource_id, row.location_id))
-        flag_incidents(affected_bookings(row.resource_id, row.location_id), "schedule_changed")
+        require(
+            actor,
+            "booking.configure",
+            schedule_scope(row.resource_id, row.location_id, row.category_id, row.organization),
+        )
+        flag_incidents(
+            affected_bookings(row.resource_id, row.location_id, row.category_id, row.organization),
+            "schedule_changed",
+        )
         audit(
             actor,
             "booking.schedule_removed",
@@ -258,10 +284,16 @@ def evaluate(
             for t in (local_s, local_e)
         ):
             return Availability("granularity_not_allowed")
-    if policy.requires_qualification:
-        return Availability("qualification_required")
-    if policy.requires_agreement and policy.use_mode != "physical_loan":
-        return Availability("agreement_required")
+    from resources.requirements import gate as requirement_gate
+
+    try:
+        problem = requirement_gate(beneficiary, resource)
+    except ValidationError:
+        return Availability(
+            "lending_setup_required" if policy.use_mode == "physical_loan" else "agreement_required"
+        )
+    if problem:
+        return Availability(problem)
     if policy.use_mode == "physical_loan":
         from lending.agreements import required_versions
         from lending.rules import appointments
@@ -302,40 +334,63 @@ def evaluate(
         >= policy.max_parallel
     ):
         return Availability("parallel_limit")
+    units = capacity_units(
+        resource, policy, s, e, unit_id=unit_id, lock=lock, existing_booking=existing_booking
+    )
+    for unit in units:
+        if policy.use_mode == "physical_loan":
+            from lending.agreements import gate
+
+            problem = gate(beneficiary, resource, unit)
+            if problem:
+                return Availability(problem)
+        return Availability("available", s, e, unit.pk, policy.revision)
+    return Availability(
+        "reserved" if candidates(resource).exists() else "capacity_exhausted",
+        s,
+        e,
+        policy_revision=policy.revision,
+    )
+
+
+def capacity_units(
+    resource, policy, start, end, *, unit_id=None, lock=False, existing_booking=None
+):
+    """Shared capacity calculation for anonymous occupancy and binding allocation.
+
+    This does not grant eligibility. Confirmation separately checks the actor,
+    beneficiary, requirements, schedules and appointments under allocation locks.
+    """
     units = candidates(resource)
     if unit_id:
         units = units.filter(pk=unit_id)
     if lock:
         units = units.select_for_update(of=("self",))
     units = list(units)
-    for unit in units:
-        if (
-            not AllocationClaim.objects.filter(
-                unit=unit, is_active=True, during__overlap=(claim_start, claim_end)
+    claim_start = start - timedelta(minutes=policy.buffer_before_minutes)
+    claim_end = end + timedelta(minutes=policy.buffer_after_minutes)
+    if ResourceBlock.objects.filter(
+        schedules.owner_filter(resource), is_active=True, start__lt=claim_end, end__gt=claim_start
+    ).exists():
+        return []
+    blocked = set(
+        AllocationClaim.objects.filter(
+            unit__in=units, is_active=True, during__overlap=(claim_start, claim_end)
+        )
+        .exclude(booking_id=getattr(existing_booking, "pk", None))
+        .values_list("unit_id", flat=True)
+    )
+    if policy.use_mode == "physical_loan":
+        from lending.models import LoanLine
+
+        blocked.update(
+            LoanLine.objects.filter(
+                unit__in=units, returned_at__isnull=True, expected_return__gt=start
             )
             .exclude(booking_id=getattr(existing_booking, "pk", None))
-            .exists()
-        ):
-            if policy.use_mode == "physical_loan":
-                from lending.agreements import gate
-
-                problem = gate(beneficiary, resource, unit)
-                if problem:
-                    return Availability(problem)
-                from lending.models import LoanLine
-
-                if (
-                    LoanLine.objects.filter(
-                        unit=unit, returned_at__isnull=True, expected_return__gt=s
-                    )
-                    .exclude(booking_id=getattr(existing_booking, "pk", None))
-                    .exists()
-                ):
-                    continue
-            return Availability("available", s, e, unit.pk, policy.revision)
-    return Availability(
-        "reserved" if units else "capacity_exhausted", s, e, policy_revision=policy.revision
-    )
+            .values_list("unit_id", flat=True)
+        )
+    return [u for u in units if u.pk not in blocked]
 
 
 def availability(

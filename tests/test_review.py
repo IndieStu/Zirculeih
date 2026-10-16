@@ -127,3 +127,46 @@ def test_review_configuration_forces_local_mail():
             check=False,
         )
         assert invalid.returncode != 0
+
+
+def test_additive_ux_upgrade_preserves_review_state(settings, tmp_path):
+    from accounts.authorization import allowed
+    from lending.models import Acceptance
+    from resources.models import UserQualification
+
+    settings.REVIEW_MODE = True
+    settings.MEDIA_ROOT = tmp_path / "media"
+    marker, _ = seed(timezone.localdate())
+    original = dict(User.objects.values_list("pk", "password"))
+    bookings = set(
+        __import__("bookings.models", fromlist=["Booking"]).Booking.objects.values_list(
+            "pk", flat=True
+        )
+    )
+    call_command("enhance_review_ux")
+    marker.refresh_from_db()
+    assert len(marker.accounts) == 10
+    assert (
+        Resource.objects.filter(slug__in=["review-mini", "review-mk3s", "review-mk4"]).count() == 3
+    )
+    for uid, password in original.items():
+        assert User.objects.get(pk=uid).password == password
+    assert bookings.issubset(
+        set(
+            __import__("bookings.models", fromlist=["Booking"]).Booking.objects.values_list(
+                "pk", flat=True
+            )
+        )
+    )
+    admin = User.objects.get(pk=marker.accounts["admin"])
+    assert allowed(admin, "permissions.manage") and allowed(admin, "resource.manage")
+    ready = User.objects.get(pk=marker.accounts["ux_ready"])
+    old = User.objects.get(pk=marker.accounts["ux_old"])
+    assert not allowed(ready, "permissions.manage")
+    assert Acceptance.objects.filter(user=ready, version__number=2).exists()
+    assert Acceptance.objects.filter(user=old, version__number=1).exists()
+    assert not Acceptance.objects.filter(user=old, version__number=2).exists()
+    assert UserQualification.objects.filter(user=ready).count() == 2
+    count = Resource.objects.count()
+    call_command("enhance_review_ux")
+    assert Resource.objects.count() == count

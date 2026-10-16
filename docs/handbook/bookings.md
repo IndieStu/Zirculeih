@@ -21,3 +21,18 @@ Seit Phase 6 sind auch [physische Ausleihreservierungen](loans.md) mit vollstän
 „Klärung erforderlich“ bedeutet, dass sich etwa eine Sperre oder der Einsatzstand geändert hat. Eine bestätigte Zusage wird dadurch nicht heimlich gelöscht. Wende dich an das Team. Dein eigener Buchungsbeleg bleibt nach Rücknahme eines Angebots lesbar, solange dein Konto freigegeben ist.
 
 Status: bestätigt → aktiv → abgeschlossen oder vor Frist storniert. Der Statusfortschritt für Vor-Ort-Nutzung wird durch den Betreiberjob aktualisiert; er ist kein Nachweis einer physischen Rückgabe. Serien, Verlängerung, Benachrichtigungen und Kalenderabos folgen später.
+
+## Zeitraum über die Verfügbarkeit wählen
+
+Im Katalog zeigt jeder Eintrag seine aktuelle Belegung. Auf der Detailseite einen
+Tag wählen und einen freien Zeitraum anklicken. Das Buchungsformular übernimmt
+Von/Bis; längere Zeiträume können dort angepasst werden. Mitnahmen benötigen
+zusätzlich passende Abhol- und Rückgabetermine. Belegung ist noch keine persönliche
+Buchungsberechtigung; fehlende Einweisungen oder Vereinbarungen werden beim Prüfen
+angezeigt. Bei der Bestätigung wird die aktuelle Kapazität erneut geprüft.
+
+Nur wenn eine eingegebene Herbst-Uhrzeit zweimal vorkommt, fragt Deelvo nach der
+früheren oder späteren Uhrzeit. Nicht existente Frühlingszeiten müssen geändert werden.
+
+**Meine Vorgänge** zeigt Reservierungen und dazugehörige Ausleihen gemeinsam.
+Der Ausleihstatus und die erwartete Rückgabe bleiben getrennt erkennbar.

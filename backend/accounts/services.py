@@ -42,15 +42,19 @@ def issue_token(user, purpose):
         user=user,
         purpose=purpose,
         password_hash=user.password,
-        expires_at=timezone.now() + timedelta(hours=24 if purpose == "verify" else 1),
+        expires_at=timezone.now() + timedelta(hours=24 if purpose in {"verify", "invite"} else 1),
     )
     return raw
 
 
 def email_token(user, purpose, raw):
-    path = "bestaetigen" if purpose == "verify" else "passwort-neu"
+    path = {"verify": "bestaetigen", "reset": "passwort-neu", "invite": "einladung"}[purpose]
     url = f"{settings.PUBLIC_BASE_URL}/konto/{path}/{raw}/"
-    subject = "E-Mail bestätigen" if purpose == "verify" else "Passwort zurücksetzen"
+    subject = {
+        "verify": "E-Mail bestätigen",
+        "reset": "Passwort zurücksetzen",
+        "invite": "Einladung zu Deelvo",
+    }[purpose]
     # Tokens are never logged; SMTP errors leave the generic response unchanged.
     try:
         send_mail(
@@ -95,7 +99,11 @@ def signup(email, password, privacy_acknowledged):
 def request_token(email, purpose):
     with authorization_write():
         user = User.objects.filter(email__iexact=email.strip(), is_active=True).first()
-        if user is None or (purpose == "verify" and user.email_verified_at):
+        if (
+            user is None
+            or user.privacy_version == "pending-invitation"
+            or (purpose == "verify" and user.email_verified_at)
+        ):
             return
         raw = issue_token(user, purpose)
         transaction.on_commit(lambda: email_token(user, purpose, raw))
@@ -113,7 +121,11 @@ def consume_token(raw, purpose, password=None):
             .select_related("user")
             .first()
         )
-        if token is None or token.password_hash != token.user.password:
+        if (
+            token is None
+            or token.password_hash != token.user.password
+            or token.user.privacy_version == "pending-invitation"
+        ):
             raise ValidationError(
                 "Der Link ist ungültig oder abgelaufen. Bitte fordere einen neuen an."
             )
@@ -360,3 +372,55 @@ def grant_details(grant):
         "max_horizon_days": grant.max_horizon_days,
         "max_duration_minutes": grant.max_duration_minutes,
     }
+
+
+def invite_user(actor, email):
+    """Invite without impersonating privacy acceptance, email verification or a password."""
+    with authorization_write():
+        require(actor, "user.invite")
+        email = email.strip().lower()
+        validate_email(email)
+        user = User.objects.filter(email__iexact=email).first()
+        if user is not None and (
+            not user.is_active or user.privacy_version != "pending-invitation"
+        ):
+            raise ValidationError("Für diese Adresse besteht bereits ein Konto.")
+        if user is None:
+            user = User.objects.create_user(email, None, privacy_version="pending-invitation")
+            Membership.objects.create(user=user, group=Group.objects.get(is_baseline=True))
+        raw = issue_token(user, "invite")
+        audit(actor, "account.invited", subject=user)
+        transaction.on_commit(lambda: email_token(user, "invite", raw))
+        return user
+
+
+def accept_invitation(raw, password, privacy_acknowledged):
+    with authorization_write() as revision:
+        token = (
+            ActionToken.objects.filter(
+                digest=hashlib.sha256(raw.encode()).hexdigest(),
+                purpose="invite",
+                expires_at__gt=timezone.now(),
+                user__is_active=True,
+                user__privacy_version="pending-invitation",
+            )
+            .select_related("user")
+            .first()
+        )
+        if token is None or token.password_hash != token.user.password:
+            raise ValidationError("Der Einladungslink ist ungültig oder abgelaufen.")
+        if not settings.PRIVACY_NOTICE_TEXT or not privacy_acknowledged:
+            raise ValidationError("Bitte die Datenschutzhinweise bestätigen.")
+        user = token.user
+        validate_password(password, user)
+        user.set_password(password)
+        user.email_verified_at = timezone.now()
+        user.privacy_acknowledged_at = timezone.now()
+        user.privacy_version = settings.PRIVACY_NOTICE_VERSION
+        user.session_revision += 1
+        user.full_clean()
+        user.save()
+        ActionToken.objects.filter(user=user).delete()
+        audit(user, "account.invitation_accepted", subject=user)
+        bump(revision)
+        return user

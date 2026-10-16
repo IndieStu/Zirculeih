@@ -6,6 +6,12 @@ from django.views.decorators.http import require_safe
 
 @require_safe
 def home(request: HttpRequest) -> HttpResponse:
+    from accounts.navigation import operational_user
+
+    if operational_user(request.user):
+        from django.shortcuts import redirect
+
+        return redirect("inventory_dashboard")
     from resources.services import catalog_card, visible_resources
 
     featured = visible_resources(request.user).filter(is_featured=True)[:6]

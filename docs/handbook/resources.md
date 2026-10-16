@@ -30,3 +30,25 @@ Bestehende Assetcodes bleiben gültig. Bei entsprechendem Identifierrecht kann �
 ## Buchungsoption ab Phase 5
 
 booking_enabled ist weiterhin nur ein Teil der Einrichtung. Zusätzlich sind [Buchungsregeln, Zeitpläne und Gruppenrechte](booking-administration.md) notwendig. Veröffentlichtes Angebot und geeignete Units allein garantieren keinen freien Zeitraum. Verbindliche Vor-Ort-Buchungen wählen erst bei Bestätigung eine konkrete Einheit; bestehende Zusagen werden bei relevanten Zustandsänderungen zur Klärung markiert, nicht gelöscht.
+
+## Artikel & Ressourcen im Review-Korrekturstand
+
+Unter **Artikel & Ressourcen** werden die buchbaren Katalogeinträge verwaltet;
+**Inventar** enthält die einzelnen physischen Gegenstände. Ein Raum benötigt keine
+Ausleihe. Unterschiedliche Maschinen oder Fahrräder erhalten eigene Katalogeinträge
+mit konkretem Namen und Eigenschaften. Nur austauschbare Exemplare gehören gemeinsam
+in einen Eintrag, etwa identische Akkuschrauber.
+
+**Arten** bezeichnet die konfigurierbare Grundart, etwa Raum oder Maschine. Namen
+lassen sich dort bearbeiten; inaktive Arten werden nicht öffentlich angeboten.
+**Kategorien** unter Einstellungen sind davon unabhängige, frei gestaltbare
+Kataloggruppen; dort anlegen, umbenennen oder deaktivieren.
+
+Die öffentliche Ortsangabe ist beschreibender Text. **Öffentlicher Filterbereich**
+ist eine gesonderte, optionale Katalogklassifikation. Interne Lagerstandorte werden
+nicht automatisch als Filter veröffentlicht.
+
+Im einzelnen Eintrag führt **Voraussetzungen bearbeiten** zu den benötigten
+Zusatzvereinbarungen und Einweisungen. Mehrere Einträge sind möglich. Allgemeine
+Ausleihvereinbarung und Versicherung gelten bei Mitnahmen weiterhin zusätzlich.
+Veröffentlichte Texte und frühere Bestätigungen bleiben erhalten.

@@ -105,6 +105,7 @@ TEMPLATES = [
                 "resources.context_processors.navigation",
                 "bookings.context_processors.navigation",
                 "review.context_processors.environment",
+                "accounts.navigation.navigation",
             ]
         },
     }

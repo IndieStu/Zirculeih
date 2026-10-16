@@ -126,6 +126,14 @@ def gate(user, resource, unit):
     user = User.objects.get(pk=user.pk)
     if not user.is_active or not user.email_verified_at or not user.borrower_profile_complete:
         return "borrower_profile_required"
+    from resources.requirements import gate as requirement_gate
+
+    try:
+        problem = requirement_gate(user, resource)
+    except ValidationError:
+        return "lending_setup_required"
+    if problem:
+        return problem
     if not unit.asset_id:
         return "physical_unit_required"
     try:

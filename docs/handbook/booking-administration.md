@@ -27,3 +27,18 @@ Zeitfenster/Ausnahmen werden bewusst entfernt und neu angelegt, nicht still übe
 ## Betreiberjob
 
 Der Betreiber führt regelmäßig `python backend/manage.py advance_onsite_bookings` in der konfigurierten Umgebung aus. Der Job setzt Vor-Ort-Buchungen bei Beginn aktiv und bei Ende abgeschlossen; abgeschlossene Claims werden freigegeben. Verpasste Läufe werden beim nächsten Lauf nachgeholt. Wiederholung ist sicher. Kein eingebauter Scheduler und keine physische Ausleih-/Gewahrsamsänderung. Zeitpunkt, Intervalle und vorhandene Zusagen bleiben nachvollziehbar.
+
+## Zeiten & Schließtage
+
+Unter Einstellungen → **Öffnungszeiten & Schließtage** regelmäßige Zeit oder
+Schließtag/Sonderzeit hinzufügen. Genau einen Bereich auswählen: gesamte Organisation,
+Kategorie, Standort oder einzelner Artikel/Raum. Nutzung, Gebäudezugang, betreute
+Öffnung, Abholung und Rückgabe werden getrennt eingerichtet. Mittwoch bis Freitag
+werden als drei Wochenzeitfenster angelegt. Ein Ferienzeitraum kann mit Von und
+**Bis einschließlich** als Datumsbereich (höchstens ein Jahr) angelegt werden.
+
+Alle betroffenen Bereiche wirken gemeinsam einschränkend. Eine Raum-Sonderzeit
+öffnet keinen organisationsweiten Schließtag. Die Berechtigung für unbetreute Nutzung
+ersetzt ausschließlich betreute Öffnung. Bestehende Buchungen werden bei Änderungen
+zur Klärung markiert, nicht gelöscht. Falsch konfigurierte Einträge entfernen und
+mit den korrekten Zeiten anlegen.

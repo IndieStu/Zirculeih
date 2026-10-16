@@ -19,6 +19,7 @@ class ResourceForm(forms.ModelForm):
             "description",
             "location",
             "location_label",
+            "catalog_area",
             "categories",
             "tags",
             "specifications",
@@ -31,18 +32,19 @@ class ResourceForm(forms.ModelForm):
         labels = {
             "title": "Titel",
             "slug": "Dauerhafter URL-Name",
-            "type": "Angebotstyp",
+            "type": "Art",
             "summary": "Kurzbeschreibung",
             "description": "Beschreibung",
             "location": "Interner Standort",
             "location_label": "Öffentliche Ortsangabe",
+            "catalog_area": "Katalogbereich (optional)",
             "categories": "Kategorien",
             "tags": "Schlagworte",
             "specifications": "Ausstattung und technische Angaben",
             "safety_notes": "Sicherheitshinweise",
             "pickup_notes": "Abhol- und Nutzungshinweise",
             "visibility": "Sichtbarkeit nach Veröffentlichung",
-            "booking_enabled": "Für spätere Buchung aktivieren (noch keine Buchungsfunktion)",
+            "booking_enabled": "Reservierung erlauben",
             "is_featured": "Auf der Startseite hervorheben",
         }
         widgets = {
@@ -72,8 +74,8 @@ class UnitForm(forms.ModelForm):
         model = ResourceUnit
         fields = ["name", "asset", "is_active"]
         labels = {
-            "name": "Interner Einheitsname",
-            "asset": "Physisches Asset (optional)",
+            "name": "Bezeichnung des Exemplars",
+            "asset": "Inventargegenstand (optional)",
             "is_active": "Aktiv",
         }
 
@@ -127,3 +129,53 @@ class TypeForm(forms.ModelForm):
         model = ResourceType
         fields = ["key", "name"]
         labels = {"key": "Typenschlüssel", "name": "Anzeigename"}
+
+
+class RequirementsForm(forms.Form):
+    agreements = forms.ModelMultipleChoiceField(
+        label="Erforderliche Vereinbarungen",
+        queryset=Category.objects.none(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+    qualifications = forms.ModelMultipleChoiceField(
+        label="Erforderliche Einweisungen",
+        queryset=Category.objects.none(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from lending.models import Agreement
+
+        from .models import QualificationType
+
+        self.fields["agreements"].queryset = Agreement.objects.filter(
+            kind="additional", is_active=True
+        )
+        self.fields["qualifications"].queryset = QualificationType.objects.filter(is_active=True)
+
+
+class QualificationForm(forms.Form):
+    name = forms.CharField(label="Name", max_length=120)
+    description = forms.CharField(
+        label="Beschreibung", max_length=2000, required=False, widget=forms.Textarea
+    )
+
+
+class IssueQualificationForm(forms.Form):
+    user = forms.ModelChoiceField(label="Person", queryset=Category.objects.none())
+    qualification = forms.ModelChoiceField(label="Einweisung", queryset=Category.objects.none())
+    note = forms.CharField(label="Notiz (optional)", max_length=500, required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from accounts.models import User
+
+        from .models import QualificationType
+
+        self.fields["user"].queryset = User.objects.filter(
+            is_active=True, email_verified_at__isnull=False
+        )
+        self.fields["qualification"].queryset = QualificationType.objects.filter(is_active=True)

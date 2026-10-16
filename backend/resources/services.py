@@ -82,13 +82,19 @@ def editable(resource):
         raise ValidationError("Archivierte Angebote sind unveränderlich.")
 
 
-def save_type(actor, data):
+def save_type(actor, data, *, type_id=None):
     with authorization_write():
         require(actor, "resource.type_manage")
-        row = ResourceType(**data)
+        row = ResourceType.objects.get(pk=type_id) if type_id else ResourceType()
+        for field, value in data.items():
+            if field not in {"key", "name", "is_active"}:
+                raise ValidationError("Unbekanntes Feld.")
+            setattr(row, field, value)
         row.full_clean()
         row.save()
-        audit(actor, "resource.type_created", object_id=row.pk)
+        audit(
+            actor, "resource.type_updated" if type_id else "resource.type_created", object_id=row.pk
+        )
         return row
 
 
@@ -103,6 +109,7 @@ def save_resource(actor, data, *, resource_id=None, expected_revision=None):
         "pickup_notes",
         "specifications",
         "location_label",
+        "catalog_area",
         "location",
         "type",
         "visibility",
@@ -414,9 +421,12 @@ class CatalogCard:
     categories: tuple[str, ...]
     cover_id: UUID | None
     cover_alt: str
+    availability_label: str
 
 
 def catalog_card(resource):
+    from .calendar import current_status
+
     images = [i for i in resource.images.all() if not i.archived_at]
     cover = images[0] if images else None
     return CatalogCard(
@@ -429,4 +439,5 @@ def catalog_card(resource):
         tuple(c.name for c in resource.categories.all()),
         cover.pk if cover else None,
         cover.alt_text if cover else "",
+        current_status(resource),
     )
