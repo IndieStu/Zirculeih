@@ -1,66 +1,65 @@
-# Deelvo — Owner UX correction handover
+# Deelvo — Kalenderkorrektur und Teamreview
 
-Phase 6 remains merged but **not accepted**. Stop for actual owner/team UX review.
-**No Phase 7.** Branch `review/phase-6-ux-gate`.
+Phase 6 ist merged, aber **nicht abgenommen**. Die Owner-Kalenderkorrektur ist
+auf dem bestehenden Branch `review/phase-6-ux-gate` umgesetzt. **STOP für den
+Owner-/Teamreview. Keine Phase 7.**
 
-Application commit: `218f712e03602194ee8f3846ff94c3205d6f4e66`.
-[Private NCtest review](http://nctest.tailf7eaa5.ts.net:8766/) through Tailscale.
-Subsequent handover documentation does not change the tested application.
+Deployter Anwendungscode: `c0135156a74e0927988dab0ebf3daca6d34d1171`.
+[NCtest öffnen](http://nctest.tailf7eaa5.ts.net:8766/).
+Nachfolgende Dokumentationscommits ändern den geprüften Anwendungscode nicht.
 
-## Changes
+## Ergebnis
 
-Grouped operational sidebar, Dashboard landing, concise labels, combined **Meine
-Vorgänge**, selectable daily availability and simple time controls. Public catalogue
-filter areas are independent of inventory locations. Category administration and
-editable resource types are discoverable. Opening/closure management has owner and
-purpose filters, compact paginated tables and bounded vacation ranges.
+Die freien Rasterkarten sind ersetzt: Monatskalender → Tag mit visuellem Zeitband
+→ zusammenhängenden Beginn/Ende auswählen → fehlende Voraussetzungen → Bestätigung.
+Belegung, Übergangszeit, geschlossen, Wartung/Sperre und Auswahl sind unterscheidbar.
+Von/Bis und Zeitband bleiben synchron. Bestehende Höchstdauer und Raster begrenzen
+die Auswahl sofort; Tagesangebote behalten inklusive Datumsbereiche.
 
-Persons are invited without admin-chosen passwords or silent verification. The
-visible Admin access combines protected administration and explicit operational
-grants; ordinary staff groups are not elevated. Resource-specific agreements and
-staff-issued qualifications remain distinct and are enforced at booking/checkout.
-Versioned consent and qualification evidence are immutable. Account status is visible.
+Räume/Maschinen benötigen mindestens 30 Minuten Übergangszeit, konfigurierbar
+über die vorhandenen Pufferfelder. Backend, aktuelle Belegungsprojektion und
+zusätzliche deferred PostgreSQL-Konfliktprüfung berücksichtigen auch ältere sowie
+abgeschlossene Vor-Ort-Buchungen. Unveränderliche Claims bleiben erhalten.
+Asset, Resource, Unit, Booking und Loan bleiben getrennt. Kein MyTurn-Domainmodell.
 
-[Full scope and deliberate limits](UX_CORRECTION_STATUS.md), [ADR-020](../adr/020.md),
-[team tasks](UX_REVIEW_PHASE_6.md), [navigation](NAVIGATION_REVIEW.md),
-[terminology choices](TERMINOLOGY_REVIEW.md), [feedback](UX_FEEDBACK_TEMPLATE.md).
-MyTurn was used only for operational presentation evidence; its domain assumptions
-were explicitly excluded. Owner feedback and Deelvo architecture prevail.
+Navigation, Administration und ressourcenspezifische Vereinbarungen/Qualifikationen
+aus dem vorherigen Pass bleiben enthalten. Anforderungen erscheinen nach der
+Zeitauswahl und werden bei verbindlicher Buchung/Ausgabe erneut geprüft.
 
-## Verification
+## Prüfung
 
-[CI 38884152250](https://github.com/IndieStu/Zirculeih/actions/runs/38884152250):
-**219 passed**, 179.64 seconds, Docker/Linux/PostgreSQL 17. Lint, formatting, Mypy,
-migrations, health/static and review seed/additive rerun all passed.
-Local full regression: **219 passed**, 68.70 seconds, PostgreSQL 16.
-[Machine-readable evidence](../test-results/ux-correction-ci.json),
-[local JUnit](../test-results/ux-correction-local.xml), [browser evidence](VERIFICATION.md).
+[CI 38913523571](https://github.com/IndieStu/Zirculeih/actions/runs/38913523571):
+**232 Tests bestanden**, 156,51 Sekunden, Linux/Docker/PostgreSQL 17.
+Lokal: **232 bestanden**, 82,55 Sekunden, PostgreSQL 16.
+Ruff, Formatierung, Mypy, Migrationsprüfung, Django-Systemprüfung, Dokumentlinks,
+Health/Static-Smoke sowie zweimalige additive Kalenderdatenanlage bestanden.
+[Nachweise](VERIFICATION.md), [JUnit](../test-results/calendar-correction-local.xml),
+[CI-/Deploymentdaten](../test-results/calendar-correction-ci.json).
 
-## Data preservation
+## Bestehende Reviewdaten erhalten
 
-NCtest was upgraded with additive migrations, never reset. Backup is private in
-`/home/timo/deelvo-review/operator-backup/ux-correction-before/` (database, media,
-environment and pre-update identity/password digest snapshot).
+Vorherige private Sicherung: NCtest
+`/home/timo/deelvo-review/operator-backup/calendar-correction-before/`
+(Datenbank, Medien, Umgebung, IDs/Passwortdigests und vollständige Vorgangswerte).
 
-All 7 previous User records, 7 bookings/claims, 2 loans/3 loan lines, 16 assets,
-7 resources/9 units, 12 acceptances and the existing asset-media record are retained.
-Every previous password hash is unchanged. Both existing media files were compared
-byte-for-byte. Three assets/resources/units, qualification/consent examples and four
-fictional users were added. Other NCtest services and the private bind are unchanged.
+11 Konten und sämtliche bisherigen Passwort-Hashes erhalten. 7 Buchungen/Claims,
+2 Ausleihen, 3 Ausleihzeilen und 16 Zustimmungen in **jedem Feld unverändert**.
+19 Assets, 10 Ressourcen, 12 Einheiten und das Medienobjekt erhalten; beide Dateien
+bytegleich. Ergänzt: vier Buchungen/Claims, ein separates fiktives Lastenrad mit
+Ressource/Einheit, Nutzungskategorie, Schließtag und CNC-Sperre. Kalenderankertag:
+**21.10.2026**. Bestehende Zeitfenster wurden nicht entfernt. Review-Web und DB gesund,
+weiterhin ausschließlich private Tailscale-Bindung `100.102.204.120:8766`.
 
-Four new scenarios: `ux_ready`, `ux_old`, `ux_noqualification`, `ux_neither`.
-**Their first usable passwords remain pending explicit owner approval.** Automatic
-approval review rejected credential provisioning separately from fixture creation.
-Existing six role credentials remain valid and unchanged. Credentials stay in a
-separate private local file, never the repository or review ZIP.
+Die vier früher ergänzten Voraussetzungskonten haben weiterhin keine nutzbaren
+Passwörter; die gesonderte Owner-Freigabe dafür steht aus. Bestehende sechs
+Rollenzugänge bleiben unverändert. Zugangsdaten sind nicht im Repository/Review-ZIP.
 
-## Review boundary
+## Nächster Schritt
 
-Daily occupancy is not a monthly drag planner, series engine or ICS feed. Final
-booking rechecks personal eligibility and appointments. Qualification issuance is
-global-only in this minimal groundwork; bundles and advanced qualification scopes
-are not implemented. No actual hardware-scanner test, comprehensive WCAG audit,
-production readiness or team UX acceptance is claimed.
+[Konkrete Kalenderaufgaben](CALENDAR_REVIEW.md), [Gesamtumfang](UX_CORRECTION_STATUS.md),
+[Feedbackbogen](UX_FEEDBACK_TEMPLATE.md), [ADR-021](../adr/021.md).
+Owner/Team prüfen jetzt die tatsächliche Bedienbarkeit. Kein vollständiger WCAG-
+Audit, Hardware-Scannertest, Serienplaner, ICS-Feed oder Produktionsfreigabe behauptet.
 
-GitHub connector still rejects draft PR creation with 403. SSH push succeeds.
-[Compare branch / create PR](https://github.com/IndieStu/Zirculeih/compare/main...review/phase-6-ux-gate?expand=1).
+GitHub-Connector verweigert weiterhin PR-Erstellung mit 403; der Branch ist per SSH
+gepusht. [Branch vergleichen / PR erstellen](https://github.com/IndieStu/Zirculeih/compare/main...review/phase-6-ux-gate?expand=1).

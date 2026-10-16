@@ -41,3 +41,34 @@ Final deployed checks:
 [Booking form](../screenshots/ux-correction-booking.png),
 [320px booking form](../screenshots/ux-correction-booking-mobile.png),
 [filtered operating calendar](../screenshots/ux-correction-hours.png).
+
+## Superseding calendar correction — 2026-10-16
+
+The previous daily free-period presentation was rejected and replaced. Application
+`c0135156a74e0927988dab0ebf3daca6d34d1171`; CI 38913523571 green, 232 passed
+156.51s; local 232 passed 82.55s. Earlier 219-test evidence above is historical.
+
+Actual local and deployed NCtest browser checks:
+
+- Month first; selecting 21 October opens the day; 22 October closure disabled.
+- Room 11–12 and 14–15 booked; transitions distinctly shown on both sides.
+- Timeline clicks select 15:30 then 17:30; accessible controls update the same
+  overlay. At 15:30, selectable ends stop at 19:30 (four-hour maximum).
+- 320px viewport: document width 320px; Von/Bis selection remains usable.
+- CNC 15–16 booked, 17–18 maintenance block, transitions constrain remaining time.
+- Prusa MK4 12–13 booked, 13–13:30 transition. 13:30–14:30 carries correctly to
+  the booking form, which shows missing staff qualification separately from
+  current agreement acceptance. No consent or booking was submitted.
+- Separate day-mode cargo bike: 22–28 October valid; entering 29 October produces
+  immediate maximum-seven-days feedback and disables Reservieren. Month navigation
+  retains the date selection (local browser check).
+- Anonymous room calendar exposes occupancy only, no email/internal claim/timezone
+  labels. Existing authenticated review session logged out; temporary tab closed.
+- Migration and additive scenario command succeeded on NCtest; rerun made no changes.
+- All prior IDs/password digests preserved; every existing Booking/Claim/Loan/
+  LoanLine/Acceptance field unchanged; both existing media files byte-identical.
+
+[Month](../screenshots/calendar-month.png), [day](../screenshots/calendar-day.png),
+[timeline selection](../screenshots/calendar-timeline.png),
+[320px](../screenshots/calendar-mobile.png), [days](../screenshots/calendar-days.png).
+These are operator checks, not owner/team acceptance or a comprehensive WCAG audit.
