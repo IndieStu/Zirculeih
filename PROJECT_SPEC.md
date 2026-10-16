@@ -485,3 +485,17 @@ Only additive migration and fictional review-data enhancement are authorized on
 NCtest. Existing review records, passwords and media must survive. Full regression
 and review-instance verification precede the actual team review. Stop there;
 Phase 7 remains unauthorized.
+
+## 28. Binding calendar correction — 2026-10-16
+
+[Owner instruction](docs/review/OWNER_CALENDAR_CORRECTION.md) supersedes the daily
+free-slot-card presentation. [ADR-021](docs/adr/021.md): month first, visual day
+timeline and continuous start/end selection; day-mode offerings retain inclusive
+date ranges. Existing policy maximum duration and grid constrain selections.
+Onsite rooms/machines require at least 30 minutes total transition, configurable
+through existing before/after fields. Current transition applies to new allocations
+without rewriting historical claims; completed onsite use still blocks remaining
+transition. PostgreSQL locking and deferred conflict protection remain authoritative.
+Requirements follow period selection. Additive fictional calendar examples only;
+full regression and green CI before preserving-data NCtest deployment. Stop for
+owner/team review; no Phase 7 authorization.

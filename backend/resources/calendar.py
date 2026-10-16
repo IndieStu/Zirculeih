@@ -1,120 +1,363 @@
-"""Bounded public occupancy, with no booking identities or personal eligibility."""
+"""Month/date selection and day timelines from shared booking-engine truth."""
 
-from datetime import datetime, time, timedelta
+import calendar as month_calendar
+from datetime import date, datetime, time, timedelta
 from urllib.parse import urlencode
 
-from bookings import schedules
-from bookings.models import BookingPolicy, ScheduleException, ScheduleWindow
-from bookings.services import capacity_units
-from bookings.time_rules import local_instant, zone
+from accounts.authorization import _grants_allow
+from bookings.models import BookingPolicy
+from bookings.occupancy import Occupancy
+from bookings.time_rules import interval, local_instant, zone
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils import timezone
 
+LABELS = {
+    "available": "Frei",
+    "booked": "Belegt",
+    "transition": "Übergangszeit",
+    "closed": "Nicht verfügbar",
+    "blocked": "Gesperrt / Wartung",
+}
+MONTHS = [
+    "",
+    "Januar",
+    "Februar",
+    "März",
+    "April",
+    "Mai",
+    "Juni",
+    "Juli",
+    "August",
+    "September",
+    "Oktober",
+    "November",
+    "Dezember",
+]
 
-def calendar(resource, selected=None):
-    policy = BookingPolicy.objects.filter(resource=resource).first()
-    if not resource.booking_enabled or policy is None:
-        return None
-    now = timezone.now()
-    today = now.astimezone(zone(policy.timezone)).date()
+
+def midnight(day, policy):
+    return local_instant(datetime.combine(day, time()), policy.timezone)
+
+
+def parse_date(raw, default=None):
     try:
-        day = datetime.strptime(selected or "", "%Y-%m-%d").date()
-    except ValueError:
-        day = today
-    day = max(today, min(day, today + timedelta(days=policy.max_horizon_days)))
-    owner = schedules.owner_filter(resource, calendar=True)
-    windows = list(ScheduleWindow.objects.filter(owner))
-    exceptions = list(
-        ScheduleException.objects.filter(
-            owner, date__gte=day - timedelta(days=1), date__lte=day + timedelta(days=1)
-        )
-    )
-    rows = []
-    granularity = policy.granularity_minutes
-    step = ((29 // granularity) + 1) * granularity
-    duration = ((policy.min_duration_minutes - 1) // granularity + 1) * granularity
-    starts = [0] if policy.time_mode == "days" else range(0, 1440, step)
-    for minute in starts:
-        local = datetime.combine(day, time()) + timedelta(minutes=minute)
-        local_end = (
-            local + timedelta(days=policy.min_days)
-            if policy.time_mode == "days"
-            else local + timedelta(minutes=duration)
-        )
-        try:
-            start = local_instant(local, policy.timezone)
-            end = local_instant(local_end, policy.timezone)
-        except ValidationError:
-            # An ambiguous hour is selected explicitly in the normal form.
-            continue
-        status = "Frei"
-        if start < now + timedelta(minutes=policy.lead_minutes):
-            status = "Vergangen"
-        elif policy.use_mode == "onsite" and not all(
-            schedules.covers(
-                resource,
-                policy,
-                purpose,
-                start,
-                end,
-                window_rows=windows,
-                exception_rows=exceptions,
-            )
-            for purpose in ("usage", "access")
+        return date.fromisoformat(raw or "")
+    except (ValueError, TypeError):
+        return default
+
+
+def validate_period(snapshot, start, end, *, start_fold=None, end_fold=None):
+    p = snapshot.policy
+    try:
+        s, e, minutes, ds, de = interval(p, start, end, start_fold=start_fold, end_fold=end_fold)
+    except ValidationError as exc:
+        return str(exc.messages[0])
+    horizon = (
+        s.astimezone(zone(p.timezone)).date() - snapshot.now.astimezone(zone(p.timezone)).date()
+    ).days
+    if (
+        e <= s
+        or s < snapshot.now + timedelta(minutes=p.lead_minutes)
+        or horizon > p.max_horizon_days
+    ):
+        return "Dieser Zeitraum ist nicht buchbar."
+    if p.time_mode == "days":
+        if not p.min_days <= (de - ds).days <= p.max_days:
+            return f"Zwischen {p.min_days} und {p.max_days} Tagen buchbar."
+        for purpose, day in (("pickup", ds), ("return", de - timedelta(days=1))):
+            if not appointment_day(snapshot, day, purpose):
+                return "An diesem Tag ist kein passender Abhol- oder Rückgabetermin möglich."
+        if ds == de - timedelta(days=1) and min(appointment_points(snapshot, ds, "pickup")) >= max(
+            appointment_points(snapshot, ds, "return")
         ):
-            status = "Geschlossen"
-        elif not capacity_units(resource, policy, start, end):
-            status = "Belegt / gesperrt"
-        params = {
-            "start": local.isoformat(timespec="minutes"),
-            "end": local_end.isoformat(timespec="minutes"),
-        }
-        if policy.time_mode == "days":
-            params = {
-                "start": day.isoformat(),
-                "end": (local_end.date() - timedelta(days=1)).isoformat(),
-            }
-        rows.append(
+            return "Abholung und Rückgabe passen an diesem Tag nicht zusammen."
+    else:
+        if not p.min_duration_minutes <= minutes <= p.max_duration_minutes:
+            return f"Maximal {duration_label(p.max_duration_minutes)} buchbar."
+        if any(
+            t.second or t.microsecond or (t.hour * 60 + t.minute) % p.granularity_minutes
+            for t in (s.astimezone(zone(p.timezone)), e.astimezone(zone(p.timezone)))
+        ):
+            return "Bitte eine passende Start- und Endzeit wählen."
+        if p.use_mode == "physical_loan":
+            pickups: list[datetime] = []
+            returns: list[datetime] = []
+            day = s.astimezone(zone(p.timezone)).date()
+            last = e.astimezone(zone(p.timezone)).date()
+            while day <= last:
+                pickups.extend(t for t in appointment_points(snapshot, day, "pickup") if s <= t < e)
+                returns.extend(t for t in appointment_points(snapshot, day, "return") if s < t <= e)
+                day += timedelta(days=1)
+            if not pickups or not returns or min(pickups) >= max(returns):
+                return "In diesem Zeitraum sind keine passenden Abhol- und Rückgabetermine möglich."
+        else:
+            if not snapshot.covers("usage", s, e) or not snapshot.covers("access", s, e):
+                return "An diesem Tag oder zu dieser Uhrzeit nicht verfügbar."
+            if not _grants_allow(
+                snapshot.unstaffed_grants, snapshot.scope, horizon, minutes
+            ) and not snapshot.covers("opening", s, e):
+                return "Außerhalb der betreuten Öffnung nicht verfügbar."
+    if not snapshot.free_units(s, e):
+        return "Dieser Zeitraum ist belegt oder benötigt zusätzliche Übergangszeit."
+    return None
+
+
+def appointment_points(snapshot, day, purpose):
+    cache = getattr(snapshot, "appointment_days", {})
+    snapshot.appointment_days = cache
+    key = (day, purpose)
+    if key not in cache:
+        p = snapshot.policy
+        lo = midnight(day, p)
+        hi = midnight(day + timedelta(days=1), p)
+        cache[key] = [
+            t
+            for t in time_points(p, lo, hi, include_end=False)
+            if snapshot.covers(purpose, t, t + timedelta(microseconds=1))
+            and snapshot.covers("access", t, t + timedelta(microseconds=1))
+        ]
+    return cache[key]
+
+
+def appointment_day(snapshot, day, purpose):
+    return bool(appointment_points(snapshot, day, purpose))
+
+
+def duration_label(minutes):
+    if minutes % 60 == 0:
+        return f"{minutes // 60} Stunde" + ("n" if minutes != 60 else "")
+    return f"{minutes} Minuten"
+
+
+def time_points(policy, start, end, *, include_end=True):
+    # Iterate real instants: spring skips nonexistent wall time; autumn keeps both folds.
+    point = start
+    while point < end or (include_end and point == end):
+        local = point.astimezone(zone(policy.timezone))
+        if (local.hour * 60 + local.minute) % policy.granularity_minutes == 0:
+            yield point
+        point += timedelta(minutes=1)
+
+
+def day_options(snapshot, day, *, all_ends=False):
+    p = snapshot.policy
+    lo = midnight(day, p)
+    hi = midnight(day + timedelta(days=1), p)
+    points = list(time_points(p, lo, hi))
+    starts = []
+    ends = {}
+    for i, s in enumerate(points[:-1]):
+        if snapshot.state(s, s + timedelta(minutes=p.min_duration_minutes)) != "available":
+            continue
+        valid = []
+        for e in points[i + 1 :]:
+            minutes = (e - s).total_seconds() / 60
+            if minutes < p.min_duration_minutes:
+                continue
+            if minutes > p.max_duration_minutes:
+                break
+            if (
+                validate_period(
+                    snapshot,
+                    s.astimezone(zone(p.timezone)).replace(tzinfo=None),
+                    e.astimezone(zone(p.timezone)).replace(tzinfo=None),
+                    start_fold=s.astimezone(zone(p.timezone)).fold,
+                    end_fold=e.astimezone(zone(p.timezone)).fold,
+                )
+                is None
+            ):
+                valid.append(int(e.timestamp() * 1000))
+                if not all_ends:
+                    return True
+        if valid:
+            starts.append(int(s.timestamp() * 1000))
+            ends[str(int(s.timestamp() * 1000))] = valid
+    if not all_ends:
+        return False
+    rendered = []
+    local_counts: dict[str, int] = {}
+    for point in points:
+        label = point.astimezone(zone(p.timezone)).strftime("%H:%M")
+        local_counts[label] = local_counts.get(label, 0) + 1
+    for point in points:
+        local = point.astimezone(zone(p.timezone))
+        label = local.strftime("%H:%M")
+        if point == hi:
+            label = "24:00"
+        elif local_counts[label] > 1:
+            label += " (später)" if local.fold else " (früher)"
+        rendered.append(
             {
-                "label": "Ganzer Tag"
-                if policy.time_mode == "days"
-                else f"{local:%H:%M}–{local_end:%H:%M}",
-                "status": status,
-                "free": status == "Frei",
-                "url": reverse("booking_create", args=[resource.pk]) + "?" + urlencode(params),
+                "value": int(point.timestamp() * 1000),
+                "label": label,
+                "local": local.replace(tzinfo=None).isoformat(timespec="minutes"),
+                "fold": local.fold,
             }
         )
+    return {"points": rendered, "starts": starts, "ends": ends}
+
+
+def calendar(resource, selected=None, *, month=None, actor=None, query=None):
+    p = BookingPolicy.objects.filter(resource=resource).first()
+    if not resource.booking_enabled or p is None:
+        return None
+    today = timezone.now().astimezone(zone(p.timezone)).date()
+    latest = today + timedelta(days=p.max_horizon_days)
+    day = parse_date(selected)
+    day = day if day and today <= day <= latest else None
+    first = parse_date((month or "") + "-01", day or today).replace(day=1)
+    first = max(today.replace(day=1), min(first, latest.replace(day=1)))
+    next_month = (first.replace(day=28) + timedelta(days=4)).replace(day=1)
+    previous = (first - timedelta(days=1)).replace(day=1)
+    requested = parse_date((query or {}).get("start")) if p.time_mode == "days" else None
+    requested = requested if requested and today <= requested <= latest else None
+    snapshot = Occupancy(
+        resource,
+        p,
+        midnight(min(first, day or first, requested or first), p),
+        midnight(next_month + timedelta(days=p.max_days + 1), p),
+        actor,
+    )
+    weeks = []
+    for week in month_calendar.Calendar(firstweekday=0).monthdatescalendar(first.year, first.month):
+        cells = []
+        for d in week:
+            bookable = False
+            if d.month == first.month and today <= d <= latest:
+                if p.time_mode == "days":
+                    bookable = (
+                        validate_period(snapshot, d, d + timedelta(days=p.min_days - 1)) is None
+                    )
+                else:
+                    bookable = day_options(snapshot, d)
+            cells.append(
+                {
+                    "date": d,
+                    "number": d.day,
+                    "inside": d.month == first.month,
+                    "bookable": bookable,
+                    "selected": d == day,
+                    "today": d == today,
+                    "url": "?"
+                    + urlencode({"month": first.strftime("%Y-%m"), "day": d.isoformat()})
+                    + ("#resource-calendar" if p.time_mode == "days" else "#day-availability"),
+                }
+            )
+        weeks.append(cells)
+    data = {
+        "mode": p.time_mode,
+        "minDate": today.isoformat(),
+        "maxStartDate": latest.isoformat(),
+        "day": day.isoformat() if day else None,
+        "maxMinutes": p.max_duration_minutes,
+        "maxDays": p.max_days,
+        "minDays": p.min_days,
+        "action": reverse("calendar_select", args=[resource.slug]),
+        "ticks": [],
+        "points": [],
+        "starts": [],
+        "ends": {},
+        "segments": [],
+    }
+    segments = []
+    if day and p.time_mode != "days":
+        lo = midnight(day, p)
+        hi = midnight(day + timedelta(days=1), p)
+        data.update(day_options(snapshot, day, all_ends=True))
+        data.update(dayStart=int(lo.timestamp() * 1000), dayEnd=int(hi.timestamp() * 1000))
+        raw_segments = snapshot.segments(lo, hi)
+        useful = [(s, e) for s, e, state in raw_segments if state != "closed"]
+        view_lo, view_hi = lo, hi
+        if useful:
+            first_minute = int((useful[0][0] - lo).total_seconds() // 3600)
+            last_minute = int((useful[-1][1] - lo).total_seconds() / 3600 + 0.999999)
+            view_lo = max(lo, lo + timedelta(hours=first_minute - 1))
+            view_hi = min(hi, lo + timedelta(hours=last_minute + 1))
+        data.update(
+            viewStart=int(view_lo.timestamp() * 1000), viewEnd=int(view_hi.timestamp() * 1000)
+        )
+        tick = view_lo
+        while tick <= view_hi:
+            data["ticks"].append(
+                {
+                    "top": (tick - view_lo).total_seconds()
+                    / (view_hi - view_lo).total_seconds()
+                    * 100,
+                    "label": tick.astimezone(zone(p.timezone)).strftime("%H:%M")
+                    if tick < hi
+                    else "24:00",
+                }
+            )
+            tick += timedelta(hours=1)
+        for s, e, state in raw_segments:
+            if e <= view_lo or s >= view_hi:
+                continue
+            s = max(s, view_lo)
+            e = min(e, view_hi)
+            label = (
+                f"{s.astimezone(zone(p.timezone)):%H:%M}–"
+                f"{e.astimezone(zone(p.timezone)):%H:%M} · {LABELS[state]}"
+            )
+            row = {
+                "start": int(s.timestamp() * 1000),
+                "end": int(e.timestamp() * 1000),
+                "state": state,
+                "label": label,
+                "top": (s - view_lo).total_seconds() / (view_hi - view_lo).total_seconds() * 100,
+                "height": (e - s).total_seconds() / (view_hi - view_lo).total_seconds() * 100,
+            }
+            segments.append(row)
+            data["segments"].append(row)
+    if p.time_mode == "days":
+        data["dateEnds"] = {}
+        requested = parse_date((query or {}).get("start"))
+        starts = {c["date"] for w in weeks for c in w if c["bookable"]}
+        if requested and today <= requested <= latest:
+            starts.add(requested)
+        for s in starts:
+            data["dateEnds"][s.isoformat()] = [
+                e.isoformat()
+                for i in range(p.min_days, p.max_days + 1)
+                if validate_period(snapshot, s, (e := s + timedelta(days=i - 1))) is None
+            ]
     return {
+        "weeks": weeks,
+        "month": first,
+        "month_label": f"{MONTHS[first.month]} {first.year}",
+        "previous_month": previous.strftime("%Y-%m") if previous >= today.replace(day=1) else None,
+        "next_month": next_month.strftime("%Y-%m") if next_month <= latest.replace(day=1) else None,
         "day": day,
-        "today": today,
-        "previous": day - timedelta(days=1),
-        "next": day + timedelta(days=1),
-        "rows": [r for r in rows if r["status"] not in {"Geschlossen", "Vergangen"}],
-        "timezone": policy.timezone,
-        "physical": policy.use_mode == "physical_loan",
+        "days_mode": p.time_mode == "days",
+        "segments": segments,
+        "data": data,
+        "duration": f"{p.max_days} Tage"
+        if p.time_mode == "days"
+        else duration_label(p.max_duration_minutes),
+        "snapshot": snapshot,
     }
 
 
 def current_status(resource):
-    policy = BookingPolicy.objects.filter(resource=resource).first()
-    if not resource.booking_enabled or policy is None:
+    from bookings import schedules
+    from bookings.services import capacity_units
+    from lending.models import LoanLine
+
+    p = BookingPolicy.objects.filter(resource=resource).first()
+    if not resource.booking_enabled or p is None:
         return "Nicht online buchbar"
-    start = timezone.now()
-    end = start + timedelta(minutes=1)
-    if policy.use_mode == "onsite" and not all(
-        schedules.covers(resource, policy, purpose, start, end) for purpose in ("usage", "access")
+    s = timezone.now()
+    e = s + timedelta(minutes=1)
+    if p.use_mode == "onsite" and not all(
+        schedules.covers(resource, p, purpose, s, e) for purpose in ("usage", "access")
     ):
         return "Zurzeit geschlossen"
-    units = capacity_units(resource, policy, start, end)
-    if policy.use_mode == "physical_loan":
-        from lending.models import LoanLine
-
-        custody = set(
-            LoanLine.objects.filter(unit__in=units, returned_at__isnull=True).values_list(
-                "unit_id", flat=True
-            )
+    units = capacity_units(resource, p, s, e)
+    custody = set(
+        LoanLine.objects.filter(unit__in=units, returned_at__isnull=True).values_list(
+            "unit_id", flat=True
         )
-        if units and all(u.pk in custody for u in units):
-            return "Zurzeit ausgeliehen"
+    )
+    if units and all(u.pk in custody for u in units):
+        return "Zurzeit ausgeliehen"
     return "Zurzeit frei" if units else "Zurzeit belegt / gesperrt"

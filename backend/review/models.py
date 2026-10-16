@@ -8,6 +8,8 @@ class ReviewDataset(models.Model):
     anchor_date = models.DateField()
     created_at = models.DateTimeField(default=timezone.now)
     accounts = models.JSONField(default=dict)
+    calendar_revision = models.PositiveSmallIntegerField(default=0)
+    calendar_anchor = models.DateField(null=True, blank=True)
 
     class Meta:
         constraints = [models.CheckConstraint(condition=models.Q(id=1), name="one_review_dataset")]

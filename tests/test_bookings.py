@@ -94,7 +94,10 @@ def test_confirm_claim_and_adjacent_intervals(configured):
     assert first.status == "confirmed" and first.unit_id == u.pk
     assert first.claim.during.lower == local_instant(s, "Europe/Berlin")
     assert services.availability(user, r.pk, s, e).code == "reserved"
-    second = services.confirm(user, r.pk, e, e + timedelta(hours=1), uuid4())
+    assert services.availability(user, r.pk, e, e + timedelta(hours=1)).code == "reserved"
+    second = services.confirm(
+        user, r.pk, e + timedelta(minutes=30), e + timedelta(minutes=90), uuid4()
+    )
     assert second.pk != first.pk and AllocationClaim.objects.filter(is_active=True).count() == 2
 
 
@@ -431,11 +434,13 @@ def test_current_permission_and_suspension_rechecked_before_commit(configured):
 
 def test_buffers_and_granularity(configured):
     actor, r, _, p, user, s, e = configured
-    services.save_policy(actor, r.pk, {"buffer_after_minutes": 15}, p.revision)
+    services.save_policy(actor, r.pk, {"buffer_after_minutes": 45}, p.revision)
     book(configured)
     assert services.availability(user, r.pk, e, e + timedelta(hours=1)).code == "reserved"
     assert (
-        services.availability(user, r.pk, e + timedelta(minutes=15), e + timedelta(minutes=75)).code
+        services.availability(
+            user, r.pk, e + timedelta(minutes=45), e + timedelta(minutes=105)
+        ).code
         == "available"
     )
     assert (
@@ -835,10 +840,11 @@ def test_anonymous_calendar_capacity_and_privacy(configured, client):
 
     _, resource, _, _, user, start, end = configured
     before = calendar(resource, start.date().isoformat())
-    assert any(row["free"] and row["label"].startswith("10:00") for row in before["rows"])
+    instant = next(p["value"] for p in before["data"]["points"] if p["label"] == "10:00")
+    assert instant in before["data"]["starts"]
     services.confirm(user, resource.pk, start, end, uuid4())
     after = calendar(resource, start.date().isoformat())
-    assert not next(row for row in after["rows"] if row["label"].startswith("10:00"))["free"]
+    assert instant not in after["data"]["starts"]
     response = client.get(f"/entdecken/{resource.slug}/", {"day": start.date().isoformat()})
     assert response.status_code == 200
     assert user.email.encode() not in response.content

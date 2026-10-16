@@ -40,5 +40,6 @@ urlpatterns = [
     ),
     path("bilder/<uuid:image_id>/", views.image, name="resource_image"),
     path("bilder/<uuid:image_id>/archivieren/", views.image_archive, name="resource_image_archive"),
+    path("<slug:slug>/zeitraum/", views.calendar_select, name="calendar_select"),
     path("<slug:slug>/", views.detail, name="resource_detail"),
 ]

@@ -103,7 +103,7 @@ def create(request, resource_id):
         missing_versions, missing_qualifications = [], []
     initial = {
         key: request.GET[key]
-        for key in ("start", "end", "pickup_at", "return_at")
+        for key in ("start", "end", "pickup_at", "return_at", "start_fold", "end_fold")
         if key in request.GET
     }
     form = forms.BookingForm(policy, request.POST or None, initial=initial)
@@ -296,14 +296,14 @@ def policy_edit(request, resource_id):
             form.add_error(None, exc)
     return render(
         request,
-        "bookings/form.html",
+        "bookings/policy.html",
         {
-            "title": f"Buchungsregeln: {resource.title}",
+            "title": f"Buchung: {resource.title}",
             "form": form,
             "text": (
                 "Nutzung, Gebäudezugang und betreute Öffnung benötigen Zeitpläne. "
-                "Physische Ausleihe und zusätzliche Pflichtgates bleiben bis zu "
-                "ihren Phasen gesperrt."
+                "Vor- und Nachbereitung ergeben zusammen mindestens 30 Minuten "
+                "Übergangszeit für Räume und Maschinen."
             ),
         },
     )

@@ -45,7 +45,7 @@ def lending_setup(configured, registry):  # noqa: F811
     policy = bookings.save_policy(
         actor,
         resource.pk,
-        {"use_mode": "physical_loan", "max_duration_minutes": 10080},
+        {"use_mode": "physical_loan", "max_duration_minutes": 10080, "buffer_after_minutes": 0},
         policy.revision,
     )
     for field in ("full_name", "street", "postal_code", "city", "country", "phone"):

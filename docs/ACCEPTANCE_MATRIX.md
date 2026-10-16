@@ -223,3 +223,17 @@ Tests in tests/test_lending.py, [Review](PHASE_6_REVIEW.md). AC-06/12/22/25–30
 | UX-10 | Additive fixtures preserve records/passwords; one Admin role | `test_additive_ux_upgrade_preserves_review_state` |
 
 These are implementation checks. Owner/team UX acceptance remains pending.
+
+## Owner calendar correction acceptance
+
+- Month first; bounded previous/next navigation; selected day opens visual timeline.
+- Existing bookings, transitions, closures and hard blocks are distinct; no PII.
+- Continuous selection and synchronized accessible controls; no free-slot cards.
+- Maximum duration enforced during selection and binding service validation.
+- Room/machine 30-minute minimum, configurable 45-minute example; legacy and
+  completed onsite transition protected without rewriting claims.
+- Inclusive day-mode ranges preserve physical appointments and custody distinctions.
+- DST folds/gaps, continuous unit capacity and concurrent transition conflicts:
+  `tests/test_calendar.py`; full regression evidence in review handover.
+- Actual browser/mobile checks and additive NCtest preservation are recorded in
+  `docs/review/VERIFICATION.md`; final UX acceptance belongs to owner/team.

@@ -59,6 +59,15 @@ def save_policy(actor, resource_id, data, expected_revision=None):
             raise ValidationError("Unbekannte Buchungsregeln.")
         for k, v in data.items():
             setattr(policy, k, v)
+        if (
+            policy.use_mode == "onsite"
+            and policy.buffer_before_minutes + policy.buffer_after_minutes < 30
+        ):
+            if {"buffer_before_minutes", "buffer_after_minutes"} & set(data):
+                raise ValidationError(
+                    "Für Räume und Maschinen sind mindestens 30 Minuten Übergangszeit erforderlich."
+                )
+            policy.buffer_after_minutes = 30 - policy.buffer_before_minutes
         zone(policy.timezone)
         # Technical expansion bounds; explicit rather than unbounded schedule work.
         if (
@@ -373,13 +382,26 @@ def capacity_units(
         schedules.owner_filter(resource), is_active=True, start__lt=claim_end, end__gt=claim_start
     ).exists():
         return []
-    blocked = set(
-        AllocationClaim.objects.filter(
-            unit__in=units, is_active=True, during__overlap=(claim_start, claim_end)
+    from .occupancy import blocking_claims, padded_claim
+
+    claims = (
+        blocking_claims()
+        .filter(
+            unit__in=units,
+            during__overlap=(
+                claim_start - timedelta(minutes=policy.buffer_after_minutes),
+                claim_end + timedelta(minutes=policy.buffer_before_minutes),
+            ),
         )
         .exclude(booking_id=getattr(existing_booking, "pk", None))
-        .values_list("unit_id", flat=True)
+        .select_related("booking")
     )
+    blocked = {
+        claim.unit_id
+        for claim in claims
+        if padded_claim(claim, policy)[0] < claim_end
+        and padded_claim(claim, policy)[1] > claim_start
+    }
     if policy.use_mode == "physical_loan":
         from lending.models import LoanLine
 

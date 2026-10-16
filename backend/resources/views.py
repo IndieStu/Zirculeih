@@ -115,13 +115,6 @@ def catalog(request):
 def detail(request, slug):
     resource = get_object_or_404(services.visible_resources(request.user), slug=slug)
     from .calendar import calendar
-    from .models import QualificationType
-    from .requirements import required_agreements
-
-    try:
-        requirement_versions = required_agreements(resource)
-    except ValidationError:
-        requirement_versions = []
 
     # Only explicitly authored catalog fields, never the inventory models or unit names.
     return render(
@@ -129,10 +122,12 @@ def detail(request, slug):
         "resources/detail.html",
         {
             "card": services.catalog_card(resource),
-            "calendar": calendar(resource, request.GET.get("day")),
-            "requirement_versions": requirement_versions,
-            "required_qualifications": QualificationType.objects.filter(
-                resourcequalification__resource=resource
+            "calendar": calendar(
+                resource,
+                request.GET.get("day"),
+                month=request.GET.get("month"),
+                actor=request.user,
+                query=request.GET,
             ),
             "description": resource.description,
             "specifications": resource.specifications,
@@ -466,4 +461,51 @@ def qualifications_admin(request):
                 "-issued_at"
             )[:100],
         },
+    )
+
+
+@require_http_methods(["GET"])
+def calendar_select(request, slug):
+    from datetime import date, datetime, timedelta
+    from urllib.parse import urlencode
+
+    from bookings.models import BookingPolicy
+    from bookings.occupancy import Occupancy
+    from bookings.time_rules import interval
+
+    from .calendar import validate_period
+
+    resource = get_object_or_404(services.visible_resources(request.user), slug=slug)
+    policy = get_object_or_404(BookingPolicy, resource=resource)
+    error = None
+    if not resource.booking_enabled:
+        raise Http404
+    try:
+        parser = date.fromisoformat if policy.time_mode == "days" else datetime.fromisoformat
+        start = parser(request.GET.get("start", ""))
+        end = parser(request.GET.get("end", ""))
+        sf = int(request.GET["start_fold"]) if request.GET.get("start_fold") else None
+        ef = int(request.GET["end_fold"]) if request.GET.get("end_fold") else None
+        s, e, _, _, _ = interval(policy, start, end, start_fold=sf, end_fold=ef)
+        if e <= s or (e - s) > timedelta(days=367):
+            raise ValueError
+        snapshot = Occupancy(resource, policy, s, e, request.user)
+        error = validate_period(snapshot, start, end, start_fold=sf, end_fold=ef)
+        if error is None:
+            params = {"start": start.isoformat(), "end": end.isoformat()}
+            if sf is not None:
+                params["start_fold"] = str(sf)
+            if ef is not None:
+                params["end_fold"] = str(ef)
+            from django.urls import reverse
+
+            return redirect(reverse("booking_create", args=[resource.pk]) + "?" + urlencode(params))
+    except (ValueError, ValidationError, OverflowError) as exc:
+        error = (
+            exc.messages[0]
+            if isinstance(exc, ValidationError)
+            else "Bitte einen gültigen Zeitraum wählen."
+        )
+    return render(
+        request, "resources/calendar_error.html", {"resource": resource, "error": error}, status=400
     )

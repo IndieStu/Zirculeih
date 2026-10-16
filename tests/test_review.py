@@ -171,3 +171,34 @@ def test_additive_ux_upgrade_preserves_review_state(settings, tmp_path):
     count = Resource.objects.count()
     call_command("enhance_review_ux")
     assert Resource.objects.count() == count
+
+
+def test_calendar_review_additions_preserve_existing_records(settings, tmp_path):
+    from bookings.models import Booking, ResourceBlock, ScheduleException
+    from resources.calendar import calendar
+
+    settings.REVIEW_MODE = True
+    settings.MEDIA_ROOT = tmp_path / "media"
+    marker, _ = seed(timezone.localdate())
+    call_command("enhance_review_ux")
+    before = dict(User.objects.values_list("pk", "password"))
+    prior = set(Booking.objects.values_list("pk", flat=True))
+    call_command("enhance_review_calendar")
+    marker.refresh_from_db()
+    assert marker.calendar_revision == 1 and marker.calendar_anchor.weekday() == 2
+    assert prior.issubset(set(Booking.objects.values_list("pk", flat=True)))
+    assert Booking.objects.count() == len(prior) + 4
+    assert all(User.objects.get(pk=pk).password == password for pk, password in before.items())
+    room = Resource.objects.get(slug="review-raum")
+    assert room.bookingpolicy.max_duration_minutes == 240
+    assert room.bookingpolicy.buffer_after_minutes >= 30
+    assert ScheduleException.objects.filter(
+        category__name="Kalenderreview · Vor-Ort-Nutzung", is_closed=True
+    ).exists()
+    assert ResourceBlock.objects.filter(reason="Fiktive Wartung für Kalenderreview").exists()
+    day = calendar(room, marker.calendar_anchor.isoformat())
+    assert {"booked", "transition", "available", "closed"}.issubset(
+        {r["state"] for r in day["segments"]}
+    )
+    call_command("enhance_review_calendar")
+    assert Booking.objects.count() == len(prior) + 4

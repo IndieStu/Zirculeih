@@ -30,5 +30,3 @@ footer{margin-top:2rem;font-weight:var(--weight-medium)}
 .table-scroll{overflow:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:.45rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}th{font-weight:600}
 @media(min-width:801px){.sidebar summary{display:none}}
 @media(max-width:800px){.operational-shell{display:block;padding:.6rem}.sidebar{margin-bottom:.6rem}.operational-shell main{padding:1rem}.sidebar nav{display:flex;gap:.6rem}.sidebar h2{width:100%}}
-.availability-slots {display:grid; grid-template-columns:repeat(auto-fit,minmax(11rem,1fr)); gap:.5rem; padding:0; list-style:none}
-.availability-slots li {padding:.5rem; border:1px solid var(--line,#D9D9CE); border-radius:.25rem}

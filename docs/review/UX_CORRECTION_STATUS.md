@@ -10,8 +10,8 @@
 - Separate concrete Prusa catalogue entries through the existing Resource/Unit/Asset
   relationships. Identical drills remain a pool. Rooms and machines remain onsite
   bookings, never physical loans merely for presentation simplicity.
-- Anonymous daily availability with date picker, occupied/free intervals and links
-  pre-filling the booking form. Current catalogue occupancy badges. Same capacity,
+- Month-first availability with a visual day timeline and continuous start/end
+  selection; day-based offerings use inclusive date ranges. Current catalogue occupancy badges. Same capacity,
   maintenance, claim buffers and custody computation as the allocator. No identities.
   The final form checks beneficiary permissions, agreements, qualifications and
   pickup/return appointments; occupancy does not confer personal eligibility.
@@ -45,16 +45,29 @@ there were no active loans. Owner feedback and Deelvo domain principles prevail.
 
 ## Deliberate limits for team review
 
-The calendar is a bounded daily occupancy view, not a drag-based monthly/series
-planner or an ICS feed. Select a suggested period, then adjust its end if needed.
+The owner rejected the original free-slot-card UI. The replacement is a month
+calendar, followed by a visual day timeline or an inclusive date range. Start/end
+controls stay synchronized with the selected overlay. No series planner or ICS feed.
 Physical appointments and personal eligibility are checked in the booking step.
-Closed/past intervals are omitted from suggested periods. Weekly opening windows
+Closed, blocked, occupied and transition periods are shown distinctly; invalid
+starts/ends cannot be selected. Weekly opening windows
 are entered by weekday; a vacation period expands into bounded date exceptions.
 Existing windows are removed and recreated to change them; no bulk spreadsheet UI.
 Qualification issuance is global-only in this minimal groundwork; scoped issuer
 administration, bundles and series are not part of this correction.
 
-**Artikel & Ressourcen**, **Exemplar / Platz**, and the daily-calendar density remain
+**Artikel & Ressourcen**, **Exemplar / Platz**, and calendar density remain
 explicit terminology/presentation choices for the team review, not domain changes.
 No final acceptance, production readiness, hardware scanner test or full WCAG audit
 is implied. Actual team feedback is the next gate.
+
+## Calendar correction
+
+[Binding replacement instruction](OWNER_CALENDAR_CORRECTION.md), [ADR-021](../adr/021.md).
+Existing maximum duration and grid fields are reused. Room/machine transitions
+default to at least 30 minutes and can be raised (e.g. 45). Current transition
+constraints cover legacy and completed onsite bookings without changing immutable
+claims. A deferred SQL guard protects direct and concurrent allocations.
+Review additions include four bookings, a usage-category closure, CNC temporary
+block and a separate fictional day-mode cargo-bike offering; existing physical
+loan modes and custody records are preserved.
