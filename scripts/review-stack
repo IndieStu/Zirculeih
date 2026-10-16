@@ -1,0 +1,5 @@
+#!/bin/sh
+# Always use the isolated review profile and its own interpolation environment.
+set -eu
+cd "$(dirname "$0")/.."
+exec docker compose --env-file .env.review -f compose.yaml -f compose.review.yaml "$@"

@@ -37,6 +37,18 @@ jobs:
           curl --fail --retry 3 http://localhost:8000/health/live/
           curl --fail --retry 3 http://localhost:8000/health/ready/
           curl --fail http://localhost:8000/
+      - name: Isolated review deployment and explicit seed
+        run: |
+          python3 scripts/review_env.py --url http://localhost:8766 --build "$(git rev-parse HEAD)"
+          scripts/review-deploy
+          scripts/review-stack exec -T web python backend/manage.py seed_review_data
+          scripts/review-stack exec -T web python backend/manage.py seed_review_data
+          scripts/review-stack exec -T web python backend/manage.py review_identifiers
+          curl --fail http://localhost:8766/ | grep TESTINSTANZ
+          curl --fail http://localhost:8766/static/brand.css
+          scripts/review-stack exec -T web python backend/manage.py shell -c "from django.conf import settings; from django.core.mail import send_mail; from pathlib import Path; assert settings.EMAIL_BACKEND == 'django.core.mail.backends.filebased.EmailBackend'; send_mail('Fictional review smoke', 'No delivery', None, ['fictional@example.test']); assert list(Path(settings.EMAIL_FILE_PATH).glob('*'))"
       - name: Disposable cleanup
         if: always()
-        run: docker compose down --volumes --remove-orphans
+        run: |
+          docker compose down --volumes --remove-orphans
+          if [ -f .env.review ]; then scripts/review-stack down --volumes --remove-orphans; fi

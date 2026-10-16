@@ -1,0 +1,40 @@
+# Compose >= 2.24.4; explicit overrides never inherit dev secrets/listen sockets.
+name: deelvo-review
+services:
+  db:
+    restart: unless-stopped
+  web:
+    image: deelvo-review-app
+    env_file: !override [.env.review]
+    environment:
+      DEELVO_REVIEW_MODE: "true"
+      DEELVO_REVIEW_BUILD: ${DEELVO_REVIEW_BUILD:?Generate review configuration}
+      REVIEW_EMAIL_DIR: /app/review-mail
+    ports: !override ["${REVIEW_BIND_IP:-127.0.0.1}:${REVIEW_PORT:-8766}:8000"]
+    volumes: !override ["media:/app/media", "static:/app/backend/staticfiles:ro", "review_mail:/app/review-mail"]
+    restart: unless-stopped
+  migrate:
+    image: deelvo-review-app
+    env_file: !override [.env.review]
+    environment:
+      DEELVO_REVIEW_MODE: "true"
+      REVIEW_EMAIL_DIR: /app/review-mail
+  static:
+    image: deelvo-review-app
+    env_file: !override [.env.review]
+    environment:
+      DEELVO_REVIEW_MODE: "true"
+  test:
+    env_file: !override [.env.review]
+    environment:
+      DEELVO_REVIEW_MODE: "false"
+volumes:
+  postgres_data:
+    name: deelvo_review_postgres
+  media:
+    name: deelvo_review_media
+  static:
+    image: deelvo-review-app
+    name: deelvo_review_static
+  review_mail:
+    name: deelvo_review_mail

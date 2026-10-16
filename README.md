@@ -34,3 +34,7 @@ Historische Phase-0-Entwürfe unter docs/history/phase-0/ sind keine aktuellen A
 ## Kiosk, Scanner und Inventur — Ergänzung 15.10.2026
 
 [Neue Owner-Anforderung](docs/OWNER_REQUIREMENT_KIOSK.md), [integriertes Konzept](docs/KIOSK_SCANNER.md), [Änderungsübersicht](docs/KIOSK_CHANGE_SUMMARY.md), [ADR-011](docs/adr/011.md). Berücksichtigt sind allgemeine Identifier, HID-Eingabe, gemeinsame Services, Abholung/Spontanausleihe/Teilrückgabe sowie scannerbasierte Inventur für alle Assets. Die Implementierung folgt frühen Phase-3/6/10-Inkrementen; Phase 1 erhält keine vollständige Kiosk-UI.
+
+## Team-UX-Review nach Phase 6
+
+Phase 6 ist gemerged, noch nicht abgenommen. [Private Reviewinstanz betreiben](docs/deployment/REVIEW_INSTANCE.md), [Teamaufgaben](docs/review/UX_REVIEW_PHASE_6.md), [Feedback](docs/review/UX_FEEDBACK_TEMPLATE.md). Phase 7 wartet auf ausdrückliche Ownerfreigabe.

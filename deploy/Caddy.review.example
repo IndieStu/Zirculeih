@@ -1,0 +1,9 @@
+# Integrate into the EXISTING Caddy instance only if private TLS is desired.
+# Replace hostname. Keep Caddy itself bound to its Tailscale address using your existing policy.
+https://deelvo-review.example.internal {
+    # Private CA; trust this CA on team devices. No public DNS/ACME required.
+    tls internal
+    reverse_proxy 127.0.0.1:8766
+}
+# Use host-network Caddy for this loopback example. A container proxy on its own
+# network must be wired deliberately; do not change 127.0.0.1 to 0.0.0.0 blindly.
