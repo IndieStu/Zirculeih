@@ -2,7 +2,7 @@
 
 Selbst gehostete Inventarverwaltung, Ressourcenreservierung und Ausleihe für Makerspaces.
 
-Stand: 16.10.2026. Phasen 1–5 sind akzeptiert und gemerged. Phase 6 ist implementiert und wird abschließend geprüft: physische Reservierungen, versionierte Vereinbarungen/Haftpflicht, Erst-Ausweisnachweis, scannerunterstützte Ausgabe/Teilrückgabe, Überziehung, Verlängerung und Nichtabholung. Reservierung und tatsächlicher Gewahrsam bleiben getrennt. Keine Produktion oder Phase 7 ohne eigene Freigabe.
+Stand: 16.10.2026. Phasen 1–5 sind akzeptiert und gemerged. Phase 6 ist implementiert und steht zur Owner-Prüfung (203 Tests lokal und in Docker/PostgreSQL 17 bestanden): physische Reservierungen, versionierte Vereinbarungen/Haftpflicht, Erst-Ausweisnachweis, scannerunterstützte Ausgabe/Teilrückgabe, Überziehung, Verlängerung und Nichtabholung. Reservierung und tatsächlicher Gewahrsam bleiben getrennt. Keine Produktion oder Phase 7 ohne eigene Freigabe.
 
 ## Start und Review
 
