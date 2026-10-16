@@ -34,7 +34,6 @@ volumes:
   media:
     name: deelvo_review_media
   static:
-    image: deelvo-review-app
     name: deelvo_review_static
   review_mail:
     name: deelvo_review_mail
