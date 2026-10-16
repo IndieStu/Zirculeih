@@ -121,3 +121,11 @@ ResourceType (UUID/key/name/active), Resource (UUID/stabiler Slug, Titel/Katalog
 Migrationen: resources 0001, inventory 0005 (nullable Asset-FK plus Unit-FK/XOR), resources 0002 (erweiterter Identifier-Identityguard, Unit-/Pool-/Resourceidentität). Bestehende Asset-Identifier bleiben unverändert und erfüllen XOR. Physische Unitzuordnung bleibt auch nach Deaktivierung einmalig. Kein ResourceUnit == Asset. Pool-Einsatzfähigkeit wird aus aktivem Kontext/Units/Assetzustand abgeleitet, ist aber keine zeitliche Verfügbarkeit.
 
 Rückmigration zu NOT-NULL Asset ist nach Anlage logischer Unitcodes nicht ohne Datenverlust möglich. Kein Zurückmigrieren oder Entfernen dieser Codes als normaler Rollback: abgestimmter DB-/Medienrestore oder Forward-Fix. Älterer Phase-3-Code kann nullable Unit-Identifier nicht korrekt interpretieren und ist nach produktiver Nutzung dieser Migration kein sicherer Drop-in-Rollback. Produktion/Restore bleibt separates Gate.
+
+## Implemented Phase-5 schema
+
+BookingPolicy has a Resource OneToOne PK, explicit onsite/physical_loan and slots/days modes, timezone, timing/limit/gate fields and revision. ScheduleWindow and ScheduleException have exactly one Resource/Location owner and a typed purpose (usage/access/opening/pickup/return). ResourceBlock stores a positive UTC interval, current revision, actor and reason.
+
+Booking stores immutable actor, beneficiary, Resource, concrete Unit, UTC interval, optional inclusive-start/exclusive-end local dates, timezone and policy snapshot. Status/revision update through services. AllocationClaim is OneToOne to Booking with real Unit FK and finite, bounded, nonempty half-open tstzrange. Active Unit/range pairs exclude overlap. Deferred constraints require exactly one matching claim with activity consistent with confirmed/active versus cancelled/completed; identity/range/history cannot be rewritten or deleted. IdempotencyRecord is unique actor+operation+UUID-key with canonical payload hash and Booking FK. BookingIncident preserves review needs without cancelling a promise.
+
+Migrations bookings/0001–0003 add independent tables, reviewed btree_gist, identity/lifecycle triggers and finite bounds. Existing inventory/resource/identifier records are preserved. [Migration and rollback procedure](docs/DEVELOPMENT.md). No Loan schema or physical custody writes in Phase 5.

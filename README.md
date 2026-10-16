@@ -2,9 +2,11 @@
 
 Selbst gehostete Inventarverwaltung, Ressourcenreservierung und Ausleihe für Makerspaces.
 
-Stand: 15.10.2026. Phase 2 ist akzeptiert und gemerged. Phase 3 ist akzeptiert und gemerged. Phase 4 ist implementiert und steht zur Owner-Prüfung: Ressourcen/Units/Pools, Veröffentlichung, Suche und getrennte Kataloggalerie. Phase-3-Grundlage: Inventar, Standort-/Kategoriebäume, Identifier und HID-Lookup, Zusatzfelder, private Medien, CSV und operative Übersicht. Phase-3-Prüfungen und Ownerreview sind abgeschlossen; Phase 4: 148 Tests lokal und in Docker/PostgreSQL 17 bestanden; siehe Reviewbericht. Buchungen und Ausleihen folgen in eigenen Phasen.
+Stand: 15.10.2026. Phase 2 ist akzeptiert und gemerged. Phase 3 ist akzeptiert und gemerged. Phase 4 ist akzeptiert und gemerged. Phase 5 ist implementiert und steht zur Owner-Prüfung: Buchungskern für Vor-Ort-Nutzung, Regeln/Zeitpläne/Sperren, konkrete transaktionale Belegung und persönliche Buchungen. Phase-3-Grundlage: Inventar, Standort-/Kategoriebäume, Identifier und HID-Lookup, Zusatzfelder, private Medien, CSV und operative Übersicht. Phase-3-Prüfungen und Ownerreview sind abgeschlossen; Phase 4: 148 Tests lokal und in Docker/PostgreSQL 17 bestanden; siehe Reviewbericht. Phase 5: 181 Tests lokal und in Docker/PostgreSQL 17 bestanden. Physische Ausleihen folgen nach eigener Phase-6-Freigabe; die hierfür notwendigen Gates bleiben sicher geschlossen.
 
 ## Start und Review
+
+- [Phase-5-Review: Buchungskern, Nachweise und Grenzen](docs/PHASE_5_REVIEW.md)
 
 - [Phase-4-Review mit Tests, Migrationen und Screenshots](docs/PHASE_4_REVIEW.md)
 

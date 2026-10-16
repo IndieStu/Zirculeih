@@ -59,6 +59,9 @@ ACTIONS = (
     )
 )
 INVENTORY_ACTIONS = {
+    "booking.configure": "Buchungsregeln und Zeitpläne konfigurieren",
+    "booking.block": "Harte Ressourcensperren verwalten",
+    "booking.read_all": "Buchungen im Betriebsbereich ansehen",
     "resource.publish": "Angebote veröffentlichen oder zurückziehen",
     "resource.type_manage": "Angebotstypen konfigurieren",
     "asset.archive": "Inventar archivieren oder ausmustern",

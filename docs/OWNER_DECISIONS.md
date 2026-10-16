@@ -49,3 +49,7 @@ Phase 3 implementiert vorhandene Inventar-Dashboardteile und Handbuch für Phase
 ## Phase 4 — 15.10.2026
 
 Phase-3-Review akzeptiert („freigegeben“), anschließende Bestätigung „phase 3 ist merged“. [Originalformulierungen und Gesprächskontext](OWNER_APPROVAL_PHASE_4.md). Ressourcen/Katalog gemäß bestehendem Plan autorisiert, Main 25f3a4c integriert. Keine Phase 5 oder Produktionsfreigabe. [ADR-016](adr/016.md) konkretisiert die Umsetzung, keine Änderung der bestätigten Ausleih-/Qualifikations-/Markenregeln.
+
+## Phase 5 authorization — 15.10.2026
+
+Owner: “freigegeben und merged” following Phase-4 review/next-phase gate. [Original contextual record](OWNER_APPROVAL_PHASE_5.md). Phase 5 proceeds on main 549ca27; implementation choices in [ADR-017](adr/017.md) remain reviewable. Prior borrower/privacy/qualification decisions are unchanged; Phase 6 and production require a new gate.

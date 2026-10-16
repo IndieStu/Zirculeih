@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "accounts",
     "inventory",
     "resources",
+    "bookings",
 ]
 AUTH_USER_MODEL = "accounts.User"
 AUTHENTICATION_BACKENDS = ["accounts.backends.EmailBackend"]
@@ -100,6 +101,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "inventory.context_processors.navigation",
                 "resources.context_processors.navigation",
+                "bookings.context_processors.navigation",
             ]
         },
     }

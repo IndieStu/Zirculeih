@@ -24,6 +24,7 @@ for prefix, count in (
     ("KIOSK-AC", 22),
     ("P3-AC", 16),
     ("P4-AC", 14),
+    ("P5-AC", 16),
     ("DASH", 4),
     ("API", 4),
     ("CAL", 6),
@@ -46,6 +47,8 @@ for chapter in (
     "imports-and-media",
     "resources",
     "catalog",
+    "bookings",
+    "booking-administration",
     "backup-restore",
     "troubleshooting",
 ):
@@ -56,5 +59,5 @@ if errors:
     raise SystemExit("\n".join(errors))
 print(
     f"PASS: {len(files)} Markdown files, links/fences, "
-    "AC/KIOSK/P3/DASH/API/CAL/DOC coverage, handbook"
+    "AC/KIOSK/P3/P4/P5/DASH/API/CAL/DOC coverage, handbook"
 )

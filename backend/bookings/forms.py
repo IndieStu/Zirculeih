@@ -1,0 +1,205 @@
+from datetime import date, datetime
+from uuid import uuid4
+
+from accounts.authorization import allowed
+from django import forms
+from inventory.forms import NodeChoice, permitted_nodes
+from inventory.models import Location
+from resources.models import Resource
+from resources.services import resource_scope
+
+from .models import BookingPolicy, ResourceBlock, ScheduleException, ScheduleWindow
+from .time_rules import local_instant
+
+FOLDS = [
+    ("", "Bei eindeutiger Uhrzeit automatisch"),
+    ("0", "Erste Instanz (Sommerzeit)"),
+    ("1", "Zweite Instanz (Winterzeit)"),
+]
+
+
+class BookingForm(forms.Form):
+    start = forms.CharField(label="Beginn", max_length=30)
+    end = forms.CharField(label="Ende", max_length=30)
+    start_fold = forms.ChoiceField(
+        label="Beginn bei doppelter Herbst-Uhrzeit", choices=FOLDS, required=False
+    )
+    end_fold = forms.ChoiceField(
+        label="Ende bei doppelter Herbst-Uhrzeit", choices=FOLDS, required=False
+    )
+    key = forms.UUIDField(widget=forms.HiddenInput, initial=uuid4)
+
+    def __init__(self, policy, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.policy = policy
+        kind = "date" if policy.time_mode == "days" else "datetime-local"
+        for field in ("start", "end"):
+            self.fields[field].widget = forms.TextInput(attrs={"type": kind})
+        if kind == "date":
+            self.fields["end"].label = "Letzter Nutzungstag (inklusive)"
+            self.fields.pop("start_fold")
+            self.fields.pop("end_fold")
+
+    def clean(self):
+        data = super().clean()
+        parser = date.fromisoformat if self.policy.time_mode == "days" else datetime.fromisoformat
+        for field in ("start", "end"):
+            if field in data:
+                try:
+                    data[field] = parser(data[field])
+                except ValueError:
+                    self.add_error(
+                        field, "Bitte ein gültiges Datum bzw. eine lokale Uhrzeit eingeben."
+                    )
+        for field in ("start_fold", "end_fold"):
+            data[field] = int(data[field]) if data.get(field) else None
+        return data
+
+
+class PolicyForm(forms.ModelForm):
+    expected_revision = forms.IntegerField(widget=forms.HiddenInput, required=False, min_value=0)
+
+    class Meta:
+        model = BookingPolicy
+        exclude = ["resource", "revision"]
+        labels = {
+            "use_mode": "Nutzungsart",
+            "time_mode": "Zeitmodus",
+            "timezone": "IANA-Zeitzone",
+            "granularity_minutes": "Zeitraster (Minuten)",
+            "min_duration_minutes": "Mindestdauer (Minuten)",
+            "max_duration_minutes": "Höchstdauer (Minuten)",
+            "min_days": "Mindesttage",
+            "max_days": "Höchsttage",
+            "max_horizon_days": "Maximaler Vorlauf (Kalendertage)",
+            "lead_minutes": "Mindestvorlauf (Minuten)",
+            "buffer_before_minutes": "Puffer vorher (Minuten)",
+            "buffer_after_minutes": "Puffer nachher (Minuten)",
+            "max_parallel": "Maximal gleichzeitige Buchungen je Konto",
+            "cancellation_notice_minutes": "Stornofrist vor Beginn (Minuten)",
+            "requires_qualification": "Einweisung erforderlich (bis Phase 7 gesperrt)",
+            "requires_agreement": "Zusatzvereinbarung erforderlich (bis Phase 6 gesperrt)",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["expected_revision"].initial = self.instance.revision
+
+
+def owner_choices(form, actor, action):
+    form.fields["resource"].queryset = Resource.objects.filter(
+        pk__in=[r.pk for r in Resource.objects.all() if allowed(actor, action, resource_scope(r))]
+    )
+    form.fields["location"] = NodeChoice(
+        label="Standort (alternativ zum Angebot)",
+        required=False,
+        queryset=permitted_nodes(actor, Location, action),
+    )
+    form.fields["resource"].label = "Angebot (alternativ zum Standort)"
+
+
+class WindowForm(forms.ModelForm):
+    class Meta:
+        model = ScheduleWindow
+        fields = [
+            "resource",
+            "location",
+            "purpose",
+            "weekday",
+            "start_time",
+            "end_time",
+            "end_next_day",
+        ]
+        labels = {
+            "purpose": "Zeitplanart",
+            "weekday": "Wochentag (0=Montag bis 6=Sonntag)",
+            "start_time": "Von",
+            "end_time": "Bis",
+            "end_next_day": "Ende am Folgetag",
+        }
+        widgets = {
+            "start_time": forms.TimeInput(attrs={"type": "time"}),
+            "end_time": forms.TimeInput(attrs={"type": "time"}),
+        }
+
+    def __init__(self, actor, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        owner_choices(self, actor, "booking.configure")
+
+
+class ExceptionForm(forms.ModelForm):
+    class Meta:
+        model = ScheduleException
+        fields = [
+            "resource",
+            "location",
+            "purpose",
+            "date",
+            "is_closed",
+            "start_time",
+            "end_time",
+            "end_next_day",
+        ]
+        labels = {
+            "purpose": "Zeitplanart",
+            "date": "Ausnahmedatum",
+            "is_closed": "An diesem Datum geschlossen",
+            "start_time": "Abweichend von",
+            "end_time": "Abweichend bis",
+            "end_next_day": "Ende am Folgetag",
+        }
+        widgets = {
+            "date": forms.DateInput(attrs={"type": "date"}),
+            "start_time": forms.TimeInput(attrs={"type": "time"}),
+            "end_time": forms.TimeInput(attrs={"type": "time"}),
+        }
+
+    def __init__(self, actor, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        owner_choices(self, actor, "booking.configure")
+
+
+class BlockForm(forms.ModelForm):
+    local_start = forms.CharField(
+        label="Beginn lokal",
+        widget=forms.TextInput(attrs={"type": "datetime-local"}),
+        max_length=30,
+    )
+    local_end = forms.CharField(
+        label="Ende lokal", widget=forms.TextInput(attrs={"type": "datetime-local"}), max_length=30
+    )
+    timezone_name = forms.CharField(label="IANA-Zeitzone", initial="Europe/Berlin", max_length=64)
+    start_fold = forms.ChoiceField(
+        label="Beginn bei Herbstumstellung", choices=FOLDS, required=False
+    )
+    end_fold = forms.ChoiceField(label="Ende bei Herbstumstellung", choices=FOLDS, required=False)
+
+    class Meta:
+        model = ResourceBlock
+        fields = ["resource", "location", "reason"]
+        labels = {"reason": "Interner Grund (keine unnötigen Personendaten)"}
+
+    def __init__(self, actor, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        owner_choices(self, actor, "booking.block")
+
+    def clean(self):
+        data = super().clean()
+        for field in ("start", "end"):
+            if data.get("local_" + field) and data.get("timezone_name"):
+                try:
+                    fold = int(data[field + "_fold"]) if data.get(field + "_fold") else None
+                    data[field] = local_instant(
+                        datetime.fromisoformat(data["local_" + field]), data["timezone_name"], fold
+                    )
+                except (ValueError, forms.ValidationError) as exc:
+                    self.add_error(
+                        "local_" + field,
+                        exc if isinstance(exc, forms.ValidationError) else "Ungültige Uhrzeit.",
+                    )
+        return data
+
+
+class ReasonForm(forms.Form):
+    reason = forms.CharField(label="Grund", max_length=500)
+    revision = forms.IntegerField(widget=forms.HiddenInput, required=False, min_value=0)

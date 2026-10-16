@@ -1,8 +1,8 @@
 # Deelvo-Handbuch
 
-Stand: Phase 4, 15.10.2026. Dieses Handbuch beschreibt die tatsächlich vorhandene Oberfläche. Die Anwendung befindet sich vor dem Echtbetrieb; Beispiele verwenden synthetische Daten.
+Stand: Phase 5, 15.10.2026. Dieses Handbuch beschreibt die tatsächlich vorhandene Oberfläche. Die Anwendung befindet sich vor dem Echtbetrieb; Beispiele verwenden synthetische Daten.
 
-Deelvo verwaltet gemeinsam nutzbare Ressourcen und deren Inventar. Aktuell verfügbar: Konten, Gruppenrechte, Inventar, Standorte, Kategorien, Identifier, Inventar-Betriebsübersicht sowie Ressourcen, Einheiten, Pools und veröffentlichter Katalog. Buchungen/Ausleihen, Inventurläufe, Kalenderabos und Integrations-API folgen später; dafür enthält dieses Handbuch noch keine Bedienungsanleitungen.
+Deelvo verwaltet gemeinsam nutzbare Ressourcen und deren Inventar. Aktuell verfügbar: Konten, Gruppenrechte, Inventar, Standorte, Kategorien, Identifier, Inventar-Betriebsübersicht sowie Ressourcen, Einheiten, Pools und veröffentlichter Katalog. Vor-Ort-Buchungen und Buchungskonfiguration sind hinzugekommen. Physische Ausleihen, Inventurläufe, Kalenderabos und Integrations-API folgen später.
 
 ## Dein Einstieg
 
@@ -15,4 +15,8 @@ Das Handbuch wird gemeinsam mit Funktionen geändert und versioniert. Neue Kapit
 
 ## Ressourcen und Katalog — Phase 4
 
-Der Katalog mit eigener Veröffentlichung ist jetzt implementiert: [Angebote, Einheiten und Pools verwalten](resources.md), [entdecken, Galerie und Veröffentlichung](catalog.md). Buchungen, Ausleihen, Kalender und API folgen weiterhin später. Interne Inventardaten bleiben vom Katalog getrennt.
+Der Katalog mit eigener Veröffentlichung ist jetzt implementiert: [Angebote, Einheiten und Pools verwalten](resources.md), [entdecken, Galerie und Veröffentlichung](catalog.md). Für eingerichtete Vor-Ort-Angebote ist der Buchungskern verfügbar; physische Ausleihen, Kalender und API folgen später. Interne Inventardaten bleiben vom Katalog getrennt.
+
+## Buchungen — Phase 5
+
+[Eigene Buchungen und Storno](bookings.md), [Regeln, Zeitpläne, Sperren und Klärung](booking-administration.md). Einrichtung und tatsächliche Verfügbarkeit werden getrennt geprüft. Keine physischen Ausgaben oder automatisch angenommene Verträge.

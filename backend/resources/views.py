@@ -121,6 +121,7 @@ def detail(request, slug):
             "pickup_notes": resource.pickup_notes,
             "images": resource.images.filter(archived_at__isnull=True),
             "internal": resource.visibility == "private",
+            "booking_ready": resource.booking_enabled and hasattr(resource, "bookingpolicy"),
         },
     )
 

@@ -42,3 +42,11 @@ Phase 3 accepted and merged; ADR-014/015 form its accepted implementation basis.
 | ADR | Thema | Status | Gate |
 | --- | --- | --- | --- |
 | ADR-016 | [Ressourcen, Einheiten und ausdrückliche Veröffentlichung](016.md) | Phase 4 autorisiert, konkrete Umsetzung zur Abnahme | Privacy-/Identity-/Race-/Katalogtests, responsive Abnahme, Ownerreview vor Phase 5 |
+
+## Phase 5
+
+Phase 4 accepted and merged, [authorization](../OWNER_APPROVAL_PHASE_5.md).
+
+| ADR | Thema | Status | Gate |
+| --- | --- | --- | --- |
+| ADR-017 | [Produktiver Buchungskern und sichere Phasengrenzen](017.md) | Phase 5 autorisiert; Implementierung zur Abnahme | PostgreSQL/Concurrency, Zeit-/Rechte-/UI-Nachweise; Ownerreview vor Phase 6 |

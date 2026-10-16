@@ -149,6 +149,10 @@ def save_resource(actor, data, *, resource_id=None, expected_revision=None):
         row.save()
         row.categories.set(categories)
         row.tags.set(Tag.objects.filter(pk__in=[t.pk for t in tags]))
+        if resource_id and set(data) & {"location", "type", "booking_enabled"}:
+            from bookings.integrity import resource_changed
+
+            resource_changed(row.pk)
         audit(
             actor,
             "resource.saved",
@@ -179,6 +183,10 @@ def publication(actor, resource_id, expected_revision, operation, reason):
         row.revision += 1
         row.updated_at = timezone.now()
         row.save()
+        if operation != "publish":
+            from bookings.integrity import resource_changed
+
+            resource_changed(row.pk)
         audit(
             actor,
             "resource." + operation,
@@ -219,6 +227,10 @@ def save_unit(actor, resource_id, data, *, unit_id=None, expected_revision=None)
                 unit.save()
         except IntegrityError as exc:
             raise ValidationError("Dieses Asset ist bereits einer Einheit zugeordnet.") from exc
+        if unit_id:
+            from bookings.integrity import resource_changed
+
+            resource_changed(resource.pk)
         audit(
             actor,
             "resource.unit_saved",

@@ -11,7 +11,7 @@ Für Betriebspersonal mit Angebotsrechten. Ein Angebot ist das, was Menschen im 
 5. Pflege die „Öffentliche Ortsangabe“ bewusst. Nur dieser Text erscheint im Katalog; interne Standortpfade, Assetnotizen, Seriennummern und Einkaufspreise werden nicht übernommen.
 6. Wähle die gewünschte Sichtbarkeit nach Veröffentlichung. Speichern erzeugt zunächst einen Entwurf.
 
-„Für spätere Buchung aktivieren“ ist derzeit nur Konfiguration. Es gibt noch keine Onlinebuchung oder verbindliche Verfügbarkeitsanzeige. „Auf der Startseite hervorheben“ wirkt nur für bereits veröffentlichte, aktuell sichtbare Angebote.
+Die Buchungsoption aktiviert nur einen Teil der Einrichtung. Regeln, Zeitpläne, aktuelle Gruppenrechte und geeignete Einheiten entscheiden zusätzlich über die Reservierung. „Auf der Startseite hervorheben“ wirkt nur für bereits veröffentlichte, aktuell sichtbare Angebote.
 
 ## Einheiten hinzufügen
 
@@ -26,3 +26,7 @@ Ein Asset kann nur einer Einheit zugeordnet werden, auch wenn diese später inak
 ## Codes
 
 Bestehende Assetcodes bleiben gültig. Bei entsprechendem Identifierrecht kann „Code zuordnen“ einen zusätzlichen Unit-Alias in einem eigenen Namensraum hinterlegen. Für physische Units führen Asset- und Unitalias zur gleichen Assetidentität; erlaubte Angebots-/Unitinformationen werden ergänzt. Eine logische Unit benötigt kein Asset. „Stilllegen“ erhält Wert und historische Zuordnung dauerhaft; keine Wiedervergabe. Der Lookup löst keine Buchung oder Ausgabe aus.
+
+## Buchungsoption ab Phase 5
+
+booking_enabled ist weiterhin nur ein Teil der Einrichtung. Zusätzlich sind [Buchungsregeln, Zeitpläne und Gruppenrechte](booking-administration.md) notwendig. Veröffentlichtes Angebot und geeignete Units allein garantieren keinen freien Zeitraum. Verbindliche Vor-Ort-Buchungen wählen erst bei Bestätigung eine konkrete Einheit; bestehende Zusagen werden bei relevanten Zustandsänderungen zur Klärung markiert, nicht gelöscht.
