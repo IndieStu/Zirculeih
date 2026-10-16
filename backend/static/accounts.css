@@ -20,3 +20,5 @@ button:hover{background:var(--primary-hover);color:var(--white)}
 .prose{overflow-wrap:anywhere}li{margin:.6rem 0}li form{display:inline-block;margin:.25rem}
 footer{margin-top:2rem;font-weight:var(--weight-medium)}
 @media(max-width:600px){main{margin:1rem .6rem;padding:1rem}header{padding:1rem}h1{font-size:1.6rem}nav{gap:.6rem}}
+
+.review-indicator { margin:0; padding:.5rem 1rem; background:var(--color-ink, #11140F); color:#fff; font-size:.875rem; overflow-wrap:anywhere; }

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "resources",
     "bookings",
     "lending",
+    "review",
 ]
 AUTH_USER_MODEL = "accounts.User"
 AUTHENTICATION_BACKENDS = ["accounts.backends.EmailBackend"]
@@ -103,6 +104,7 @@ TEMPLATES = [
                 "inventory.context_processors.navigation",
                 "resources.context_processors.navigation",
                 "bookings.context_processors.navigation",
+                "review.context_processors.environment",
             ]
         },
     }
@@ -181,3 +183,19 @@ if OIDC_ENABLED:
 DATA_UPLOAD_MAX_MEMORY_SIZE = 6 * 1024 * 1024
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024
 FILE_UPLOAD_PERMISSIONS = 0o600
+
+
+# Explicit isolated UX gate; never selects SMTP in review mode.
+REVIEW_MODE = flag("DEELVO_REVIEW_MODE")
+REVIEW_BUILD = os.environ.get("DEELVO_REVIEW_BUILD", "local")
+if REVIEW_MODE:
+    import re
+
+    if REVIEW_BUILD != "local" and not re.fullmatch(r"[0-9a-f]{7,40}", REVIEW_BUILD):
+        raise ImproperlyConfigured("Review build must be a Git SHA or local")
+    if DEBUG or OIDC_ENABLED:
+        raise ImproperlyConfigured("Review requires DEBUG=false and local fictional accounts")
+    EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+    EMAIL_FILE_PATH = os.environ.get(
+        "REVIEW_EMAIL_DIR", str(BASE_DIR.parent / ".local/review-mail")
+    )

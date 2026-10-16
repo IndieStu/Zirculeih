@@ -1,6 +1,6 @@
 # Deelvo — Product & Engineering Specification
 
-**Version:** 0.7 · **Status:** Phase 5 accepted and merged; Phase 6 authorized and in progress · **Date:** 2026-10-16
+**Version:** 0.7 · **Status:** Phase 5 accepted and merged; Phase 6 merged, not accepted; owner/team UX review gate active · **Date:** 2026-10-16
 **Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
@@ -464,3 +464,8 @@ Owner confirmed “freigegeben und merged”; [record](docs/OWNER_APPROVAL_PHASE
 ## 25. Phase-5 acceptance and Phase-6 authorization — 2026-10-16
 
 Owner confirmed “freigegeben und merged” following the Phase-5 review/next-phase gate. [Authorization](docs/OWNER_APPROVAL_PHASE_6.md), Main 96456d3. Phase 6 implements physical reservations with required personal profile/agreements/insurance, first identity-check evidence, separate appointments, actual custody, scanner-supported staffed issue/return/partial return, extensions and overdue/no-show handling. [ADR-018](docs/adr/018.md). Phase 7, public self-service, production and real personal data remain outside this approval.
+
+
+## 26. Owner/team UX review gate — 2026-10-16
+
+The owner confirmed Phase 6 is merged but not accepted. [Binding review gate](docs/review/OWNER_UX_REVIEW_GATE.md) authorizes an isolated fictional NCtest/Tailscale review instance, explicit seed, role accounts and review material, not a speculative redesign. [Deployment](docs/deployment/REVIEW_INSTANCE.md), [team tasks](docs/review/UX_REVIEW_PHASE_6.md). Phase 7 remains blocked until explicit owner approval after team feedback. No production or real personal data is authorized.

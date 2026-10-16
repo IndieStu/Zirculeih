@@ -24,3 +24,7 @@ Der Katalog mit eigener Veröffentlichung ist jetzt implementiert: [Angebote, Ei
 ## Physische Ausleihe — Phase 6
 
 [Reservierung, Ausgabe, Teilrückgabe, Überziehung und Verlängerung](loans.md), [Vereinbarungen und Haftpflicht](agreements.md). Scanner/HID bereitet vor, tatsächlicher Gewahrsam erfordert bewussten Abschluss. Keine Self-Service-Aktivierung.
+
+## Fiktive Teamtestinstanz
+
+Für den Phase-6-Review: [Aufgaben je Rolle](../review/UX_REVIEW_PHASE_6.md) und [Feedbackvorlage](../review/UX_FEEDBACK_TEMPLATE.md). Die Testinstanz zeigt TESTINSTANZ und den Build. Nur erfundene Personen/Geräte verwenden; keine echte Ausgabe. Betreiber finden Passwort-, Mail-, Backup- und Resetkommandos in der [Review-Anleitung](../deployment/REVIEW_INSTANCE.md).

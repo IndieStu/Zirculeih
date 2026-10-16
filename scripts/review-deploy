@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")/.."
+test -f .env.review
+scripts/review-stack config --quiet
+scripts/review-stack build web
+# Avoid writes against a schema being upgraded. No volumes are removed.
+scripts/review-stack stop web
+scripts/review-stack run --rm migrate
+scripts/review-stack run --rm static
+scripts/review-stack up -d --wait web

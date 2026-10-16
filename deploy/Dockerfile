@@ -6,7 +6,7 @@ WORKDIR /app
 COPY requirements.lock requirements-dev.lock ./
 RUN python -m pip install --no-cache-dir --require-hashes -r requirements.lock
 RUN groupadd --gid 10001 app && useradd --uid 10001 --gid app --create-home app \
-    && mkdir -p /app/media /app/backend/staticfiles && chown -R app:app /app
+    && mkdir -p /app/media /app/backend/staticfiles /app/review-mail && chown -R app:app /app && chmod 0700 /app/review-mail
 COPY --chown=app:app backend ./backend
 ENV PYTHONPATH=/app/backend
 USER app
