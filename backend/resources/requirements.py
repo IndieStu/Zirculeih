@@ -85,6 +85,18 @@ def configure(actor, resource_id, agreement_ids, qualification_ids):
             ResourceQualification.objects.get_or_create(
                 resource=resource, qualification=qualification
             )
+        if hasattr(resource, "bookingpolicy"):
+            from bookings.services import save_policy
+
+            save_policy(
+                actor,
+                resource.pk,
+                {
+                    "requires_qualification": bool(qualifications),
+                    "requires_agreement": bool(agreements),
+                },
+                resource.bookingpolicy.revision,
+            )
         audit(
             actor,
             "resource.requirements_configured",

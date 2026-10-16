@@ -106,8 +106,15 @@ def current_status(resource):
         schedules.covers(resource, policy, purpose, start, end) for purpose in ("usage", "access")
     ):
         return "Zurzeit geschlossen"
-    return (
-        "Zurzeit frei"
-        if capacity_units(resource, policy, start, end)
-        else "Zurzeit belegt / gesperrt"
-    )
+    units = capacity_units(resource, policy, start, end)
+    if policy.use_mode == "physical_loan":
+        from lending.models import LoanLine
+
+        custody = set(
+            LoanLine.objects.filter(unit__in=units, returned_at__isnull=True).values_list(
+                "unit_id", flat=True
+            )
+        )
+        if units and all(u.pk in custody for u in units):
+            return "Zurzeit ausgeliehen"
+    return "Zurzeit frei" if units else "Zurzeit belegt / gesperrt"

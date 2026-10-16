@@ -634,3 +634,12 @@ def test_resource_qualification_is_rechecked_at_checkout(lending_setup, monkeypa
     assert (
         services.checkout(actor, user.pk, [reserved.pk], uuid4(), checks=checks).lines.count() == 1
     )
+
+
+def test_current_catalog_status_does_not_call_overdue_custody_free(lending_setup, monkeypatch):
+    from resources.calendar import current_status
+
+    _, resource, _, _, _, _, _, _, due, _ = lending_setup
+    issue(lending_setup, monkeypatch)
+    monkeypatch.setattr(timezone, "now", lambda: due + timedelta(days=1))
+    assert current_status(resource) == "Zurzeit ausgeliehen"

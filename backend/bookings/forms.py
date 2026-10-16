@@ -115,7 +115,7 @@ class PolicyForm(forms.ModelForm):
 
     class Meta:
         model = BookingPolicy
-        exclude = ["resource", "revision"]
+        exclude = ["resource", "revision", "requires_qualification", "requires_agreement"]
         labels = {
             "use_mode": "Nutzungsart",
             "time_mode": "Zeitmodus",
