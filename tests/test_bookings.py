@@ -881,3 +881,31 @@ def test_organization_category_closures_intersect_resource_hours(configured):
     )
     assert not schedules.covers(resource, policy, "usage", a, b)
     assert schedules.covers(resource, policy, "usage", a + timedelta(days=1), b + timedelta(days=1))
+
+
+def test_hours_admin_filters_paginates_and_checks_permission(configured, client):
+    actor, resource, _, _, user, _, _ = configured
+    for weekday in range(7):
+        for purpose in ("usage", "access", "opening"):
+            services.save_schedule(
+                actor,
+                {
+                    "organization": True,
+                    "purpose": purpose,
+                    "weekday": weekday,
+                    "start_time": time(9),
+                    "end_time": time(17),
+                },
+            )
+    client.force_login(actor)
+    response = client.get("/buchungen/betrieb/zeiten/")
+    assert response.status_code == 200
+    assert response.context["windows"].paginator.count == 42
+    assert len(response.context["windows"]) == 30
+    response = client.get(
+        "/buchungen/betrieb/zeiten/", {"owner": "resource:" + str(resource.pk), "purpose": "usage"}
+    )
+    assert response.context["windows"].paginator.count == 7
+    assert all(row.resource_id == resource.pk for row in response.context["windows"])
+    client.force_login(user)
+    assert client.get("/buchungen/betrieb/zeiten/").status_code == 404

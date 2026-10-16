@@ -84,3 +84,26 @@ Rolle, Build, gewünschte Aufgabe und Screenshot nennen; fiktive Konten nutzen.
 [Begriffsliste](TERMINOLOGY_REVIEW.md) und [Navigation](NAVIGATION_REVIEW.md) sind
 Entscheidungshilfen, keine schon beschlossenen Umbenennungen. Das Team entscheidet
 anschließend über konkrete UX-Arbeit. Phase 7 startet erst nach ausdrücklicher Freigabe.
+
+## Zusätzliche Aufgaben nach Owner-Korrektur
+
+1. Als Admin anmelden: Dashboard als Einstieg, Gruppen anlegen/bearbeiten,
+   Kategorien und Arten finden, Personeneinladung vorbereiten. In der Testinstanz
+   werden E-Mails nur lokal abgelegt; keine echten Adressen verwenden.
+2. Ohne Anmeldung Katalog öffnen: konkrete Prusa-Modelle unterscheiden, aktuellen
+   Status sehen, freien Zeitraum im Tageskalender wählen. Nach Anmeldung bleiben
+   ausgewählter Beginn und Ende im Buchungsformular erhalten.
+3. Einen Schließtag oder Ferienbereich für eine Testkategorie einrichten. Nutzung,
+   Abholung und Rückgabe getrennt prüfen. Vorhandene betroffene Reservierungen
+   bleiben erhalten und erscheinen mit Klärungsbedarf.
+4. Die vier zusätzlichen Konten an einem Prusa-Eintrag vergleichen:
+   `ux_ready` (aktuelle Vereinbarung + Einweisungen), `ux_old` (alte Vereinbarung),
+   `ux_noqualification` (aktuelle Vereinbarung, keine Einweisung), `ux_neither`
+   (beides fehlt). Einweisung kann nur das berechtigte Team dokumentieren.
+5. Eine aktuelle Vereinbarung bestätigen; beim nächsten Vorgang darf sie nicht erneut
+   verlangt werden. Neue veröffentlichte Version verlangt neue Bestätigung.
+6. Persönliche Reservierung und ausgegebene Gegenstände in **Meine Vorgänge** finden.
+   Einen Raum als Vor-Ort-Nutzung prüfen: keine Ausgabe oder Rücknahme erforderlich.
+
+Alle Daten sind fiktiv. Bestehende Teamtestdaten wurden beim Update nicht zurückgesetzt.
+Keine Phase-7-Freigabe; nach diesem Stand folgt der tatsächliche Team-UX-Review.

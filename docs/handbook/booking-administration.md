@@ -42,3 +42,6 @@ Alle betroffenen Bereiche wirken gemeinsam einschränkend. Eine Raum-Sonderzeit
 ersetzt ausschließlich betreute Öffnung. Bestehende Buchungen werden bei Änderungen
 zur Klärung markiert, nicht gelöscht. Falsch konfigurierte Einträge entfernen und
 mit den korrekten Zeiten anlegen.
+
+Die Übersicht lässt sich nach **Bereich** und **Zeitplan** filtern. Wochenzeiten und
+Sonderzeiten stehen in kompakten Tabellen mit jeweils höchstens 30 Zeilen pro Seite.

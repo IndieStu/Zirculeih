@@ -453,21 +453,48 @@ def hours_admin(request):
             ),
         )
 
+    windows = [
+        r
+        for r in ScheduleWindow.objects.select_related("resource", "location", "category")
+        if permitted(r)
+    ]
+    exceptions = [
+        r
+        for r in ScheduleException.objects.select_related("resource", "location", "category")
+        if permitted(r)
+    ]
+
+    def owner(row):
+        if row.organization:
+            return "organization", "Organisation"
+        if row.resource_id:
+            return "resource:" + str(row.resource_id), row.resource.title
+        if row.category_id:
+            return "category:" + str(row.category_id), "Kategorie: " + row.category.name
+        return "location:" + str(row.location_id), "Standort: " + row.location.name
+
+    owners = dict(owner(r) for r in [*windows, *exceptions])
+    selected = request.GET.get("owner", "")[:100]
+    purpose = request.GET.get("purpose", "")[:10]
+    if selected:
+        windows = [r for r in windows if owner(r)[0] == selected]
+        exceptions = [r for r in exceptions if owner(r)[0] == selected]
+    if purpose:
+        windows = [r for r in windows if r.purpose == purpose]
+        exceptions = [r for r in exceptions if r.purpose == purpose]
+    from urllib.parse import urlencode
+
+    query = urlencode({"owner": selected, "purpose": purpose})
     return render(
         request,
         "bookings/hours.html",
         {
-            "windows": [
-                r
-                for r in ScheduleWindow.objects.select_related("resource", "location", "category")
-                if permitted(r)
-            ],
-            "exceptions": [
-                r
-                for r in ScheduleException.objects.select_related(
-                    "resource", "location", "category"
-                )
-                if permitted(r)
-            ],
+            "windows": Paginator(windows, 30).get_page(request.GET.get("weekpage")),
+            "exceptions": Paginator(exceptions, 30).get_page(request.GET.get("exceptionpage")),
+            "owners": sorted(owners.items(), key=lambda pair: pair[1]),
+            "purposes": ScheduleWindow._meta.get_field("purpose").choices,
+            "selected_owner": selected,
+            "selected_purpose": purpose,
+            "filter_query": query,
         },
     )

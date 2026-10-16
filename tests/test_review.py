@@ -89,6 +89,7 @@ def test_marker_configuration(settings, client):
     response = client.get("/")
     assert b"TESTINSTANZ" in response.content
     assert b"abcdef0" in response.content
+    assert b"accounts.css?v=abcdef0" in response.content
 
 
 def test_review_configuration_forces_local_mail():
