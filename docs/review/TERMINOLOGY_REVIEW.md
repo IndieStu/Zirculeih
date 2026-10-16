@@ -16,6 +16,7 @@ Diese Liste beschreibt vorhandene Texte und ihre Bedeutung; Vorschläge sind off
 | Begünstigte Person | Beneficiary | Buchung für eine andere Person | Nutzende/ausleihende Person? |
 | Grant / Scope / Action | PermissionGrant | Gruppen-/Rechtekonfiguration, technische Aktionsnamen | Deutsche Labels mit erklärenden Beispielen? |
 | Onsite / physical_loan | BookingPolicy.use_mode | Technische Werte in Konfiguration | Vor-Ort-Nutzung / Mitnahme? |
+| overdue_custody | BookingIncident.kind | Buchungsbetrieb: Folgebuchung durch tatsächlichen Verbleib gefährdet | Deutsche Erklärung statt internem Schlüssel? |
 | AllocationClaim | AllocationClaim | Interne Zeitbelegung; kein normaler UI-Einstieg | Intern belassen |
 | Actor | User als ausführender Akteur | Audit/Service; kein eigener Kontotyp | Intern belassen, UI ggf. durchgeführt von |
 

@@ -2,7 +2,9 @@
 
 2026-10-16, NCtest Linux/Docker/PostgreSQL 17. Browserprüfung vor Übergabe mit
 fiktiven Rollen; erster vorläufiger Buildmarker a3f8f7b während des Stackaufbaus.
-Endgültiger Quellstand wird im Übergabebericht genannt.
+Endgültiger Quellstand 9e6cb73; CI und NCtest jeweils 207 Tests bestanden.
+Nach den Browser-Mutationen wurde der eigene vor Übergabe angelegte Reviewdatensatz
+gesichert und frisch initialisiert, damit alle Startszenarien für das Team bereitstehen.
 
 | Aufgabe | Tatsächliche Beobachtung |
 |---|---|
@@ -12,12 +14,20 @@ Endgültiger Quellstand wird im Übergabebericht genannt.
 | Buchungsablauf | Raum morgen 14–15 Uhr geprüft, bestätigt, Detail gelesen, ausdrücklich storniert |
 | Inventar | Liste 15 aktive Treffer + 1 Archiv, Drilldetail mit Ort, Codes, 18V-Zusatzfeld und Bild |
 | HID-Eingabe | Legacy-Namensraum + WERK-TEST-001 + Enter erkennt Akkuschrauber 1; keine Mutation |
+| Operativer Buchungsbetrieb | Bestätigte/aktive/stornierte Buchungen und echter overdue_custody-Prüfhinweis sichtbar |
+| Werkstattverwaltung | Nur CNC und 3D-Drucker in der Verwaltung; CNC mit physischer Einheit und Standortverknüpfung |
+| Spontane Ausgabe | UXR-CABLE ohne Reservierung eingegeben, laufenden Zeitraum und Termine gesetzt, bewusst ausgegeben → Beleg mit neuer Reservierung |
 | Ausgabe | Test Nutzer gewählt, UXR-CARGO eingegeben, vorhandene Reservierung vorbereitet, Zubehörprüfung + bewusste Ausgabe → Beleg |
 | Rücknahme | UXR-DRILL-01 gefunden, Zustand/Zubehör bestätigt → nächste Scanmaske; Beleg zeigt eine zurückgegebene und eine weiterhin überfällige Position |
 | Rechte | Normale Nutzung ohne operative Menüs, Inventar ohne Ausleihbetrieb, Theke mit Ausgabe/Rücknahme; automatische Tests prüfen verborgene Inventar-/Betriebsrouten |
 | Mobile | Inventardetail und Rücknahme bei 320×780: Seitenbreite 320, Labels/Formulare erreichbar; Screenshots gespeichert |
 
-Screenshots: [Inventardetail mobil](../screenshots/ux-review-inventory-mobile.png),
+Die abschließende Anmeldung mit dem endgültigen Normalnutzerpasswort wurde nach
+Neuinitialisierung erneut erfolgreich geprüft und danach abgemeldet.
+
+Screenshots: [Übergabestand](../screenshots/ux-review-ready.png),
+[Spontanbeleg](../screenshots/ux-review-spontaneous-receipt.png),
+[Inventardetail mobil](../screenshots/ux-review-inventory-mobile.png),
 [Rücknahme mobil](../screenshots/ux-review-return-mobile.png).
 
 ## Bekannte UX-Beobachtungen zur Entscheidung
@@ -27,6 +37,8 @@ Screenshots: [Inventardetail mobil](../screenshots/ux-review-inventory-mobile.pn
 - Umfangreiche Hauptnavigation belegt auf kleinen Geräten mehrere Zeilen.
 - Code-Namensraum muss bewusst gewählt werden; nach Rücknahme wird die Auswahl zurückgesetzt.
 - Rücknahme-Erfolg führt zur nächsten Scanmaske; zum gemeinsamen Beleg führt ein weiterer Weg.
+- Operativer Prüfhinweis zeigt den internen Schlüssel `overdue_custody`.
+- Bereichsbeschränkte Werkstattrolle sieht „Angebot anlegen“, obwohl manche Anlagekontexte nicht erlaubt sind.
 - Buchungsformular zeigt DST-Fold-Auswahl auch bei gewöhnlichen Tagen.
 - Raumdetail nutzt ebenfalls die Abschnittsüberschrift „Abholung und Nutzung“.
 - Die Inventarliste besteht aktuell aus Einträgen statt einer kompakten Betriebstabelle.
