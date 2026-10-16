@@ -181,3 +181,28 @@ Nachweise in tests/test_bookings.py, [Review](PHASE_5_REVIEW.md). AC-03/04/09/17
 | P5-AC-14 | Onsite-Statusjob ohne physische Rückgabe | advance_onsite_bookings | Lokal + Docker/PG17 bestanden; siehe Review |
 | P5-AC-15 | Dashboard/Heute nur tatsächlich erlaubte Bookings | stale_cancel_and_scoped_operational_dashboard | Lokal + Docker/PG17 bestanden; siehe Review |
 | P5-AC-16 | Physische Profil-/Vertrags-/Qualifikationsgates fail-closed | physical/qualification/agreement gates | Lokal + Docker/PG17 bestanden; siehe Review |
+
+## Phase 6 — konkrete Ausleihfälle
+
+Tests in tests/test_lending.py, [Review](PHASE_6_REVIEW.md). AC-06/12/22/25–30 und KIOSK-AC-03–08 sind in ihren physischen Teilpfaden nachzuweisen; keine pauschale Behauptung für noch ausstehende API/Hardware/Bundle/Self-Service-Gates.
+
+| ID | Nachweis | Testschwerpunkt | Status |
+| --- | --- | --- | --- |
+| P6-AC-01 | Profil, aktuelle allgemeine/Haftpflicht-/Assettexte verpflichtend | current_profile_and_asset_specific_terms_are_mandatory | Implementiert; finaler Nachweis im Review |
+| P6-AC-02 | Einmal je Version; unveränderliche Texte/Nachweise | new_text_version_requires_fresh_personal_acceptance | Implementiert; finaler Nachweis im Review |
+| P6-AC-03 | Erst-Ausweisprüfung ohne Dokumentdaten | identity_and_custody_gate | Implementiert; finaler Nachweis im Review |
+| P6-AC-04 | Physische Tagesbuchung mit separaten Terminen | calendar_days_allow_closed_opening_between_appointments | Implementiert; finaler Nachweis im Review |
+| P6-AC-05 | Reservierung wiederverwenden, kein doppeltes Booking | physical_reservation_issue_and_return_are_separate | Implementiert; finaler Nachweis im Review |
+| P6-AC-06 | Spontanausgabe Booking/Loan atomar + Retry | spontaneous_issue_is_atomic_and_idempotent / failed_spontaneous | Implementiert; finaler Nachweis im Review |
+| P6-AC-07 | Mehrere Lines, Teilrückgabe und spezifischer Schaden | partial_return_and_damage_block_only_returned_unit | Implementiert; finaler Nachweis im Review |
+| P6-AC-08 | Acht gleichzeitige Ausgaben, genau ein Gewahrsam | concurrent_checkout_has_one_actual_custody | Implementiert; finaler Nachweis im Review |
+| P6-AC-09 | Folgereservierung trotz offenem Loan; Überziehung markiert | future_booking_allowed_during_custody_and_overdue_marks_it | Implementiert; finaler Nachweis im Review |
+| P6-AC-10 | Verlängerung mit permanentem Vorher/Nachher; keine Folgeüberlappung | extension_checks_next_claim / extension_cannot_overlap_followup | Implementiert; finaler Nachweis im Review |
+| P6-AC-11 | Gesperrter Beneficiary bleibt rücknehmbar | physical_reservation_issue_and_return_are_separate | Implementiert; finaler Nachweis im Review |
+| P6-AC-12 | Rechteentzug/Mitarbeiter/Admin kein Bypass | permission_revocation_and_employee_flag_never_bypass | Implementiert; finaler Nachweis im Review |
+| P6-AC-13 | Fremde Belege/CSRF/no-store | receipt_idor_private_headers_and_csrf | Implementiert; finaler Nachweis im Review |
+| P6-AC-14 | Scanner vorbereitet schreibfrei, Duplikat/Abschluss/Reset | scanner_prepares_then_confirms_and_resets_context | Implementiert; finaler Nachweis im Review |
+| P6-AC-15 | Scanner-Spontanformular kompletter Commit | scanned_spontaneous_form_commits_booking_and_loan_together | Implementiert; finaler Nachweis im Review |
+| P6-AC-16 | Nichtabholung ohne Gewahrsam, terminale Historie | no_show_frees_claim_without_creating_custody | Implementiert; finaler Nachweis im Review |
+| P6-AC-17 | Beleg darf nicht vor tatsächlicher Rückgabe schließen | loan_receipt_cannot_close_before_actual_return | Implementiert; finaler Nachweis im Review |
+| P6-AC-18 | Neue Pflichtversion nach Reservierung sperrt Ausgabe | new_agreement_after_reservation_prevents_checkout | Implementiert; finaler Nachweis im Review |

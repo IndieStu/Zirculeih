@@ -50,3 +50,11 @@ Phase 4 accepted and merged, [authorization](../OWNER_APPROVAL_PHASE_5.md).
 | ADR | Thema | Status | Gate |
 | --- | --- | --- | --- |
 | ADR-017 | [Produktiver Buchungskern und sichere Phasengrenzen](017.md) | Phase 5 autorisiert; Implementierung zur Abnahme | PostgreSQL/Concurrency, Zeit-/Rechte-/UI-Nachweise; Ownerreview vor Phase 6 |
+
+## Phase 6
+
+Phase 5 accepted and merged, [authorization](../OWNER_APPROVAL_PHASE_6.md).
+
+| ADR | Thema | Status | Gate |
+| --- | --- | --- | --- |
+| ADR-018 | [Physische Ausleihe, Nachweise und Gewahrsam](018.md) | Phase 6 autorisiert; Umsetzung zur Review | Consent/custody/races, UI/Migration/Handbook, owner review before Phase 7 |

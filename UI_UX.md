@@ -116,3 +116,7 @@ Angebotsverwaltung ist eigene operative UI: Entwurf bearbeiten, permanente Units
 ## Phase-5 interface
 
 Configured catalog offers lead to a local-time booking form with explicit DST-fold selectors, read-only preview and deliberate confirmation. My Bookings/detail/cancellation show real receipts/status and preserve history. Booking operations expose separately authorized rules/windows/exceptions/blocks/incidents; dashboard adds current permitted Today bookings and review counts. No public borrower identity or fake checkout action. Local Inter and central Deelvo tokens remain unchanged. [User handbook](docs/handbook/bookings.md), [administration](docs/handbook/booking-administration.md).
+
+## Phase 6 interface
+
+Physical reservation adds local pickup/return and current agreement/profile links. Separate personal loans and operational lending navigation. Organization authors immutable versioned texts, publishes consciously and assigns multiple additional terms. Staff exact-email selection → first identity proof if needed → repeated HID/manual scans → per-item period/condition/accessories → deliberate atomic issuance. Existing reservations are reused, spontaneous lines have per-offer time inputs. Return scan → condition/accessories → explicit per-line return → fresh next scan; partial loan receipt remains accurate. Dashboard adds real scoped pickups/returns/overdue. No public kiosk or camera path. [Handbook](docs/handbook/loans.md).

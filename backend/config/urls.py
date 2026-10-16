@@ -3,6 +3,7 @@ from django.urls import include, path
 from . import views
 
 urlpatterns = [
+    path("ausleihen/", include("lending.urls")),
     path("buchungen/", include("bookings.urls")),
     path("entdecken/", include("resources.urls")),
     path("inventar/", include("inventory.urls")),

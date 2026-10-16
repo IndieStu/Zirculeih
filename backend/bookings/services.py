@@ -211,6 +211,9 @@ def evaluate(
     lock=False,
     start_fold=None,
     end_fold=None,
+    pickup_at=None,
+    return_at=None,
+    existing_booking=None,
 ):
     now = now or timezone.now()
     scope = resource_scope(resource)
@@ -238,7 +241,7 @@ def evaluate(
         or not resource.booking_enabled
     ):
         return Availability("not_bookable")
-    if e <= s or s < now + timedelta(minutes=policy.lead_minutes):
+    if e <= s or (existing_booking is None and s < now + timedelta(minutes=policy.lead_minutes)):
         return Availability("invalid_interval")
     if horizon > policy.max_horizon_days:
         return Availability("outside_booking_horizon")
@@ -255,20 +258,35 @@ def evaluate(
             for t in (local_s, local_e)
         ):
             return Availability("granularity_not_allowed")
-    if policy.use_mode == "physical_loan":
-        return Availability("lending_setup_required", s, e, policy_revision=policy.revision)
     if policy.requires_qualification:
         return Availability("qualification_required")
-    if policy.requires_agreement:
+    if policy.requires_agreement and policy.use_mode != "physical_loan":
         return Availability("agreement_required")
-    if not schedules.covers(resource, policy, "usage", s, e):
-        return Availability("outside_usage_hours")
-    if not schedules.covers(resource, policy, "access", s, e):
-        return Availability("outside_access_hours")
-    if not allowed(
-        beneficiary, "resource.use_unstaffed", scope, horizon_days=horizon, duration_minutes=minutes
-    ) and not schedules.covers(resource, policy, "opening", s, e):
-        return Availability("outside_staffed_hours")
+    if policy.use_mode == "physical_loan":
+        from lending.agreements import required_versions
+        from lending.rules import appointments
+
+        try:
+            required_versions(resource)
+        except ValidationError:
+            return Availability("lending_setup_required")
+
+        problem = appointments(resource, policy, s, e, pickup_at, return_at)
+        if problem:
+            return Availability(problem)
+    else:
+        if not schedules.covers(resource, policy, "usage", s, e):
+            return Availability("outside_usage_hours")
+        if not schedules.covers(resource, policy, "access", s, e):
+            return Availability("outside_access_hours")
+        if not allowed(
+            beneficiary,
+            "resource.use_unstaffed",
+            scope,
+            horizon_days=horizon,
+            duration_minutes=minutes,
+        ) and not schedules.covers(resource, policy, "opening", s, e):
+            return Availability("outside_staffed_hours")
     claim_start = s - timedelta(minutes=policy.buffer_before_minutes)
     claim_end = e + timedelta(minutes=policy.buffer_after_minutes)
     if ResourceBlock.objects.filter(
@@ -278,7 +296,9 @@ def evaluate(
     if (
         Booking.objects.filter(
             beneficiary=beneficiary, status__in=["confirmed", "active"], start__lt=e, end__gt=s
-        ).count()
+        )
+        .exclude(pk=getattr(existing_booking, "pk", None))
+        .count()
         >= policy.max_parallel
     ):
         return Availability("parallel_limit")
@@ -289,9 +309,29 @@ def evaluate(
         units = units.select_for_update(of=("self",))
     units = list(units)
     for unit in units:
-        if not AllocationClaim.objects.filter(
-            unit=unit, is_active=True, during__overlap=(claim_start, claim_end)
-        ).exists():
+        if (
+            not AllocationClaim.objects.filter(
+                unit=unit, is_active=True, during__overlap=(claim_start, claim_end)
+            )
+            .exclude(booking_id=getattr(existing_booking, "pk", None))
+            .exists()
+        ):
+            if policy.use_mode == "physical_loan":
+                from lending.agreements import gate
+
+                problem = gate(beneficiary, resource, unit)
+                if problem:
+                    return Availability(problem)
+                from lending.models import LoanLine
+
+                if (
+                    LoanLine.objects.filter(
+                        unit=unit, returned_at__isnull=True, expected_return__gt=s
+                    )
+                    .exclude(booking_id=getattr(existing_booking, "pk", None))
+                    .exists()
+                ):
+                    continue
             return Availability("available", s, e, unit.pk, policy.revision)
     return Availability(
         "reserved" if units else "capacity_exhausted", s, e, policy_revision=policy.revision
@@ -308,6 +348,9 @@ def availability(
     unit_id=None,
     start_fold=None,
     end_fold=None,
+    pickup_at=None,
+    return_at=None,
+    existing_booking=None,
 ):
     require_active_actor(actor)
     resource = visible_resources(beneficiary or actor).filter(pk=resource_id).first()
@@ -326,6 +369,9 @@ def availability(
         unit_id=unit_id,
         start_fold=start_fold,
         end_fold=end_fold,
+        pickup_at=pickup_at,
+        return_at=return_at,
+        existing_booking=existing_booking,
     )
 
 
@@ -357,6 +403,9 @@ def confirm(
     unit_id=None,
     start_fold=None,
     end_fold=None,
+    pickup_at=None,
+    return_at=None,
+    walk_in=False,
 ):
     beneficiary = beneficiary or actor
     try:
@@ -372,6 +421,13 @@ def confirm(
         "start_fold": start_fold,
         "end_fold": end_fold,
     }
+    if pickup_at is not None or return_at is not None:
+        payload.update(
+            pickup_at=pickup_at.isoformat() if pickup_at else None,
+            return_at=return_at.isoformat() if return_at else None,
+        )
+    if walk_in:
+        payload["walk_in"] = True
     digest = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
     with authorization_write():
         require_active_actor(actor)
@@ -386,6 +442,23 @@ def confirm(
         policy = BookingPolicy.objects.select_for_update().filter(resource=resource).first()
         if policy is None:
             raise ValidationError("Buchung noch nicht konfiguriert.")
+        existing = None
+        if walk_in:
+            require(actor, "loan.checkout", resource_scope(resource))
+            s0, e0, _, _, _ = interval(policy, start, end, start_fold=start_fold, end_fold=end_fold)
+            now = timezone.now()
+            if policy.use_mode != "physical_loan" or policy.lead_minutes != 0 or not s0 <= now < e0:
+                raise ValidationError(
+                    "Spontanausgabe benötigt aktuellen Zeitraum und Vorlauf null."
+                )
+            if (
+                s0.astimezone(zone(policy.timezone)).date()
+                != now.astimezone(zone(policy.timezone)).date()
+            ):
+                raise ValidationError("Spontanausgabe muss heute beginnen.")
+            from types import SimpleNamespace
+
+            existing = SimpleNamespace(pk=None)
         result = evaluate(
             actor,
             beneficiary,
@@ -397,6 +470,9 @@ def confirm(
             lock=True,
             start_fold=start_fold,
             end_fold=end_fold,
+            pickup_at=pickup_at,
+            return_at=return_at,
+            existing_booking=existing,
         )
         if result.code != "available":
             raise ValidationError(result.code)
@@ -426,6 +502,12 @@ def confirm(
                         "[)",
                     ),
                 )
+                if policy.use_mode == "physical_loan":
+                    from lending.models import Appointment
+
+                    Appointment.objects.create(
+                        booking=booking, pickup_at=pickup_at, return_at=return_at
+                    )
                 IdempotencyRecord.objects.create(
                     actor=actor, operation="confirm", key=key, payload_hash=digest, booking=booking
                 )

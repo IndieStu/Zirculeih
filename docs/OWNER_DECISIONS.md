@@ -53,3 +53,7 @@ Phase-3-Review akzeptiert („freigegeben“), anschließende Bestätigung „ph
 ## Phase 5 authorization — 15.10.2026
 
 Owner: “freigegeben und merged” following Phase-4 review/next-phase gate. [Original contextual record](OWNER_APPROVAL_PHASE_5.md). Phase 5 proceeds on main 549ca27; implementation choices in [ADR-017](adr/017.md) remain reviewable. Prior borrower/privacy/qualification decisions are unchanged; Phase 6 and production require a new gate.
+
+## Phase 6 authorization — 16.10.2026
+
+Owner accepted Phase 5 and confirmed merge: “freigegeben und merged”. [Record](OWNER_APPROVAL_PHASE_6.md), Main 96456d3. [ADR-018](adr/018.md) concretizes physical lending while retaining all previous consent/privacy/custody decisions. Phase 7 and production still require separate gates.

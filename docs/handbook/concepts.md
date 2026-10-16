@@ -12,4 +12,4 @@
 
 **Gruppe und Recht:** Zugehörigkeit und ausdrückliche Aktionen bestimmen, was du in welchem Bereich tun kannst. Mitarbeitendenstatus oder Systemadministration allein geben keine operativen Inventarrechte. Eine ausdrückliche Verweigerung hat Vorrang.
 
-**Reservierung und Ausleihe:** sind getrennte Vorgänge. Eine Reservierung betrifft zugesagte Nutzung; eine Ausleihe dokumentiert tatsächliche Ausgabe/Rückgabe. Vor-Ort-Reservierungen sind seit Phase 5 verfügbar, physische Ausleihen folgen später.
+**Reservierung und Ausleihe:** sind getrennte Vorgänge. Eine Reservierung betrifft zugesagte Nutzung; eine Ausleihe dokumentiert tatsächliche Ausgabe/Rückgabe. Vor-Ort-Reservierungen sind seit Phase 5 verfügbar, physische Ausleihen seit Phase 6. Eine tatsächliche Ausgabe hat eigene LoanLines und endet erst durch dokumentierte Rücknahme.

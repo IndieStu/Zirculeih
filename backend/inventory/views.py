@@ -68,7 +68,7 @@ def any_action(actor, action):
         return False
     if allowed(actor, action):
         return True
-    if action.startswith(("resource.", "identifier.", "booking.")):
+    if action.startswith(("resource.", "identifier.", "booking.", "loan.", "agreement.")):
         from resources.models import Resource
         from resources.services import resource_scope
 
@@ -108,7 +108,15 @@ def dashboard(request):
         any_action(request.user, action)
         for action in ("booking.read_all", "booking.configure", "booking.block")
     )
-    if not any(nav.values()) and not assets.exists() and not booking_can_operate:
+    loan_can_operate = any(
+        any_action(request.user, action) for action in ("loan.read", "loan.checkout", "loan.return")
+    )
+    if (
+        not any(nav.values())
+        and not assets.exists()
+        and not booking_can_operate
+        and not loan_can_operate
+    ):
         return redirect("account")
     from datetime import datetime, time, timedelta
 
@@ -132,6 +140,29 @@ def dashboard(request):
         if bookings is not None
         else BookingIncident.objects.none()
     )
+    from lending.models import LoanLine
+    from lending.services import pickup_bookings, visible_loans
+
+    loan_rows = visible_loans(request.user, operational=True) if loan_can_operate else None
+    loan_lines = (
+        LoanLine.objects.filter(loan__in=loan_rows, returned_at__isnull=True).select_related(
+            "booking__resource"
+        )
+        if loan_rows is not None
+        else LoanLine.objects.none()
+    )
+    overdue_lines = loan_lines.filter(expected_return__lt=timezone.now())
+    pickups = (
+        pickup_bookings(request.user).filter(
+            appointment__pickup_at__gte=today_start,
+            appointment__pickup_at__lt=today_start + timedelta(days=1),
+        )
+        if loan_can_operate
+        else []
+    )
+    returns_today = loan_lines.filter(
+        expected_return__gte=today_start, expected_return__lt=today_start + timedelta(days=1)
+    )
     attention = assets.filter(
         Q(condition__in=["damaged", "inspection"])
         | Q(lifecycle__in=["unavailable", "maintenance", "lost"])
@@ -152,6 +183,11 @@ def dashboard(request):
             "asset_count": assets.count(),
             "archived_count": assets.filter(archived_at__isnull=False).count(),
             "booking_can_operate": booking_can_operate,
+            "loan_can_operate": loan_can_operate,
+            "overdue_lines": overdue_lines[:20],
+            "overdue_count": overdue_lines.count(),
+            "today_pickups": pickups[:20],
+            "today_returns": returns_today[:20],
             "today_bookings": today[:20],
             "booking_incident_count": incidents.count(),
         },

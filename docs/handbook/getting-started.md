@@ -14,7 +14,7 @@ Falls die Registrierung „wird vorbereitet“ meldet, muss die Organisation ers
 
 ## Mein Konto und Ausleihprofil
 
-Unter „Mein Konto“ kannst du vollständigen Namen, Straße/Hausnummer, Postleitzahl, Ort, Land und Telefonnummer speichern. Die Anzeige „Ausleihprofil vollständig“ berücksichtigt auch deine bestätigte E-Mail. Diese Angaben sind für spätere verbindliche physische Ausleihreservierungen vorgesehen. Für die Registrierung und normalerweise reine Raum-/Maschinennutzung brauchst du noch keine Anschrift. Für freigeschaltete Vor-Ort-Angebote kannst du jetzt [eigene Buchungen](bookings.md) anlegen. Physische Ausleihe folgt erst mit den vollständigen Vertrags-/Versicherungsgates.
+Unter „Mein Konto“ kannst du vollständigen Namen, Straße/Hausnummer, Postleitzahl, Ort, Land und Telefonnummer speichern. Die Anzeige „Ausleihprofil vollständig“ berücksichtigt auch deine bestätigte E-Mail. Diese Angaben sind für spätere verbindliche physische Ausleihreservierungen vorgesehen. Für die Registrierung und normalerweise reine Raum-/Maschinennutzung brauchst du noch keine Anschrift. Für freigeschaltete Vor-Ort-Angebote kannst du jetzt [eigene Buchungen](bookings.md) anlegen. Für [physische Ausleihe](loans.md) sind jetzt das vollständige Profil und die aktuellen [Vereinbarungen](agreements.md) erforderlich.
 
 Die Konto-E-Mail lässt sich nicht über das normale Profilformular ändern. Sprich bei einer falschen Adresse mit der Administration. Ausweisnummern, Ausweiskopien und Versicherungsunterlagen gehören nicht ins Profil.
 

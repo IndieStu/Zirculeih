@@ -186,6 +186,7 @@ class Booking(models.Model):
             ("active", "Aktiv"),
             ("completed", "Abgeschlossen"),
             ("cancelled", "Storniert"),
+            ("no_show", "Nicht abgeholt"),
         ],
         default="confirmed",
     )
@@ -201,7 +202,9 @@ class Booking(models.Model):
                 condition=Q(end__gt=F("start")), name="booking_positive_interval"
             ),
             models.CheckConstraint(
-                condition=Q(status__in=["confirmed", "active", "completed", "cancelled"]),
+                condition=Q(
+                    status__in=["confirmed", "active", "completed", "cancelled", "no_show"]
+                ),
                 name="booking_status_valid",
             ),
             models.CheckConstraint(

@@ -40,3 +40,7 @@ Die Gruppenkonfiguration bietet jetzt reale Angebote als Scopeziele, gefiltert n
 ## Buchungsregeln
 
 Mit eigenen fachlichen Rechten konfigurierst du [Buchungsregeln, Zeitpläne und Sperren](booking-administration.md). Das geschützte Systemadministrationsrecht allein reicht dafür nicht. Aktiviere nur Angebote, deren vollständige Prüfbedingungen bereits eingerichtet sind.
+
+## Vereinbarungen und Ausleihe
+
+[Texte schreiben, veröffentlichen und zuordnen](agreements.md), [Personalabläufe und Rechte](loans.md). Eine Ausweisprüfung wird nur durch ausdrücklich berechtigtes Personal bei tatsächlicher persönlicher Prüfung dokumentiert. Es gibt kein Feld für Ausweisnummern oder Kopien.
