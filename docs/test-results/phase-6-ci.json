@@ -1,0 +1,17 @@
+{
+  "repository": "IndieStu/Zirculeih",
+  "commit": "104a7db853b43da4cc158de1142041ecf6bfcd48",
+  "run_id": 38867010811,
+  "job_id": 116862052792,
+  "url": "https://github.com/IndieStu/Zirculeih/actions/runs/38867010811",
+  "conclusion": "success",
+  "environment": "GitHub Actions ubuntu-latest, Docker Compose, pinned PostgreSQL 17 image",
+  "evidence": [
+    "2026-10-16T07:25:04.2755818Z All checks passed!",
+    "2026-10-16T07:25:05.2144028Z 112 files already formatted",
+    "2026-10-16T07:25:10.0777292Z Success: no issues found in 101 source files",
+    "2026-10-16T07:25:11.8995699Z System check identified no issues (0 silenced).",
+    "2026-10-16T07:25:13.8524657Z No changes detected",
+    "2026-10-16T07:27:40.0366812Z ======================= 203 passed in 144.21s (0:02:24) ========================"
+  ]
+}
