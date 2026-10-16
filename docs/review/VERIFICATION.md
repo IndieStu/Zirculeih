@@ -1,49 +1,43 @@
-# Prüfung der privaten Reviewinstanz
+# Owner UX correction verification
 
-2026-10-16, NCtest Linux/Docker/PostgreSQL 17. Browserprüfung vor Übergabe mit
-fiktiven Rollen; erster vorläufiger Buildmarker a3f8f7b während des Stackaufbaus.
-Endgültiger Quellstand 9e6cb73; CI und NCtest jeweils 207 Tests bestanden.
-Nach den Browser-Mutationen wurde der eigene vor Übergabe angelegte Reviewdatensatz
-gesichert und frisch initialisiert, damit alle Startszenarien für das Team bereitstehen.
+Application `218f712e03602194ee8f3846ff94c3205d6f4e66`.
+CI and full local regression: 219 tests passed; see [handover](HANDOVER.md).
 
-| Aufgabe | Tatsächliche Beobachtung |
-|---|---|
-| Öffentlich | Start/Katalog und Raumdetail mit Testbanner erreichbar; Angebotstexte/Ort sichtbar |
-| Anmeldung | Normalnutzer, Inventar und Ausleihtheke lokal angemeldet; unterschiedliche Menüs |
-| Eigene Buchungen | Seedbuchungen heute/morgen und aktive Leihbuchungen sichtbar |
-| Buchungsablauf | Raum morgen 14–15 Uhr geprüft, bestätigt, Detail gelesen, ausdrücklich storniert |
-| Inventar | Liste 15 aktive Treffer + 1 Archiv, Drilldetail mit Ort, Codes, 18V-Zusatzfeld und Bild |
-| HID-Eingabe | Legacy-Namensraum + WERK-TEST-001 + Enter erkennt Akkuschrauber 1; keine Mutation |
-| Operativer Buchungsbetrieb | Bestätigte/aktive/stornierte Buchungen und echter overdue_custody-Prüfhinweis sichtbar |
-| Werkstattverwaltung | Nur CNC und 3D-Drucker in der Verwaltung; CNC mit physischer Einheit und Standortverknüpfung |
-| Spontane Ausgabe | UXR-CABLE ohne Reservierung eingegeben, laufenden Zeitraum und Termine gesetzt, bewusst ausgegeben → Beleg mit neuer Reservierung |
-| Ausgabe | Test Nutzer gewählt, UXR-CARGO eingegeben, vorhandene Reservierung vorbereitet, Zubehörprüfung + bewusste Ausgabe → Beleg |
-| Rücknahme | UXR-DRILL-01 gefunden, Zustand/Zubehör bestätigt → nächste Scanmaske; Beleg zeigt eine zurückgegebene und eine weiterhin überfällige Position |
-| Rechte | Normale Nutzung ohne operative Menüs, Inventar ohne Ausleihbetrieb, Theke mit Ausgabe/Rücknahme; automatische Tests prüfen verborgene Inventar-/Betriebsrouten |
-| Mobile | Inventardetail und Rücknahme bei 320×780: Seitenbreite 320, Labels/Formulare erreichbar; Screenshots gespeichert |
+NCtest browser checks use only fictional accounts and existing credentials:
 
-Die abschließende Anmeldung mit dem endgültigen Normalnutzerpasswort wurde nach
-Neuinitialisierung erneut erfolgreich geprüft und danach abgemeldet.
+- Existing Admin sign-in succeeded without changing its password.
+- Group creation form is accessible from Organisation → Gruppen.
+- Dashboard contains real due/overdue, pickup, booking and attention records.
+- Resource catalogue shows three distinct named Prusa models and current occupancy.
+- A free Prusa calendar period opens the form with Von/Bis prefilled.
+- The normal form has no visible DST ambiguity controls.
+- Missing qualification is reported separately from the current agreement checkbox.
+- Current-version agreement text is available on demand; no self-qualification checkbox.
+- Account overview lists relevant qualification/agreement state.
+- Operating-calendar administration and category links are reachable.
 
-Screenshots: [Übergabestand](../screenshots/ux-review-ready.png),
-[Spontanbeleg](../screenshots/ux-review-spontaneous-receipt.png),
-[Inventardetail mobil](../screenshots/ux-review-inventory-mobile.png),
-[Rücknahme mobil](../screenshots/ux-review-return-mobile.png).
+Only read-only navigation was used for these NCtest browser checks. No existing team
+booking, loan, agreement acceptance or profile was edited. Automated tests separately
+exercise writes, authorization, all requirement combinations, version changes,
+immutable evidence, concurrent allocation, checkout and return.
 
-## Bekannte UX-Beobachtungen zur Entscheidung
+[Dashboard screenshot](../screenshots/ux-correction-dashboard.png).
+Final browser screenshots and responsive measurements are recorded below. These
+checks do not constitute
+team UX acceptance or a full accessibility audit.
 
-- „Asset“, „Identifier“, „Einheit“ und technische Rechtenamen sind sichtbar.
-- Login führt zunächst zum Profil, auch bei Mitarbeitenden; Schnellweg zum Betrieb prüfen.
-- Umfangreiche Hauptnavigation belegt auf kleinen Geräten mehrere Zeilen.
-- Code-Namensraum muss bewusst gewählt werden; nach Rücknahme wird die Auswahl zurückgesetzt.
-- Rücknahme-Erfolg führt zur nächsten Scanmaske; zum gemeinsamen Beleg führt ein weiterer Weg.
-- Operativer Prüfhinweis zeigt den internen Schlüssel `overdue_custody`.
-- Bereichsbeschränkte Werkstattrolle sieht „Angebot anlegen“, obwohl manche Anlagekontexte nicht erlaubt sind.
-- Buchungsformular zeigt DST-Fold-Auswahl auch bei gewöhnlichen Tagen.
-- Raumdetail nutzt ebenfalls die Abschnittsüberschrift „Abholung und Nutzung“.
-- Die Inventarliste besteht aktuell aus Einträgen statt einer kompakten Betriebstabelle.
-- Kein physischer HID-Scanner an diesem Rechner getestet: Tastatureingabe + Enter geprüft.
-- Keine umfassende WCAG-Abnahme, keine echte Telefonhardware und keine OIDC-Providerprüfung in dieser isolierten Instanz.
+Final deployed checks:
 
-Diese Punkte sind Feedbackmaterial, keine vorab beschlossenen Umbauten.
-Nicht implementierte Phase-7+-Funktionen werden nicht vorgetäuscht.
+- Build marker `218f712e03602194ee8f3846ff94c3205d6f4e66` verified in the browser.
+- A previously opened browser now loads the versioned stylesheet and renders the
+  desktop operational shell as a CSS grid/sidebar without cache-clearing steps.
+- Fresh Admin login lands on `/inventar/uebersicht/` (Dashboard).
+- At 320px, booking document width equals viewport width (320px); navigation
+  collapses and the date/time controls remain accessible.
+- Operating-calendar overview shows at most 30 weekly rows; selecting Prusa MK4
+  filters to its 21 weekly windows. No existing time window was edited or deleted.
+- Temporary browser sessions were logged out and closed; local test servers stopped.
+
+[Booking form](../screenshots/ux-correction-booking.png),
+[320px booking form](../screenshots/ux-correction-booking-mobile.png),
+[filtered operating calendar](../screenshots/ux-correction-hours.png).

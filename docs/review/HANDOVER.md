@@ -1,53 +1,66 @@
-# Deelvo – UX-Gate Übergabe
+# Deelvo — Owner UX correction handover
 
-Phase 6 gemerged, **noch nicht akzeptiert**. Phase 7 bleibt gesperrt.
-Branch: `review/phase-6-ux-gate`.
-Geprüfter Anwendungsstand: `9e6cb73ced1b6048b97819e6e0e5ba10e29b9e31`.
-Spätere Übergabedokumentation ändert den geprüften Anwendungscode nicht.
+Phase 6 remains merged but **not accepted**. Stop for actual owner/team UX review.
+**No Phase 7.** Branch `review/phase-6-ux-gate`.
 
-[Private NCtest-Testinstanz](http://nctest.tailf7eaa5.ts.net:8766/) über Tailscale.
-SSH-Host geprüft; bestehende NCtest-Dienste, WLAN-/Proxykonfiguration unverändert.
-Eigene DB/Medien/Static/Mail-Volumes, kein veröffentlichter PostgreSQL-Port.
-Zugangsdaten getrennt vom Repository; sechs fiktive Rollen mit getrennten Passwörtern.
+Application commit: `218f712e03602194ee8f3846ff94c3205d6f4e66`.
+[Private NCtest review](http://nctest.tailf7eaa5.ts.net:8766/) through Tailscale.
+Subsequent handover documentation does not change the tested application.
 
-[CI 38871170512](https://github.com/IndieStu/Zirculeih/actions/runs/38871170512):
-207 Tests bestanden, 152,69 Sekunden; Docker/Linux/PostgreSQL 17, Lint/Format/Mypy,
-Migrationsprüfung, Health, Static, explizites Seed/Rerun und lokale Mailerfassung grün.
-[Maschinenlesbarer Nachweis](../test-results/ux-review-ci.json).
-Lokale Vollregression vor dem letzten Konfigurationstest: 206 bestanden, 58,26 Sekunden.
-Die finalen vier Reviewtests wurden zusätzlich lokal erfolgreich ausgeführt.
-Auf NCtest selbst: 207 bestanden, 348,07 Sekunden, im Docker/PostgreSQL-17-Stack.
-Vor Übergabe wurden Browser-Teständerungen gesichert und ausschließlich die eigenen
-Review-Volumes bewusst neu initialisiert; die dokumentierten Startszenarien sind
-wieder verfügbar. Ein erneuter Seedaufruf erhält anschließend die Teamänderungen.
+## Changes
 
-16 Inventargegenstände, sieben veröffentlichte Angebote, WERK-ähnliche Standortstruktur,
-sechs Rollen, eigener Drill-Pool mit drei physischen Einheiten, Raum als logische
-Einheit, CNC/Prusa vor Ort, Powerstation mit reiner Zubehörcheckliste. Beschädigtes/
-archiviertes Inventar, Bild, Zusatzfeld, Inventarcodes und Legacyalias enthalten.
-Heute/morgen, Abholung, offene/überfällige Ausleihe, fällige Rückgabe und echte
-Folgebuchungswarnung beruhen auf regulären produktiven Datensätzen. Seedtag 2026-10-16.
+Grouped operational sidebar, Dashboard landing, concise labels, combined **Meine
+Vorgänge**, selectable daily availability and simple time controls. Public catalogue
+filter areas are independent of inventory locations. Category administration and
+editable resource types are discoverable. Opening/closure management has owner and
+purpose filters, compact paginated tables and bounded vacation ranges.
 
-[Exakte Installation, Update, Backup, Restore, Reset und Entfernung](../deployment/REVIEW_INSTANCE.md).
-DB+Medien-Backup/Restore wurde auf NCtest erfolgreich durchgeführt; kein breites
-Docker-Pruning. Anwendungsupdate mit gemeinsamem Image für Web/Migration/Static geprüft.
+Persons are invited without admin-chosen passwords or silent verification. The
+visible Admin access combines protected administration and explicit operational
+grants; ordinary staff groups are not elevated. Resource-specific agreements and
+staff-issued qualifications remain distinct and are enforced at booking/checkout.
+Versioned consent and qualification evidence are immutable. Account status is visible.
 
-[Browsernachweis und bekannte UX-Punkte](VERIFICATION.md), [Teamaufgaben](UX_REVIEW_PHASE_6.md),
-[Feedbackvorlage](UX_FEEDBACK_TEMPLATE.md), [Begriffe](TERMINOLOGY_REVIEW.md),
-[Navigation](NAVIGATION_REVIEW.md). Reservierung/Storno, Abholung, spontane Ausleihe,
-Codesuche und Teilrückgabe wurden mit fiktiven Rollen im Browser geprüft.
-320px-Inventardetail/Rücknahme ohne horizontalen Seitenüberlauf; kein physischer
-Scanner oder umfassender Accessibility-/Produktionsaudit behauptet.
+[Full scope and deliberate limits](UX_CORRECTION_STATUS.md), [ADR-020](../adr/020.md),
+[team tasks](UX_REVIEW_PHASE_6.md), [navigation](NAVIGATION_REVIEW.md),
+[terminology choices](TERMINOLOGY_REVIEW.md), [feedback](UX_FEEDBACK_TEMPLATE.md).
+MyTurn was used only for operational presentation evidence; its domain assumptions
+were explicitly excluded. Owner feedback and Deelvo architecture prevail.
 
-Die vollständigen Review-Unterlagen werden zusätzlich als ZIP bereitgestellt;
-Zugänge stehen ausschließlich in einer getrennten privaten Datei, nie im ZIP.
+## Verification
 
-Offen für Ownerentscheidung: Begriffe, Menüstruktur, Einstieg nach Login,
-Informationsdichte, Scanner-Namensraumwahl, Formulartiefe und nötige Schnellaktionen.
-Keine autonome Umbenennung oder Neugestaltung. Keine Qualifikations-/Bundle-/Serien-
-Funktion vorgetäuscht; OIDC bleibt im isolierten Review deaktiviert. Keine echten
-Personendaten und kein produktiver Gerätebetrieb.
+[CI 38884152250](https://github.com/IndieStu/Zirculeih/actions/runs/38884152250):
+**219 passed**, 179.64 seconds, Docker/Linux/PostgreSQL 17. Lint, formatting, Mypy,
+migrations, health/static and review seed/additive rerun all passed.
+Local full regression: **219 passed**, 68.70 seconds, PostgreSQL 16.
+[Machine-readable evidence](../test-results/ux-correction-ci.json),
+[local JUnit](../test-results/ux-correction-local.xml), [browser evidence](VERIFICATION.md).
 
-GitHub-Connector verweigert PR-Erstellung mit 403 „Resource not accessible by integration“.
-SSH-Push funktioniert; [Branch vergleichen / PR anlegen](https://github.com/IndieStu/Zirculeih/compare/main...review/phase-6-ux-gate?expand=1).
-Nächster Schritt: Owner-/Teamtest und konkretes Feedback, nicht Phase 7.
+## Data preservation
+
+NCtest was upgraded with additive migrations, never reset. Backup is private in
+`/home/timo/deelvo-review/operator-backup/ux-correction-before/` (database, media,
+environment and pre-update identity/password digest snapshot).
+
+All 7 previous User records, 7 bookings/claims, 2 loans/3 loan lines, 16 assets,
+7 resources/9 units, 12 acceptances and the existing asset-media record are retained.
+Every previous password hash is unchanged. Both existing media files were compared
+byte-for-byte. Three assets/resources/units, qualification/consent examples and four
+fictional users were added. Other NCtest services and the private bind are unchanged.
+
+Four new scenarios: `ux_ready`, `ux_old`, `ux_noqualification`, `ux_neither`.
+**Their first usable passwords remain pending explicit owner approval.** Automatic
+approval review rejected credential provisioning separately from fixture creation.
+Existing six role credentials remain valid and unchanged. Credentials stay in a
+separate private local file, never the repository or review ZIP.
+
+## Review boundary
+
+Daily occupancy is not a monthly drag planner, series engine or ICS feed. Final
+booking rechecks personal eligibility and appointments. Qualification issuance is
+global-only in this minimal groundwork; bundles and advanced qualification scopes
+are not implemented. No actual hardware-scanner test, comprehensive WCAG audit,
+production readiness or team UX acceptance is claimed.
+
+GitHub connector still rejects draft PR creation with 403. SSH push succeeds.
+[Compare branch / create PR](https://github.com/IndieStu/Zirculeih/compare/main...review/phase-6-ux-gate?expand=1).
