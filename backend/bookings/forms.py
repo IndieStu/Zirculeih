@@ -35,6 +35,19 @@ class BookingForm(forms.Form):
         kind = "date" if policy.time_mode == "days" else "datetime-local"
         for field in ("start", "end"):
             self.fields[field].widget = forms.TextInput(attrs={"type": kind})
+        if policy.use_mode == "physical_loan":
+            for field, label in (
+                ("pickup_at", "Abholtermin lokal"),
+                ("return_at", "Rückgabetermin lokal"),
+            ):
+                self.fields[field] = forms.CharField(
+                    label=label,
+                    max_length=30,
+                    widget=forms.TextInput(attrs={"type": "datetime-local"}),
+                )
+                self.fields[field + "_fold"] = forms.ChoiceField(
+                    label=label + " bei Herbstumstellung", choices=FOLDS, required=False
+                )
         if kind == "date":
             self.fields["end"].label = "Letzter Nutzungstag (inklusive)"
             self.fields.pop("start_fold")
@@ -53,6 +66,19 @@ class BookingForm(forms.Form):
                     )
         for field in ("start_fold", "end_fold"):
             data[field] = int(data[field]) if data.get(field) else None
+        if self.policy.use_mode == "physical_loan":
+            for field in ("pickup_at", "return_at"):
+                if data.get(field):
+                    try:
+                        fold = int(data[field + "_fold"]) if data.get(field + "_fold") else None
+                        data[field] = local_instant(
+                            datetime.fromisoformat(data[field]), self.policy.timezone, fold
+                        )
+                    except (ValueError, forms.ValidationError) as exc:
+                        self.add_error(
+                            field,
+                            exc if isinstance(exc, forms.ValidationError) else "Ungültige Uhrzeit.",
+                        )
         return data
 
 
@@ -78,7 +104,7 @@ class PolicyForm(forms.ModelForm):
             "max_parallel": "Maximal gleichzeitige Buchungen je Konto",
             "cancellation_notice_minutes": "Stornofrist vor Beginn (Minuten)",
             "requires_qualification": "Einweisung erforderlich (bis Phase 7 gesperrt)",
-            "requires_agreement": "Zusatzvereinbarung erforderlich (bis Phase 6 gesperrt)",
+            "requires_agreement": "Zusatzvereinbarung erforderlich",
         }
 
     def __init__(self, *args, **kwargs):

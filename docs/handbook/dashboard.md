@@ -23,3 +23,7 @@ Synthetische Daten, Phase 3 (15.10.2026): Hinweise und Schnellaktionen vor Besta
 ## Buchungen und Heute — Phase 5
 
 Mit booking.read_all zeigt „Heute“ reale bestätigte/aktive/abgeschlossene Buchungen, deren Zeitraum den heutigen lokalen Tag schneidet; stornierte werden ausgeblendet, höchstens 20 Zeilen. „Buchungen prüfen“ zählt offene Hinweise aus deinen aktuellen Lesescopes und führt zum [Buchungsbetrieb](booking-administration.md). Mit Konfigurations-/Sperrrechten ist dieser Betrieb auch ohne Inventarleserecht erreichbar; fremde Buchungsdetails werden dadurch nicht freigegeben. Es gibt weiterhin keine erfundenen Abhol-/Rückgabetermine.
+
+## Ausleihen — Phase 6
+
+Mit passenden loan-Rechten zeigt die Übersicht sichtbare überfällige Positionen und heutige erwartete Abholungen/Rückgaben; begrenzt auf 20 Einträge pro Dashboardabschnitt. Der [Ausleihbetrieb](loans.md) bietet tatsächliche Ausgabe-/Rücknahmepfade. Ein noch ausgegebener Gegenstand bleibt offen, auch wenn expected_return überschritten ist. Ohne alle enthaltenen Lesescopes wird ein fremder Mehrpositionsloan nicht als Gesamtbeleg angezeigt. Kein öffentlicher Borrowerfeed.

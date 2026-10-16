@@ -62,3 +62,7 @@ Der Dashboard-Ausbau folgt den produktiven Domänen: Phase 5 Bookings/Heute, Pha
 ## Phase 5 — authorized after Phase-4 merge
 
 [Owner authorization](docs/OWNER_APPROVAL_PHASE_5.md), base main 549ca27. P5.1 schema/PG guards; P5.2 shared time/schedule/policy/allocation services; P5.3 own bookings/cancellation and scoped configuration; P5.4 real dashboard/incident projection; P5.5 PostgreSQL concurrency/regression, browser checks, handbook/ADR/migration review and Linux/PostgreSQL-17 CI. Physical reservations wait fail-closed for Phase-6 borrower/contract gates; qualifications remain Phase 7. Owner review before any Phase 6 or production.
+
+## Phase 6 — owner authorized 16.10.2026
+
+Base Main 96456d3, [authorization](docs/OWNER_APPROVAL_PHASE_6.md). P6.1 agreements/profile/identity gates and appointments; P6.2 actual Loan/lines/custody and scanner preparation, reservation reuse and atomic spontaneous loan; P6.3 partial/damage return, overdue incidents, guarded extension/no-show and scoped dashboard; P6.4 handbook/ADR/migrations, PostgreSQL concurrency/regression, browser/mobile and Docker/PG17 evidence. No Phase 7 or production without a new review gate.

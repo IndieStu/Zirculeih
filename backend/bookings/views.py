@@ -5,7 +5,7 @@ from accounts.authorization import allowed, require
 from accounts.ratelimit import take
 from accounts.views import throttled
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.core.paginator import Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
@@ -25,6 +25,10 @@ from .models import (
 )
 
 MESSAGES = {
+    "borrower_profile_required": "Bitte zuerst dein Ausleihprofil vollständig ausfüllen.",
+    "physical_unit_required": "Eine physische Einheit muss eingerichtet sein.",
+    "pickup_unavailable": "Abholtermin außerhalb eines erlaubten Abholfensters oder Zeitraums.",
+    "return_unavailable": "Der Rückgabetermin liegt nicht in einem erlaubten Rückgabefenster.",
     "available": (
         "Der Zeitraum ist derzeit frei. Erst der erfolgreiche Abschluss bestätigt die Buchung."
     ),
@@ -49,7 +53,7 @@ MESSAGES = {
         "freigeschaltet. Bitte beim Team melden."
     ),
     "qualification_required": "Die erforderliche Einweisungsprüfung ist noch nicht freigeschaltet.",
-    "agreement_required": "Die erforderliche Zusatzvereinbarung ist noch nicht eingerichtet.",
+    "agreement_required": "Bitte die erforderlichen aktuellen Vereinbarungen bestätigen.",
 }
 
 
@@ -61,6 +65,7 @@ def page(view):
             services.require_active_actor(request.user)
             return view(request, *args, **kwargs)
         except (
+            ObjectDoesNotExist,
             PermissionDenied,
             Booking.DoesNotExist,
             Resource.DoesNotExist,
@@ -99,6 +104,8 @@ def create(request, resource_id):
             data = form.cleaned_data
             try:
                 kwargs = {"start_fold": data["start_fold"], "end_fold": data["end_fold"]}
+                if policy.use_mode == "physical_loan":
+                    kwargs.update(pickup_at=data["pickup_at"], return_at=data["return_at"])
                 if request.POST.get("action") == "confirm":
                     booking = services.confirm(
                         request.user, resource.pk, data["start"], data["end"], data["key"], **kwargs

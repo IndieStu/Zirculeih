@@ -5,14 +5,14 @@
 ## Ein Angebot freischalten
 
 1. Veröffentliche das Angebot, aktiviere die Buchungsoption und richte mindestens eine geeignete aktive Einheit ein. Physische Assets müssen aktiv, nicht archiviert und in gutem oder gebrauchtem Zustand sein.
-2. Öffne im Buchungsbetrieb „Regeln“. Wähle die Nutzungsart ausdrücklich. Neue Regeln stehen sicher auf physischer Ausleihe, die bis zur vollständigen Ausleihfunktion gesperrt bleibt. Für Raum-/Maschinennutzung ohne Ausgabe wähle Nutzung vor Ort.
+2. Öffne im Buchungsbetrieb „Regeln“. Wähle die Nutzungsart ausdrücklich. Neue Regeln stehen sicher auf physischer Ausleihe, die bis zur Einrichtung aller Pflichtnachweise und Termine gesperrt bleibt. Für Raum-/Maschinennutzung ohne Ausgabe wähle Nutzung vor Ort.
 3. Lege Zeitmodus, IANA-Zeitzone, Raster, Mindest-/Höchstdauer bzw. Tage, Vorlauf, Horizont, Puffer, Parallelgrenze und Stornofrist fest. Gruppenrechte dürfen enger sein; ein vollständiges passendes Grantprofil muss Dauer und Horizont gemeinsam erlauben. Keine Mischung verschiedener Profile.
 4. Lege Wochenfenster für Nutzung, Gebäudezugang und betreute Öffnung an. Mindestens das Angebot braucht einen Nutzungsplan. Standort- und Angebotspläne schneiden sich; ein engerer Gebäudebereich kann nicht durch ein weiteres Angebotsfenster geöffnet werden. Alle anwendbaren Zeiten werden in der Zeitzone der Angebotsregel ausgewertet.
 5. Prüfe mit einem gewöhnlichen Testkonto. Eine freie Vorschau ist noch keine Bestätigung.
 
 Wochentag 0 ist Montag, 6 Sonntag. Ende am Folgetag erlaubt maximal 24 Stunden. 00:00 bis 00:00 am Folgetag ist ein ganzer Tag. Datumsbezogene Ausnahmen ersetzen Wochenfenster an diesem lokalen Datum einschließlich hineinragender Nachtfenster. Für einen geschlossenen Tag setze „geschlossen“ ohne Uhrzeiten; für Sonderöffnung gib ein gültiges Fenster an. Mehrere Fenster am Datum können zusammen eine Sonderöffnung bilden.
 
-Abholung und Rückgabe sind bereits getrennte Zeitplanarten, werden bei Vor-Ort-Buchungen jedoch nicht herangezogen. Die dazugehörige Ausleihbedienung folgt erst mit Profil-/Vertrags-/Versicherungsprüfung. Einweisungspflicht und Zusatzvereinbarung schalten das Angebot bis zu ihrer vollständigen Prüfung sicher gegen Buchung.
+Abholung und Rückgabe sind bereits getrennte Zeitplanarten, werden bei Vor-Ort-Buchungen jedoch nicht herangezogen. Die [Ausleihbedienung](loans.md) verwendet diese Pläne und prüft Profil, Verträge und Haftpflicht. Einweisungspflicht sperrt bis Phase 7. Zugeordnete Zusatzvereinbarungen sind bei physischer Reservierung/Ausgabe Pflicht; die separate Policyoption verlangt zusätzlich mindestens eine solche Zuordnung.
 
 Die Parallelgrenze der gerade angefragten Angebotsregel zählt gleichzeitig bestätigte/aktive Buchungen des Kontos über alle Angebote; sie zählt keine bereits stornierten Vorgänge. Bestehende Buchungen behalten den unveränderlichen Regelsnapshot, insbesondere die ursprüngliche Stornofrist. Technische Grenzen: Nutzungsdauer höchstens 366 Tage, Horizont höchstens 3660 Tage; Vorlauf, Puffer und Stornofrist höchstens 3660 Tage in Minuten.
 

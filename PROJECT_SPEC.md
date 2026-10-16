@@ -1,6 +1,6 @@
 # Deelvo — Product & Engineering Specification
 
-**Version:** 0.6 · **Status:** Phase 4 accepted and merged; Phase 5 implemented, pending owner review · **Date:** 2026-10-15
+**Version:** 0.7 · **Status:** Phase 5 accepted and merged; Phase 6 authorized and in progress · **Date:** 2026-10-16
 **Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
@@ -460,3 +460,7 @@ Public catalog/Home/search/detail/gallery use explicitly published Resource fiel
 ## 24. Phase-4 acceptance and Phase-5 authorization — 2026-10-15
 
 Owner confirmed “freigegeben und merged”; [record](docs/OWNER_APPROVAL_PHASE_5.md). Main 549ca27 is the Phase-5 basis. [ADR-017](docs/adr/017.md) implements the booking core with explicit onsite/physical_loan modes, current complete grant profiles, separate schedules, UTC claims, PostgreSQL exclusion and idempotency. Physical-loan confirmation remains fail-closed until Phase-6 profile/agreement gates; no fabricated consent or physical return. Own bookings, cancellation, real operational projections and configuration are in Phase 5. Phase 6 requires a new review gate; no production authorization.
+
+## 25. Phase-5 acceptance and Phase-6 authorization — 2026-10-16
+
+Owner confirmed “freigegeben und merged” following the Phase-5 review/next-phase gate. [Authorization](docs/OWNER_APPROVAL_PHASE_6.md), Main 96456d3. Phase 6 implements physical reservations with required personal profile/agreements/insurance, first identity-check evidence, separate appointments, actual custody, scanner-supported staffed issue/return/partial return, extensions and overdue/no-show handling. [ADR-018](docs/adr/018.md). Phase 7, public self-service, production and real personal data remain outside this approval.

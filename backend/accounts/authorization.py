@@ -29,6 +29,7 @@ ACTIONS = (
             "resource.use_unstaffed",
             "loan.checkout",
             "loan.return",
+            "loan.extend",
             "loan.inspect_identity",
             "loan.read",
             "borrower.read_contact",
@@ -59,6 +60,7 @@ ACTIONS = (
     )
 )
 INVENTORY_ACTIONS = {
+    "loan.extend": "Physische Ausleihen verlängern",
     "booking.configure": "Buchungsregeln und Zeitpläne konfigurieren",
     "booking.block": "Harte Ressourcensperren verwalten",
     "booking.read_all": "Buchungen im Betriebsbereich ansehen",

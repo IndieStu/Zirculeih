@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "inventory",
     "resources",
     "bookings",
+    "lending",
 ]
 AUTH_USER_MODEL = "accounts.User"
 AUTHENTICATION_BACKENDS = ["accounts.backends.EmailBackend"]

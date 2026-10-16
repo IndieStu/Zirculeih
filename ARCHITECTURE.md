@@ -81,3 +81,7 @@ Ein zusätzlicher schmaler Cross-Domain-Guard bei Baumänderungen prüft betroff
 ## Phase 5 implementation
 
 The `bookings` module owns BookingPolicy, typed schedules/exceptions, ResourceBlock, Booking, AllocationClaim, incidents and idempotency. It calls the existing grant algebra and Resource visibility services. Central authorization-write serialization precedes policy and concrete Unit locks; confirmation, claim, audit and idempotency commit together. PostgreSQL exclusion and deferred lifecycle guards form a second integrity boundary. Prototype allocation/custody stays isolated. [ADR-017](docs/adr/017.md), [operator handbook](docs/handbook/booking-administration.md). No new dependency, API or scheduler. Physical loans remain Phase 6.
+
+## Phase 6 implementation
+
+The lending module owns Agreement/immutable Version, Assignment, Acceptance, IdentityCheck, Appointment, Loan/LoanLine, Extension and actor-bound Operation idempotency. Booking confirmation calls the same current policy/grant/allocation engine with lending gates, not a second kiosk engine. The existing global authorization lock serializes configuration/consent/checkout/return/extension/booking. PostgreSQL active-custody uniqueness and deferred loan/line/booking/claim consistency supplement temporal exclusion. No new infrastructure/dependency. [ADR-018](docs/adr/018.md).

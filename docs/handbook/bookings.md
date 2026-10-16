@@ -12,7 +12,7 @@ Du benötigst ein aktives, verifiziertes Konto und passende Gruppenrechte. Ein �
 
 Die Website ist jederzeit erreichbar; die Nutzung muss trotzdem in Nutzungs- und Gebäudezugangszeiten liegen. Ohne passendes Gruppenrecht muss auch die betreute Öffnung abgedeckt sein. Harte Sperren gelten immer. Ein Gruppenrecht für unbetreute Nutzung erweitert keine Abhol- oder Rückgabezeiten.
 
-Aktuell können freigeschaltete Nutzungen vor Ort reserviert werden. Physische Ausleihreservierungen sowie Angebote mit noch nicht eingerichteter Einweisungs-/Vereinbarungsprüfung werden sicher abgewiesen. Es findet keine Ausgabe und keine Rückgabe statt.
+Seit Phase 6 sind auch [physische Ausleihreservierungen](loans.md) mit vollständigem Profil, aktuellen [Textbestätigungen](agreements.md) und getrennten Terminen möglich. Noch nicht eingerichtete Pflichtgates und Einweisungspflichten sperren weiterhin sicher. Eine Reservierung allein ist keine Ausgabe.
 
 ## Stornieren und Hinweise
 

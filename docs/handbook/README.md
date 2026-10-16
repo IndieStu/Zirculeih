@@ -1,8 +1,8 @@
 # Deelvo-Handbuch
 
-Stand: Phase 5, 15.10.2026. Dieses Handbuch beschreibt die tatsächlich vorhandene Oberfläche. Die Anwendung befindet sich vor dem Echtbetrieb; Beispiele verwenden synthetische Daten.
+Stand: Phase 6, 16.10.2026. Dieses Handbuch beschreibt die tatsächlich vorhandene Oberfläche. Die Anwendung befindet sich vor dem Echtbetrieb; Beispiele verwenden synthetische Daten.
 
-Deelvo verwaltet gemeinsam nutzbare Ressourcen und deren Inventar. Aktuell verfügbar: Konten, Gruppenrechte, Inventar, Standorte, Kategorien, Identifier, Inventar-Betriebsübersicht sowie Ressourcen, Einheiten, Pools und veröffentlichter Katalog. Vor-Ort-Buchungen und Buchungskonfiguration sind hinzugekommen. Physische Ausleihen, Inventurläufe, Kalenderabos und Integrations-API folgen später.
+Deelvo verwaltet gemeinsam nutzbare Ressourcen und deren Inventar. Aktuell verfügbar: Konten, Gruppenrechte, Inventar, Standorte, Kategorien, Identifier, Inventar-Betriebsübersicht sowie Ressourcen, Einheiten, Pools und veröffentlichter Katalog. Vor-Ort-Buchungen und Buchungskonfiguration sind hinzugekommen. Physische Ausleihen und versionierte Vereinbarungen sind hinzugekommen. Inventurläufe, Kalenderabos und Integrations-API folgen später.
 
 ## Dein Einstieg
 
@@ -20,3 +20,7 @@ Der Katalog mit eigener Veröffentlichung ist jetzt implementiert: [Angebote, Ei
 ## Buchungen — Phase 5
 
 [Eigene Buchungen und Storno](bookings.md), [Regeln, Zeitpläne, Sperren und Klärung](booking-administration.md). Einrichtung und tatsächliche Verfügbarkeit werden getrennt geprüft. Keine physischen Ausgaben oder automatisch angenommene Verträge.
+
+## Physische Ausleihe — Phase 6
+
+[Reservierung, Ausgabe, Teilrückgabe, Überziehung und Verlängerung](loans.md), [Vereinbarungen und Haftpflicht](agreements.md). Scanner/HID bereitet vor, tatsächlicher Gewahrsam erfordert bewussten Abschluss. Keine Self-Service-Aktivierung.
