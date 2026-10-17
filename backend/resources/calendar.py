@@ -361,6 +361,16 @@ def current_status(resource):
 
         try:
             for component, _required in expansion(resource)[1:]:
+                if component.visibility != "public":
+                    return "Verfügbarkeit im Kalender prüfen"
+                from .services import active_context
+
+                if (
+                    component.archived_at
+                    or not component.published_at
+                    or not active_context(component)
+                ):
+                    return "Zurzeit belegt / gesperrt"
                 cp = BookingPolicy.objects.filter(resource=component).first()
                 if cp is None or not component.booking_enabled:
                     return "Zurzeit belegt / gesperrt"

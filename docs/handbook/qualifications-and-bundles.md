@@ -26,7 +26,9 @@ Eine eigene Angebotszuordnung hebt eine Kategorieanforderung nicht auf.
 
 Beim Einrichten von Exemplaren und Pools ist der **Name für die Buchungsauswahl**
 eine ausdrücklich öffentliche Bezeichnung. Interne Namen, Inventarnummern und
-Seriennummern werden dadurch nicht automatisch veröffentlicht. Leer lassen, wenn
+Seriennummern werden dadurch nicht automatisch veröffentlicht. Bei bereits
+veröffentlichten Angeboten braucht eine Änderung dieser öffentlichen Namen
+zusätzlich Veröffentlichungsrecht. Leer lassen, wenn
 die Einheit ausschließlich automatisch zugewiesen werden soll.
 
 Nach der Kalenderauswahl kann die reservierende Person ein veröffentlicht benanntes

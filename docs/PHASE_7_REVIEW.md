@@ -80,8 +80,11 @@ Wartungsaufträge, ICS/API, Hardware-/Kiosktests und Produktion sind nicht Phase
 
 ## Bisherige Verifikation
 
-Vollständige lokale PostgreSQL-16-Regression: **247 bestanden**, 97,02 Sekunden.
-[JUnit](test-results/phase-7-local.xml). Ruff, Formatierung, Mypy (132 Dateien),
+Vollständige lokale PostgreSQL-16-Regression: **248 bestanden**, 95,98 Sekunden.
+[JUnit](test-results/phase-7-local.xml). Nach dem letzten Privacy-/Status-Härtungsfall
+zusätzlich **16 Phase-7-Tests bestanden**, 13,18 Sekunden
+([gezielte Nachweise](test-results/phase-7-targeted.xml)); die abschließende CI prüft
+die gesamte endgültige Fassung. Ruff, Formatierung, Mypy (132 Dateien),
 Django-Systemprüfung, Migrationskonsistenz und Dokumentlinks bestanden.
 
 Tatsächliche Browserprüfung an der isolierten lokalen Preview: öffentliches
@@ -92,8 +95,16 @@ führt ohne Konto zur Anmeldung. Test-Sperre anschließend regulär aufgehoben.
 Authentifizierte Verwaltungs-/Vergabe-/Buchungsansichten sind durch Django-Client-
 Tests geprüft; keine manuelle Passwortanlage oder behauptete Hardwareabnahme.
 
-[Bundle](screenshots/phase-7-bundle.png), [320px](screenshots/phase-7-mobile.png),
+[Übersicht](screenshots/phase-7-overview.png), [Bundle](screenshots/phase-7-bundle.png), [320px](screenshots/phase-7-mobile.png),
 [Komponentensperre](screenshots/phase-7-component-block.png).
 
 CI-Ergebnis wird nach dem Lauf des gepushten Anwendungscodes ergänzt.
 Phase 8 bleibt ein separates Owner-Gate.
+
+## Review-PR
+
+SSH-Push funktioniert. GitHub-Connector verweigert die PR-Erstellung weiterhin mit
+403 `Resource not accessible by integration`; lokal ist keine GitHub-CLI vorhanden.
+[Branch vergleichen / PR erstellen](https://github.com/IndieStu/Zirculeih/compare/main...phase-7-qualifications-bundles?expand=1).
+Der Branch enthält zusätzlich die bereits akzeptierten UX-/Kalender-Follow-ups,
+die im älteren Main-Snapshot noch nicht enthalten waren.

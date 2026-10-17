@@ -444,3 +444,57 @@ def test_physical_bundle_no_show_is_atomic(lending_setup, monkeypatch):
     loans.no_show(actor, root.pk, root.revision, "Nicht erschienen")
     assert set(Booking.objects.values_list("status", flat=True)) == {"no_show"}
     assert not AllocationClaim.objects.filter(is_active=True).exists()
+
+
+def test_public_capacity_names_require_publication_permission(configured):
+    actor, r, u, _, _, _, _ = configured
+    group = actor.membership_set.get(removed_at=None).group
+    pool = resources.save_pool(actor, r.pk, "Internal", [u], public_name="Published pool")
+    Grant.objects.filter(group=group, action="resource.publish").delete()
+    with pytest.raises(PermissionDenied):
+        resources.save_unit(
+            actor,
+            r.pk,
+            {"public_name": "Published unit"},
+            unit_id=u.pk,
+            expected_revision=u.revision,
+        )
+    with pytest.raises(PermissionDenied):
+        resources.save_pool(
+            actor,
+            r.pk,
+            "Internal",
+            [u],
+            pool_id=pool.pk,
+            expected_revision=pool.revision,
+            public_name="Changed public pool",
+        )
+    resources.save_pool(
+        actor,
+        r.pk,
+        "Internal",
+        [u],
+        pool_id=pool.pk,
+        expected_revision=pool.revision,
+        is_active=False,
+    )
+    pool.refresh_from_db()
+    assert pool.public_name == "Published pool"
+
+
+def test_private_component_does_not_publish_occupancy_or_labels(configured, client):
+    from resources.calendar import current_status
+
+    actor, r, _, _, user, s, e = configured
+    c = component(configured)
+    c = resources.save_resource(
+        actor, {"visibility": "private"}, resource_id=c.pk, expected_revision=c.revision
+    )
+    bundles.configure(actor, r.pk, [(c, True)], r.revision)
+    assert current_status(r) == "Verfügbarkeit im Kalender prüfen"
+    page = client.get(reverse("resource_detail", args=[r.slug]))
+    assert page.status_code == 200
+    assert c.title not in page.content.decode()
+    with pytest.raises((PermissionDenied, ValidationError)):
+        services.confirm(user, r.pk, s, e, uuid4())
+    assert not Booking.objects.exists()

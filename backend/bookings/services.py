@@ -752,7 +752,7 @@ def availability(actor, resource_id, start, end, *, optional_ids=(), **kwargs):
     return result
 
 
-def confirm(actor, resource_id, start, end, key, *, optional_ids=(), **kwargs):
+def _confirm_dispatch(actor, resource_id, start, end, key, *, optional_ids=(), **kwargs):
     if any(k.startswith("_") for k in kwargs):
         raise ValidationError("Unbekannte Buchungseingabe.")
     from resources.models import BundleComponent
@@ -770,6 +770,15 @@ def confirm(actor, resource_id, start, end, key, *, optional_ids=(), **kwargs):
             actor, resource_id, start, end, key, optional_ids=optional_ids, **kwargs
         )
     return _confirm_single(actor, resource_id, start, end, key, **kwargs)
+
+
+def confirm(actor, resource_id, start, end, key, *, optional_ids=(), **kwargs):
+    try:
+        return _confirm_dispatch(
+            actor, resource_id, start, end, key, optional_ids=optional_ids, **kwargs
+        )
+    except IntegrityError as exc:
+        raise ValidationError("Der Zeitraum wurde inzwischen belegt. Bitte erneut prüfen.") from exc
 
 
 def cancel(actor, booking_id, revision, reason):

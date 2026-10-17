@@ -215,6 +215,12 @@ def save_unit(actor, resource_id, data, *, unit_id=None, expected_revision=None)
             if unit_id
             else ResourceUnit(resource=resource)
         )
+        if (
+            "public_name" in data
+            and data["public_name"] != unit.public_name
+            and resource.published_at
+        ):
+            require(actor, "resource.publish", resource_scope(resource))
         if unit_id:
             check_revision(unit, expected_revision)
             if "asset" in data and getattr(data["asset"], "pk", None) != unit.asset_id:
@@ -256,7 +262,7 @@ def save_pool(
     pool_id=None,
     expected_revision=None,
     is_active=True,
-    public_name="",
+    public_name=None,
 ):
     with authorization_write():
         resource = read_resource(actor, resource_id)
@@ -274,7 +280,11 @@ def save_pool(
             raise ValidationError("Nur aktive Einheiten dieses Angebots wählen.")
         if PoolMembership.objects.filter(unit_id__in=ids).exclude(pool=pool).exists():
             raise ValidationError("Eine Einheit ist bereits einem anderen Pool zugeordnet.")
-        pool.name, pool.is_active, pool.public_name = name, is_active, public_name
+        if public_name is not None and public_name != pool.public_name and resource.published_at:
+            require(actor, "resource.publish", resource_scope(resource))
+        pool.name, pool.is_active = name, is_active
+        if public_name is not None:
+            pool.public_name = public_name
         pool.revision += 1
         pool.full_clean()
         pool.save()
