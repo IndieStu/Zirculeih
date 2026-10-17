@@ -4,7 +4,7 @@
 
 Auf der Startseite kannst du einen Begriff eingeben und Enter drücken. „Entdecken“ zeigt veröffentlichte Angebote mit Suche nach Katalogtexten/Schlagworten und Filtern für Typ, Kategorie einschließlich Unterkategorien und öffentliche Ortsangabe. Öffne eine Karte für Beschreibung, Galerie, Ausstattung sowie Sicherheits-/Nutzungshinweise.
 
-Öffentliche Angebote sind ohne Konto lesbar. Interne veröffentlichte Angebote benötigen ein verifiziertes, freigegebenes Konto mit passenden Katalogrechten. Entwürfe und archivierte Angebote sind nicht im Katalog. Bei eingerichteten Angeboten führt „Buchung prüfen“ zum [Buchungsablauf](bookings.md). Die Detailseite behauptet keine freie Zeit; die aktuelle Prüfung erfolgt für deinen Zeitraum und deine Rechte. Noch nicht eingerichtete Angebote bleiben ohne verbindliche Buchungszusage.
+Öffentliche Angebote sind ohne Konto lesbar. Interne veröffentlichte Angebote benötigen ein verifiziertes, freigegebenes Konto mit passenden Katalogrechten. Entwürfe und archivierte Angebote sind nicht im Katalog. Bei eingerichteten Angeboten beginnt die Auswahl im Monatskalender. Wähle einen verfügbaren Tag und anschließend im Zeitband oder über Von/Bis einen zusammenhängenden Zeitraum. Belegt, Übergangszeit, Sperre und geschlossen sind unterscheidbar. Die Höchstdauer begrenzt die auswählbaren Endzeiten sofort. Tagesangebote verwenden Von/Bis einschließlich im Monatskalender. „Reservieren“ führt danach zum [Buchungsablauf](bookings.md) mit den noch fehlenden Voraussetzungen. Die verbindliche Prüfung erfolgt erneut für deinen Zeitraum und deine Rechte. Noch nicht eingerichtete Angebote bleiben ohne verbindliche Buchungszusage.
 
 ## Bilder vorbereiten
 

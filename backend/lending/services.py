@@ -94,9 +94,47 @@ def checkout(actor, borrower_id, booking_ids, key, *, checks, spontaneous=None):
             raise ValidationError("Vollständiges freigegebenes Ausleihprofil erforderlich.")
         if not IdentityCheck.objects.filter(user=borrower).exists():
             raise ValidationError("Erste Ausweisprüfung erforderlich.")
-        for request in spontaneous or []:
-            unit = ResourceUnit.objects.select_related("resource").get(pk=request["unit_id"])
+        pending = list(spontaneous or [])
+        pending_units = {str(r["unit_id"]): r for r in pending}
+        if len(pending_units) != len(pending):
+            raise ValidationError("Ein Exemplar darf nur einmal vorbereitet werden.")
+        unit_rows = {
+            str(u.pk): u
+            for u in ResourceUnit.objects.filter(pk__in=pending_units).select_related("resource")
+        }
+        if len(unit_rows) != len(pending_units):
+            raise ValidationError("Ungültige vorbereitete Exemplare.")
+        pending.sort(
+            key=lambda r: not unit_rows[str(r["unit_id"])].resource.bundle_components.exists()
+        )
+        reused: dict[str, dict] = {}
+        for request in pending:
+            unit = unit_rows[str(request["unit_id"])]
+            if str(unit.pk) in reused:
+                original = reused[str(unit.pk)]
+                if any(
+                    request.get(field) != original.get(field)
+                    for field in ("start", "end", "pickup_at", "return_at")
+                ):
+                    raise ValidationError(
+                        "Für Bundle-Komponenten denselben Zeitraum und dieselben Termine wählen."
+                    )
+                continue
             require(actor, "loan.checkout", resource_scope(unit.resource))
+            bundle_kwargs = {}
+            if unit.resource.bundle_components.exists():
+                from resources.bundles import expansion
+
+                component_ids = {str(r.pk) for r, _ in expansion(unit.resource)[1:]}
+                choices = {}
+                for uid, candidate in unit_rows.items():
+                    if str(candidate.resource_id) in component_ids:
+                        if str(candidate.resource_id) in choices:
+                            raise ValidationError(
+                                "Ein eindeutiges Exemplar je Bundle-Komponente vorbereiten."
+                            )
+                        choices[str(candidate.resource_id)] = uid
+                bundle_kwargs["component_units"] = choices
             row = bookings.confirm(
                 actor,
                 unit.resource_id,
@@ -110,8 +148,29 @@ def checkout(actor, borrower_id, booking_ids, key, *, checks, spontaneous=None):
                 walk_in=True,
                 start_fold=request.get("start_fold"),
                 end_fold=request.get("end_fold"),
+                **bundle_kwargs,
             )
-            ids.append(str(row.pk))
+            from bookings.models import BundleMember
+
+            member = BundleMember.objects.filter(booking=row).first()
+            physical = (
+                list(
+                    Booking.objects.filter(
+                        bundle_member__reservation_id=member.reservation_id,
+                        policy_snapshot__use_mode="physical_loan",
+                    )
+                )
+                if member
+                else [row]
+            )
+            if any(str(item.unit_id) not in pending_units for item in physical):
+                raise ValidationError(
+                    "Alle physischen Bundle-Komponenten scannen und "
+                    "Zustand/Zubehör ausdrücklich prüfen."
+                )
+            for item in physical:
+                ids.append(str(item.pk))
+                reused[str(item.unit_id)] = request
         rows = list(
             Booking.objects.select_for_update(of=("self",))
             .filter(pk__in=ids)
@@ -119,6 +178,12 @@ def checkout(actor, borrower_id, booking_ids, key, *, checks, spontaneous=None):
         )
         if len(rows) != len(ids):
             raise PermissionDenied
+        from bookings.bundles import physical_members
+
+        if not {str(pk) for pk in physical_members(ids)}.issubset(set(ids)):
+            raise ValidationError(
+                "Alle reservierten physischen Bundle-Komponenten gemeinsam ausgeben."
+            )
         now = timezone.now()
         evidence: set[str] = set()
         for row in rows:
@@ -324,7 +389,7 @@ def mark_overdue():
         return rows.count()
 
 
-def extend_line(actor, line_id, end, return_at, revision, reason, *, end_fold=None):
+def _extend_line_single(actor, line_id, end, return_at, revision, reason, *, end_fold=None):
     from bookings.time_rules import interval
     from psycopg.types.range import Range
 
@@ -416,7 +481,7 @@ def pickup_bookings(actor):
     return rows.filter(pk__in=ids)
 
 
-def no_show(actor, booking_id, revision, reason):
+def _no_show_single(actor, booking_id, revision, reason):
     with authorization_write():
         row = (
             Booking.objects.select_for_update(of=("self",))
@@ -444,4 +509,60 @@ def no_show(actor, booking_id, revision, reason):
         row.save()
         AllocationClaim.objects.filter(booking=row).update(is_active=False)
         audit(actor, "loan.no_show", subject=row.beneficiary, object_id=row.pk, reason=reason)
+        return row
+
+
+def extend_line(actor, line_id, end, return_at, revision, reason, *, end_fold=None):
+    from bookings.models import BundleMember
+
+    with authorization_write():
+        line = LoanLine.objects.select_for_update().get(pk=line_id)
+        if line.booking.revision != revision:
+            raise ValidationError("Buchung wurde inzwischen geändert.")
+        member = BundleMember.objects.filter(booking_id=line.booking_id).first()
+        if not member:
+            return _extend_line_single(
+                actor, line_id, end, return_at, revision, reason, end_fold=end_fold
+            )
+        members = list(member.reservation.members.select_related("booking"))
+        if any(m.booking.policy_snapshot.get("use_mode") != "physical_loan" for m in members):
+            raise ValidationError(
+                "Gemischte Vor-Ort-/Ausleihbundles können nicht als Ausleihe verlängert werden. "
+                "Bitte neue Anschlussbuchung prüfen."
+            )
+        lines = list(
+            LoanLine.objects.filter(
+                booking_id__in=[m.booking_id for m in members], returned_at__isnull=True
+            ).select_related("booking")
+        )
+        if len(lines) != len(members):
+            raise ValidationError(
+                "Nur ein vollständig ausgegebenes, noch offenes Bundle gemeinsam verlängern."
+            )
+        for item in sorted(lines, key=lambda x: str(x.pk)):
+            _extend_line_single(
+                actor, item.pk, end, return_at, item.booking.revision, reason, end_fold=end_fold
+            )
+        line.refresh_from_db()
+        return line
+
+
+def no_show(actor, booking_id, revision, reason):
+    from bookings.models import BundleMember
+
+    with authorization_write():
+        row = bookings.read_booking(actor, booking_id)
+        if row.revision != revision:
+            raise ValidationError("Buchung wurde inzwischen geändert.")
+        member = BundleMember.objects.filter(booking=row).first()
+        if not member:
+            return _no_show_single(actor, booking_id, revision, reason)
+        members = list(member.reservation.members.select_related("booking"))
+        if any(m.booking.policy_snapshot.get("use_mode") != "physical_loan" for m in members):
+            raise ValidationError(
+                "Bei gemischten Bundles bitte den gesamten Vorgang betrieblich klären."
+            )
+        for item in sorted(members, key=lambda x: str(x.booking_id)):
+            _no_show_single(actor, item.booking_id, item.booking.revision, reason)
+        row.refresh_from_db()
         return row

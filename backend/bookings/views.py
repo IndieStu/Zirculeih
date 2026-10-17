@@ -29,9 +29,7 @@ MESSAGES = {
     "physical_unit_required": "Eine physische Einheit muss eingerichtet sein.",
     "pickup_unavailable": "Abholtermin außerhalb eines erlaubten Abholfensters oder Zeitraums.",
     "return_unavailable": "Der Rückgabetermin liegt nicht in einem erlaubten Rückgabefenster.",
-    "available": (
-        "Der Zeitraum ist derzeit frei. Erst der erfolgreiche Abschluss bestätigt die Buchung."
-    ),
+    "available": ("Der Zeitraum ist frei."),
     "permission_denied": "Für diesen Zeitraum fehlt eine erforderliche Berechtigung.",
     "reserved": "Der Zeitraum ist inzwischen belegt.",
     "capacity_exhausted": "Keine geeignete aktive Einheit vorhanden.",
@@ -52,7 +50,10 @@ MESSAGES = {
         "Physische Ausleihreservierungen sind für dieses Angebot noch nicht "
         "freigeschaltet. Bitte beim Team melden."
     ),
-    "qualification_required": "Die erforderliche Einweisungsprüfung ist noch nicht freigeschaltet.",
+    "bundle_component_unavailable": (
+        "Eine benötigte Komponente ist nicht verfügbar oder eine Voraussetzung fehlt."
+    ),
+    "qualification_required": "Die erforderliche Einweisung fehlt. Bitte wende dich an das Team.",
     "agreement_required": "Bitte die erforderlichen aktuellen Vereinbarungen bestätigen.",
 }
 
@@ -95,7 +96,74 @@ def create(request, resource_id):
             "bookings/unavailable.html",
             {"resource": resource, "message": MESSAGES["not_configured"]},
         )
-    form = forms.BookingForm(policy, request.POST or None)
+    from django import forms as django_forms
+    from lending import agreements
+    from resources.bundles import expansion
+    from resources.models import BundleComponent
+    from resources.requirements import outstanding
+
+    optional_rows: list[Resource] = []
+    from uuid import UUID
+
+    frontier = [resource.pk]
+    seen: set[UUID] = set()
+    visible = set(visible_resources(request.user).values_list("pk", flat=True))
+    while frontier and len(seen) <= 20:
+        seen.update(frontier)
+        links = list(
+            BundleComponent.objects.filter(resource_id__in=frontier).select_related("component")
+        )
+        optional_rows.extend(
+            link.component for link in links if not link.required and link.component_id in visible
+        )
+        frontier = [link.component_id for link in links if link.component_id not in seen]
+    selected = request.POST.getlist("optional_ids") if request.method == "POST" else []
+    try:
+        entries = expansion(resource, selected)
+    except ValidationError:
+        entries = [(resource, True)]
+    missing_versions: list = []
+    missing_qualifications: list = []
+    for entry, _required in entries:
+        if entry.pk not in visible:
+            continue
+        try:
+            versions, qualifications = outstanding(request.user, entry)
+            missing_versions.extend(
+                v for v in versions if v.pk not in {x.pk for x in missing_versions}
+            )
+            missing_qualifications.extend(
+                q for q in qualifications if q.pk not in {x.pk for x in missing_qualifications}
+            )
+        except ValidationError:
+            pass
+    needs_appointments = any(
+        hasattr(entry, "bookingpolicy") and entry.bookingpolicy.use_mode == "physical_loan"
+        for entry, _required in entries
+    )
+    initial = {
+        key: request.GET[key]
+        for key in ("start", "end", "pickup_at", "return_at", "start_fold", "end_fold")
+        if key in request.GET
+    }
+    form = forms.BookingForm(
+        policy, request.POST or None, initial=initial, needs_appointments=needs_appointments
+    )
+    if optional_rows:
+        form.fields["optional_ids"] = django_forms.MultipleChoiceField(
+            label="Optionale Komponenten",
+            required=False,
+            choices=[(str(r.pk), r.title) for r in optional_rows],
+            widget=django_forms.CheckboxSelectMultiple,
+        )
+
+    requirement_fields = []
+    for version in missing_versions:
+        key = "agreement_" + str(version.pk)
+        form.fields[key] = django_forms.BooleanField(
+            label="Ich akzeptiere " + version.agreement.title + ".", required=False
+        )
+        requirement_fields.append((version, form[key]))
     result = None
     if request.method == "POST":
         if not take(request, "booking-submit", str(request.user.pk), limit=120):
@@ -103,10 +171,20 @@ def create(request, resource_id):
         if form.is_valid():
             data = form.cleaned_data
             try:
-                kwargs = {"start_fold": data["start_fold"], "end_fold": data["end_fold"]}
-                if policy.use_mode == "physical_loan":
+                kwargs = {
+                    "start_fold": data["start_fold"],
+                    "end_fold": data["end_fold"],
+                    "unit_id": data.get("unit_id") or None,
+                    "pool_id": data.get("pool_id") or None,
+                    "optional_ids": data.get("optional_ids", []),
+                }
+                if "pickup_at" in form.fields:
                     kwargs.update(pickup_at=data["pickup_at"], return_at=data["return_at"])
                 if request.POST.get("action") == "confirm":
+                    if any(not data["agreement_" + str(v.pk)] for v in missing_versions):
+                        raise ValidationError("Bitte die erforderlichen Vereinbarungen bestätigen.")
+                    if missing_versions:
+                        agreements.accept(request.user, [v.pk for v in missing_versions])
                     booking = services.confirm(
                         request.user, resource.pk, data["start"], data["end"], data["key"], **kwargs
                     )
@@ -121,9 +199,13 @@ def create(request, resource_id):
         "bookings/create.html",
         {
             "resource": resource,
+            "bundle_resources": [r for r, _required in entries[1:] if r.pk in visible],
             "policy": policy,
             "form": form,
             "result": result,
+            "requirement_fields": requirement_fields,
+            "missing_qualifications": missing_qualifications,
+            "booking_fields": [f for f in form if not f.name.startswith("agreement_")],
             "result_message": MESSAGES.get(result.code) if result else None,
         },
     )
@@ -132,13 +214,15 @@ def create(request, resource_id):
 @page
 @require_http_methods(["GET"])
 def own(request):
-    rows = services.visible_bookings(request.user)
+    rows = services.visible_bookings(request.user).select_related(
+        "loan_line__loan", "loan_line__asset"
+    )
     return render(
         request,
         "bookings/list.html",
         {
             "page_obj": Paginator(rows, 30).get_page(request.GET.get("page")),
-            "title": "Meine Buchungen",
+            "title": "Meine Vorgänge",
         },
     )
 
@@ -147,11 +231,22 @@ def own(request):
 @require_http_methods(["GET"])
 def detail(request, booking_id):
     booking = services.read_booking(request.user, booking_id)
+    from .models import BundleMember
+
+    membership = BundleMember.objects.filter(booking=booking).first()
+    group_rows = []
+    if membership:
+        for member in membership.reservation.members.select_related("booking__resource"):
+            try:
+                group_rows.append(services.read_booking(request.user, member.booking_id))
+            except PermissionDenied:
+                continue
     return render(
         request,
         "bookings/detail.html",
         {
             "booking": booking,
+            "bundle_bookings": group_rows,
             "last_date": booking.end_date_exclusive - timedelta(days=1)
             if booking.end_date_exclusive
             else None,
@@ -184,7 +279,18 @@ def cancel(request, booking_id):
             return redirect("booking_detail", booking_id=booking.pk)
         except ValidationError as exc:
             form.add_error(None, error_message(exc))
-    return render(request, "bookings/form.html", {"title": "Buchung stornieren", "form": form})
+    return render(
+        request,
+        "bookings/form.html",
+        {
+            "title": "Buchung stornieren",
+            "form": form,
+            "text": "Alle gemeinsam reservierten Bundle-Komponenten werden ebenfalls storniert. "
+            "Jede Stornofrist und Berechtigung wird geprüft."
+            if hasattr(booking, "bundle_member")
+            else None,
+        },
+    )
 
 
 @page
@@ -213,14 +319,18 @@ def operations(request):
         w
         for w in ScheduleWindow.objects.all()
         if allowed(
-            request.user, "booking.configure", services.schedule_scope(w.resource_id, w.location_id)
+            request.user,
+            "booking.configure",
+            services.schedule_scope(w.resource_id, w.location_id, w.category_id, w.organization),
         )
     ]
     exceptions = [
         w
         for w in ScheduleException.objects.all()
         if allowed(
-            request.user, "booking.configure", services.schedule_scope(w.resource_id, w.location_id)
+            request.user,
+            "booking.configure",
+            services.schedule_scope(w.resource_id, w.location_id, w.category_id, w.organization),
         )
     ]
     incidents = BookingIncident.objects.filter(booking__in=rows, is_open=True).select_related(
@@ -265,14 +375,14 @@ def policy_edit(request, resource_id):
             form.add_error(None, exc)
     return render(
         request,
-        "bookings/form.html",
+        "bookings/policy.html",
         {
-            "title": f"Buchungsregeln: {resource.title}",
+            "title": f"Buchung: {resource.title}",
             "form": form,
             "text": (
                 "Nutzung, Gebäudezugang und betreute Öffnung benötigen Zeitpläne. "
-                "Physische Ausleihe und zusätzliche Pflichtgates bleiben bis zu "
-                "ihren Phasen gesperrt."
+                "Vor- und Nachbereitung ergeben zusammen mindestens 30 Minuten "
+                "Übergangszeit für Räume und Maschinen."
             ),
         },
     )
@@ -286,11 +396,21 @@ def schedule_add(request, exception=False):
     if not any_action(request.user, "booking.configure"):
         raise PermissionDenied
     form = (forms.ExceptionForm if exception else forms.WindowForm)(
-        request.user, request.POST or None
+        request.user, request.POST or None, initial={"resource": request.GET.get("resource")}
     )
     if request.method == "POST" and form.is_valid():
         try:
-            services.save_schedule(request.user, form.cleaned_data, exception=exception)
+            data = dict(form.cleaned_data)
+            through = data.pop("through", None)
+            from accounts.authorization import authorization_write
+
+            with authorization_write():
+                services.save_schedule(request.user, data, exception=exception)
+                if exception and through:
+                    day = data["date"] + timedelta(days=1)
+                    while day <= through:
+                        services.save_schedule(request.user, {**data, "date": day}, exception=True)
+                        day += timedelta(days=1)
             return redirect("booking_operations")
         except ValidationError as exc:
             form.add_error(None, exc)
@@ -301,7 +421,9 @@ def schedule_add(request, exception=False):
             "title": "Datumsbezogene Ausnahme" if exception else "Wochenzeitfenster hinzufügen",
             "form": form,
             "text": (
-                "Genau ein Angebot oder einen Standort wählen. Ausnahmen ersetzen "
+                "Genau einen Bereich wählen: Organisation, Kategorie, Standort oder Artikel / Raum."
+                " "
+                "Ausnahmen ersetzen "
                 "Wochenzeiten am Datum. Ende am Folgetag erlaubt höchstens 24 "
                 "Stunden; 00:00 bis 00:00 am Folgetag ist ein ganzer Tag."
             ),
@@ -389,5 +511,69 @@ def incident_resolve(request, incident_id):
                 "Tatsächliche Maßnahmen vorher durchführen und im Grund "
                 "dokumentieren."
             ),
+        },
+    )
+
+
+@page
+@require_http_methods(["GET"])
+def hours_admin(request):
+    from inventory.views import any_action
+
+    if not any_action(request.user, "booking.configure"):
+        raise PermissionDenied
+
+    def permitted(row):
+        return allowed(
+            request.user,
+            "booking.configure",
+            services.schedule_scope(
+                row.resource_id, row.location_id, row.category_id, row.organization
+            ),
+        )
+
+    windows = [
+        r
+        for r in ScheduleWindow.objects.select_related("resource", "location", "category")
+        if permitted(r)
+    ]
+    exceptions = [
+        r
+        for r in ScheduleException.objects.select_related("resource", "location", "category")
+        if permitted(r)
+    ]
+
+    def owner(row):
+        if row.organization:
+            return "organization", "Organisation"
+        if row.resource_id:
+            return "resource:" + str(row.resource_id), row.resource.title
+        if row.category_id:
+            return "category:" + str(row.category_id), "Kategorie: " + row.category.name
+        return "location:" + str(row.location_id), "Standort: " + row.location.name
+
+    owners = dict(owner(r) for r in [*windows, *exceptions])
+    selected = request.GET.get("owner", "")[:100]
+    purpose = request.GET.get("purpose", "")[:10]
+    if selected:
+        windows = [r for r in windows if owner(r)[0] == selected]
+        exceptions = [r for r in exceptions if owner(r)[0] == selected]
+    if purpose:
+        windows = [r for r in windows if r.purpose == purpose]
+        exceptions = [r for r in exceptions if r.purpose == purpose]
+    from urllib.parse import urlencode
+
+    query = urlencode({"owner": selected, "purpose": purpose})
+    return render(
+        request,
+        "bookings/hours.html",
+        {
+            "windows": Paginator(windows, 30).get_page(request.GET.get("weekpage")),
+            "exceptions": Paginator(exceptions, 30).get_page(request.GET.get("exceptionpage")),
+            "owners": sorted(owners.items(), key=lambda pair: pair[1]),
+            "purposes": ScheduleWindow._meta.get_field("purpose").choices,
+            "selected_owner": selected,
+            "selected_purpose": purpose,
+            "filter_query": query,
         },
     )

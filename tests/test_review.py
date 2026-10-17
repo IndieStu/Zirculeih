@@ -89,6 +89,7 @@ def test_marker_configuration(settings, client):
     response = client.get("/")
     assert b"TESTINSTANZ" in response.content
     assert b"abcdef0" in response.content
+    assert b"accounts.css?v=abcdef0" in response.content
 
 
 def test_review_configuration_forces_local_mail():
@@ -127,3 +128,98 @@ def test_review_configuration_forces_local_mail():
             check=False,
         )
         assert invalid.returncode != 0
+
+
+def test_additive_ux_upgrade_preserves_review_state(settings, tmp_path):
+    from accounts.authorization import allowed
+    from lending.models import Acceptance
+    from resources.models import UserQualification
+
+    settings.REVIEW_MODE = True
+    settings.MEDIA_ROOT = tmp_path / "media"
+    marker, _ = seed(timezone.localdate())
+    original = dict(User.objects.values_list("pk", "password"))
+    bookings = set(
+        __import__("bookings.models", fromlist=["Booking"]).Booking.objects.values_list(
+            "pk", flat=True
+        )
+    )
+    call_command("enhance_review_ux")
+    marker.refresh_from_db()
+    assert len(marker.accounts) == 10
+    assert (
+        Resource.objects.filter(slug__in=["review-mini", "review-mk3s", "review-mk4"]).count() == 3
+    )
+    for uid, password in original.items():
+        assert User.objects.get(pk=uid).password == password
+    assert bookings.issubset(
+        set(
+            __import__("bookings.models", fromlist=["Booking"]).Booking.objects.values_list(
+                "pk", flat=True
+            )
+        )
+    )
+    admin = User.objects.get(pk=marker.accounts["admin"])
+    assert allowed(admin, "permissions.manage") and allowed(admin, "resource.manage")
+    ready = User.objects.get(pk=marker.accounts["ux_ready"])
+    old = User.objects.get(pk=marker.accounts["ux_old"])
+    assert not allowed(ready, "permissions.manage")
+    assert Acceptance.objects.filter(user=ready, version__number=2).exists()
+    assert Acceptance.objects.filter(user=old, version__number=1).exists()
+    assert not Acceptance.objects.filter(user=old, version__number=2).exists()
+    assert UserQualification.objects.filter(user=ready).count() == 2
+    count = Resource.objects.count()
+    call_command("enhance_review_ux")
+    assert Resource.objects.count() == count
+
+
+def test_calendar_review_additions_preserve_existing_records(settings, tmp_path):
+    from bookings.models import Booking, ResourceBlock, ScheduleException
+    from resources.calendar import calendar
+
+    settings.REVIEW_MODE = True
+    settings.MEDIA_ROOT = tmp_path / "media"
+    marker, _ = seed(timezone.localdate())
+    call_command("enhance_review_ux")
+    before = dict(User.objects.values_list("pk", "password"))
+    prior = set(Booking.objects.values_list("pk", flat=True))
+    call_command("enhance_review_calendar")
+    marker.refresh_from_db()
+    assert marker.calendar_revision == 1 and marker.calendar_anchor.weekday() == 2
+    assert prior.issubset(set(Booking.objects.values_list("pk", flat=True)))
+    assert Booking.objects.count() == len(prior) + 4
+    assert all(User.objects.get(pk=pk).password == password for pk, password in before.items())
+    room = Resource.objects.get(slug="review-raum")
+    assert room.bookingpolicy.max_duration_minutes == 240
+    assert room.bookingpolicy.buffer_after_minutes >= 30
+    assert ScheduleException.objects.filter(
+        category__name="Kalenderreview · Vor-Ort-Nutzung", is_closed=True
+    ).exists()
+    assert ResourceBlock.objects.filter(reason="Fiktive Wartung für Kalenderreview").exists()
+    day = calendar(room, marker.calendar_anchor.isoformat())
+    assert {"booked", "transition", "available", "closed"}.issubset(
+        {r["state"] for r in day["segments"]}
+    )
+    call_command("enhance_review_calendar")
+    assert Booking.objects.count() == len(prior) + 4
+
+
+def test_phase7_examples_are_explicit_additive_and_idempotent(settings, tmp_path):
+    settings.REVIEW_MODE = True
+    settings.MEDIA_ROOT = tmp_path / "media"
+    marker, _ = seed(timezone.localdate())
+    call_command("enhance_review_ux")
+    before = dict(User.objects.values_list("pk", "password"))
+    old_resources = set(Resource.objects.values_list("pk", flat=True))
+    from bookings.models import Booking
+
+    old_bookings = list(Booking.objects.values())
+    call_command("enhance_review_phase7")
+    assert Resource.objects.count() == len(old_resources) + 4
+    assert old_resources.issubset(set(Resource.objects.values_list("pk", flat=True)))
+    assert list(Booking.objects.values()) == old_bookings
+    assert all(User.objects.get(pk=pk).password == password for pk, password in before.items())
+    root = Resource.objects.get(slug="review-p7-bike")
+    assert root.bundle_components.filter(required=True).count() == 3
+    call_command("enhance_review_phase7")
+    assert Resource.objects.count() == len(old_resources) + 4

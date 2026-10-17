@@ -1,6 +1,6 @@
 # Deelvo — Product & Engineering Specification
 
-**Version:** 0.7 · **Status:** Phase 5 accepted and merged; Phase 6 merged, not accepted; owner/team UX review gate active · **Date:** 2026-10-16
+**Version:** 0.8 · **Status:** Phase 6 and owner/team UX review accepted; Phase 7 implemented; owner review pending · **Date:** 2026-10-17
 **Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
@@ -469,3 +469,44 @@ Owner confirmed “freigegeben und merged” following the Phase-5 review/next-p
 ## 26. Owner/team UX review gate — 2026-10-16
 
 The owner confirmed Phase 6 is merged but not accepted. [Binding review gate](docs/review/OWNER_UX_REVIEW_GATE.md) authorizes an isolated fictional NCtest/Tailscale review instance, explicit seed, role accounts and review material, not a speculative redesign. [Deployment](docs/deployment/REVIEW_INSTANCE.md), [team tasks](docs/review/UX_REVIEW_PHASE_6.md). Phase 7 remains blocked until explicit owner approval after team feedback. No production or real personal data is authorized.
+
+## 27. Owner UX correction before team review — 2026-10-16
+
+[Binding correction](docs/review/OWNER_UX_CORRECTION.md), [owner notes](docs/review/OWNER_UX_NOTES.md)
+and [ADR-020](docs/adr/020.md) authorize the correction of navigation, terminology,
+visible availability, scheduling administration and resource-specific agreements/
+qualifications within the Phase-6 review gate. The owner confirmed one visible
+Admin role, preserving protected authority and explicit operational permissions.
+MyTurn is evidence for operational presentation only: its item/check-out model,
+membership types, fragmented scheduling and consent-like induction labels must not
+replace Deelvo's established models. Owner feedback prevails.
+
+Only additive migration and fictional review-data enhancement are authorized on
+NCtest. Existing review records, passwords and media must survive. Full regression
+and review-instance verification precede the actual team review. Stop there;
+Phase 7 remains unauthorized.
+
+## 28. Binding calendar correction — 2026-10-16
+
+[Owner instruction](docs/review/OWNER_CALENDAR_CORRECTION.md) supersedes the daily
+free-slot-card presentation. [ADR-021](docs/adr/021.md): month first, visual day
+timeline and continuous start/end selection; day-mode offerings retain inclusive
+date ranges. Existing policy maximum duration and grid constrain selections.
+Onsite rooms/machines require at least 30 minutes total transition, configurable
+through existing before/after fields. Current transition applies to new allocations
+without rewriting historical claims; completed onsite use still blocks remaining
+transition. PostgreSQL locking and deferred conflict protection remain authoritative.
+Requirements follow period selection. Additive fictional calendar examples only;
+full regression and green CI before preserving-data NCtest deployment. Stop for
+owner/team review; no Phase 7 authorization.
+
+## 29. Phase-6/team-review acceptance and Phase-7 authorization — 2026-10-17
+
+Owner: “review durch starte mit p7”. [Record](docs/OWNER_APPROVAL_PHASE_7.md).
+Accepted review 0595653 includes application c013515; main 1ed5bbc contains an
+earlier review snapshot. The Phase-7 branch preserves the later corrections. Phase 7 extends existing
+qualifications with granular authorization, selected units/pools and atomic required
+bundle components while preserving resource/asset/loan distinctions and all current
+booking guarantees. AC-05/07/08/14 and concurrency/security regression are the gate.
+Earlier review-stop statements are historical. Phase 8 and production still need
+separate owner approval.

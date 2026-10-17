@@ -1,24 +1,24 @@
-# Begriffe zur Ownerentscheidung
+# Begriffe nach Owner-Korrektur
 
-Keine Domainmodelle umbenannt. UI darf später andere Wörter als Code verwenden.
-Diese Liste beschreibt vorhandene Texte und ihre Bedeutung; Vorschläge sind offen.
+Die Domainmodelle bleiben getrennt; ihre technischen Namen müssen Nutzende nicht kennen.
 
-| Aktueller UI-Begriff | Domain | Kontext / Bedeutung | Entscheidung |
-|---|---|---|---|
-| Inventar / Gegenstand | Asset | Dauerhaft verwaltetes physisches Objekt | Gegenstand/Inventarstück konsistent? |
-| Asset | Asset | Einzelne Inventarfehlertexte, Archiv-/Verwaltungswege | Technischen Begriff durch Gegenstand ersetzen? |
-| Angebot | Resource | Öffentlicher Katalog und Verwaltung | Angebot, Ressource oder Buchungsobjekt? |
-| Einheit | ResourceUnit | Verwaltung und Auswahl eines Exemplars/Kapazitätsplatzes | Exemplar für Gegenstände, Platz für Räume? |
-| Pool | ResourcePool | Zusammengehörige austauschbare Einheiten | Gruppe identischer Gegenstände verständlicher? |
-| Buchung | Booking | Reservierung eines Nutzungszeitraums | Einheitlich Buchung oder Reservierung? |
-| Ausleihe | Loan | Tatsächlich ausgegebene Gegenstände | Abgrenzung von Buchung deutlich genug? |
-| Position | LoanLine | Einzelgegenstand innerhalb einer Ausleihe | Gegenstand statt Position? |
-| Begünstigte Person | Beneficiary | Buchung für eine andere Person | Nutzende/ausleihende Person? |
-| Grant / Scope / Action | PermissionGrant | Gruppen-/Rechtekonfiguration, technische Aktionsnamen | Deutsche Labels mit erklärenden Beispielen? |
-| Onsite / physical_loan | BookingPolicy.use_mode | Technische Werte in Konfiguration | Vor-Ort-Nutzung / Mitnahme? |
-| AllocationClaim | AllocationClaim | Interne Zeitbelegung; kein normaler UI-Einstieg | Intern belassen |
-| Actor | User als ausführender Akteur | Audit/Service; kein eigener Kontotyp | Intern belassen, UI ggf. durchgeführt von |
+| UI | Interner Begriff | Bedeutung für das Team |
+| --- | --- | --- |
+| Inventar / Gegenstand | Asset | Physisch vorhandener, dauerhaft identifizierbarer Gegenstand |
+| Artikel & Ressourcen | Resource | Buchbarer Katalogeintrag, etwa Maschine, Raum oder Fahrzeug |
+| Exemplar / Platz | ResourceUnit | Austauschbarer Gegenstand oder logischer Kapazitätsplatz |
+| Pool | ResourcePool | Gemeinsam buchbare, austauschbare Exemplare |
+| Reservierung / Buchung | Booking | Zugesagter Nutzungszeitraum |
+| Ausleihe | Loan | Tatsächlich ausgegebene Gegenstände |
+| Meine Vorgänge | Booking + Loan presentation | Gemeinsame persönliche Übersicht, getrennte Zustände |
+| Vereinbarung | Agreement / Acceptance | Persönliche Bestätigung einer konkreten Textversion |
+| Einweisung | Qualification / UserQualification | Durch berechtigtes Personal dokumentierte Befähigung |
+| Art | ResourceType | Konfigurierbare Grundart, getrennt von Kategorien |
+| Kategorie | Category | Frei gepflegte fachliche Einordnung |
+| Öffentlicher Filterbereich | Resource.catalog_area | Gesonderte Katalogklassifikation, kein Lagerstandort |
+| Admin | Protected flag + explicit grants | Ein sichtbarer Zugang für Organisation und Betrieb |
 
-Bitte den tatsächlichen Bildschirm und Build ergänzen, wenn ein Wort unklar ist.
-Katalogtexte und Testnamen enthalten bewusst explizite Hinweise auf unfertige
-Einweisungen/Bundles; diese sind keine finale Produktterminologie.
+**Artikel & Ressourcen**, **Exemplar / Platz**, „Pool“ und Buchung/Reservierung bleiben
+bewusste Sprachentscheidungen für den Teamtest. Unterschiedliche Druckermodelle
+werden direkt mit ihrem konkreten Namen angeboten, nicht hinter einem austauschbaren
+Pool versteckt. Bitte unverständliche Resttexte mit Bildschirm und Tätigkeit melden.

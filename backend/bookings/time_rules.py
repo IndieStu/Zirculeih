@@ -25,11 +25,15 @@ def local_instant(value, timezone_name, fold=None):
         except OverflowError as exc:
             raise ValidationError("Diese Uhrzeit liegt außerhalb des gültigen Bereichs.") from exc
     if not choices:
-        raise ValidationError("Diese lokale Uhrzeit existiert wegen der Zeitumstellung nicht.")
+        raise ValidationError(
+            "Diese lokale Uhrzeit existiert wegen der Zeitumstellung nicht.",
+            code="nonexistent_time",
+        )
     if len(set(choices.values())) > 1:
         if fold not in (0, 1):
             raise ValidationError(
-                "Diese Uhrzeit kommt zweimal vor. Bitte erste/zweite Instanz wählen."
+                "Diese Uhrzeit kommt zweimal vor. Bitte die frühere oder spätere Uhrzeit wählen.",
+                code="ambiguous_time",
             )
         return choices[fold]
     return next(iter(choices.values()))

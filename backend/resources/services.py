@@ -82,13 +82,19 @@ def editable(resource):
         raise ValidationError("Archivierte Angebote sind unveränderlich.")
 
 
-def save_type(actor, data):
+def save_type(actor, data, *, type_id=None):
     with authorization_write():
         require(actor, "resource.type_manage")
-        row = ResourceType(**data)
+        row = ResourceType.objects.get(pk=type_id) if type_id else ResourceType()
+        for field, value in data.items():
+            if field not in {"key", "name", "is_active"}:
+                raise ValidationError("Unbekanntes Feld.")
+            setattr(row, field, value)
         row.full_clean()
         row.save()
-        audit(actor, "resource.type_created", object_id=row.pk)
+        audit(
+            actor, "resource.type_updated" if type_id else "resource.type_created", object_id=row.pk
+        )
         return row
 
 
@@ -103,6 +109,7 @@ def save_resource(actor, data, *, resource_id=None, expected_revision=None):
         "pickup_notes",
         "specifications",
         "location_label",
+        "catalog_area",
         "location",
         "type",
         "visibility",
@@ -198,7 +205,7 @@ def publication(actor, resource_id, expected_revision, operation, reason):
 
 
 def save_unit(actor, resource_id, data, *, unit_id=None, expected_revision=None):
-    if set(data) - {"name", "asset", "is_active"}:
+    if set(data) - {"name", "public_name", "asset", "is_active"}:
         raise ValidationError("Unbekannte Einheitsfelder.")
     with authorization_write():
         resource = read_resource(actor, resource_id)
@@ -208,6 +215,12 @@ def save_unit(actor, resource_id, data, *, unit_id=None, expected_revision=None)
             if unit_id
             else ResourceUnit(resource=resource)
         )
+        if (
+            "public_name" in data
+            and data["public_name"] != unit.public_name
+            and resource.published_at
+        ):
+            require(actor, "resource.publish", resource_scope(resource))
         if unit_id:
             check_revision(unit, expected_revision)
             if "asset" in data and getattr(data["asset"], "pk", None) != unit.asset_id:
@@ -241,7 +254,15 @@ def save_unit(actor, resource_id, data, *, unit_id=None, expected_revision=None)
 
 
 def save_pool(
-    actor, resource_id, name, units, *, pool_id=None, expected_revision=None, is_active=True
+    actor,
+    resource_id,
+    name,
+    units,
+    *,
+    pool_id=None,
+    expected_revision=None,
+    is_active=True,
+    public_name=None,
 ):
     with authorization_write():
         resource = read_resource(actor, resource_id)
@@ -259,7 +280,11 @@ def save_pool(
             raise ValidationError("Nur aktive Einheiten dieses Angebots wählen.")
         if PoolMembership.objects.filter(unit_id__in=ids).exclude(pool=pool).exists():
             raise ValidationError("Eine Einheit ist bereits einem anderen Pool zugeordnet.")
+        if public_name is not None and public_name != pool.public_name and resource.published_at:
+            require(actor, "resource.publish", resource_scope(resource))
         pool.name, pool.is_active = name, is_active
+        if public_name is not None:
+            pool.public_name = public_name
         pool.revision += 1
         pool.full_clean()
         pool.save()
@@ -414,9 +439,12 @@ class CatalogCard:
     categories: tuple[str, ...]
     cover_id: UUID | None
     cover_alt: str
+    availability_label: str
 
 
 def catalog_card(resource):
+    from .calendar import current_status
+
     images = [i for i in resource.images.all() if not i.archived_at]
     cover = images[0] if images else None
     return CatalogCard(
@@ -429,4 +457,5 @@ def catalog_card(resource):
         tuple(c.name for c in resource.categories.all()),
         cover.pk if cover else None,
         cover.alt_text if cover else "",
+        current_status(resource),
     )

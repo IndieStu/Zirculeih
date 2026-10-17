@@ -2,7 +2,7 @@
 
 Selbst gehostete Inventarverwaltung, Ressourcenreservierung und Ausleihe für Makerspaces.
 
-Stand: 16.10.2026. Phasen 1–5 sind akzeptiert und gemerged. Phase 6 ist implementiert und steht zur Owner-Prüfung (203 Tests lokal und in Docker/PostgreSQL 17 bestanden): physische Reservierungen, versionierte Vereinbarungen/Haftpflicht, Erst-Ausweisnachweis, scannerunterstützte Ausgabe/Teilrückgabe, Überziehung, Verlängerung und Nichtabholung. Reservierung und tatsächlicher Gewahrsam bleiben getrennt. Keine Produktion oder Phase 7 ohne eigene Freigabe.
+Stand: 17.10.2026. Phasen 1–6 einschließlich Owner-/Team-UX-Review sind akzeptiert. Phase 7 ist implementiert und steht zur Abnahme: Einweisungsbereiche, konkrete Pool-/Exemplarauswahl und atomare Ressourcenbundles; 252 Tests lokal und in CI bestanden. [Phase-7-Review und Nachweise](docs/PHASE_7_REVIEW.md). Reservierung und tatsächlicher Gewahrsam bleiben getrennt. Keine Produktion oder Phase 8 ohne eigene Freigabe.
 
 ## Start und Review
 
@@ -37,4 +37,4 @@ Historische Phase-0-Entwürfe unter docs/history/phase-0/ sind keine aktuellen A
 
 ## Team-UX-Review nach Phase 6
 
-Phase 6 ist gemerged, noch nicht abgenommen. [Private Reviewinstanz betreiben](docs/deployment/REVIEW_INSTANCE.md), [Teamaufgaben](docs/review/UX_REVIEW_PHASE_6.md), [Feedback](docs/review/UX_FEEDBACK_TEMPLATE.md). Phase 7 wartet auf ausdrückliche Ownerfreigabe.
+Phase 6 und die nachfolgenden UX-/Kalenderkorrekturen wurden am 17.10.2026 abgenommen. [Private Reviewinstanz betreiben](docs/deployment/REVIEW_INSTANCE.md), [Teamaufgaben](docs/review/UX_REVIEW_PHASE_6.md), [Feedback](docs/review/UX_FEEDBACK_TEMPLATE.md). [Phase 7 ist ausdrücklich freigegeben](docs/OWNER_APPROVAL_PHASE_7.md). Die bisherige NCtest-Instanz bleibt bis zu einem gesonderten Update auf dem akzeptierten Kalenderbuild.

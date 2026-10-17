@@ -206,3 +206,50 @@ Tests in tests/test_lending.py, [Review](PHASE_6_REVIEW.md). AC-06/12/22/25–30
 | P6-AC-16 | Nichtabholung ohne Gewahrsam, terminale Historie | no_show_frees_claim_without_creating_custody | Lokal + Docker/PG17 bestanden; siehe Review |
 | P6-AC-17 | Beleg darf nicht vor tatsächlicher Rückgabe schließen | loan_receipt_cannot_close_before_actual_return | Lokal + Docker/PG17 bestanden; siehe Review |
 | P6-AC-18 | Neue Pflichtversion nach Reservierung sperrt Ausgabe | new_agreement_after_reservation_prevents_checkout | Lokal + Docker/PG17 bestanden; siehe Review |
+
+## Owner UX correction before team review
+
+| ID | Required behavior | Evidence |
+| --- | --- | --- |
+| UX-01 | Grouped responsive navigation and staff dashboard landing | Browser review; account/OIDC regression |
+| UX-02 | Anonymous truthful occupancy, selectable periods, no personal identity | `test_anonymous_calendar_capacity_and_privacy` |
+| UX-03 | Normal times have no DST controls; ambiguity asks only on demand | `test_booking_form_dst_only_when_needed`; prior DST suite |
+| UX-04 | Public filter areas remain separate from storage locations | Catalog filter/security regression |
+| UX-05 | Organization/category closures intersect resource windows | `test_organization_category_closures_intersect_resource_hours`; schedule regression |
+| UX-06 | Invitations preserve self-verification, privacy and self-chosen password | `test_invitation_requires_self_verification_privacy_and_password` |
+| UX-07 | All combinations of resource agreements/qualifications enforced directly | `test_resource_requirements_enforced_without_ui` |
+| UX-08 | Current version requires acceptance; history immutable; no self-qualification | Same test, lending evidence/version regression |
+| UX-09 | Physical checkout rechecks qualification after reservation; no override bypass | `test_resource_qualification_is_rechecked_at_checkout` |
+| UX-10 | Additive fixtures preserve records/passwords; one Admin role | `test_additive_ux_upgrade_preserves_review_state` |
+
+These are implementation checks. Owner/team UX acceptance remains pending.
+
+## Owner calendar correction acceptance
+
+- Month first; bounded previous/next navigation; selected day opens visual timeline.
+- Existing bookings, transitions, closures and hard blocks are distinct; no PII.
+- Continuous selection and synchronized accessible controls; no free-slot cards.
+- Maximum duration enforced during selection and binding service validation.
+- Room/machine 30-minute minimum, configurable 45-minute example; legacy and
+  completed onsite transition protected without rewriting claims.
+- Inclusive day-mode ranges preserve physical appointments and custody distinctions.
+- DST folds/gaps, continuous unit capacity and concurrent transition conflicts:
+  `tests/test_calendar.py`; full regression evidence in review handover.
+- Actual browser/mobile checks and additive NCtest preservation are recorded in
+  `docs/review/VERIFICATION.md`; final UX acceptance belongs to owner/team.
+
+## Phase-7 implementation acceptance
+
+- AC-05: resource/category qualification scope, inherited category requirements,
+  current issuance checks at booking and checkout; no self-certification/expiry/revoke.
+- AC-07: concrete unit and active pool selection share the existing allocator;
+  only deliberately published labels appear in ordinary booking controls.
+- AC-08: bounded acyclic independent resource bundles, optional selection,
+  per-component permissions/requirements, atomic claims/rollback/idempotence,
+  immutable complete member set and group cancellation; shared-component race.
+- AC-14: component maintenance blocks the composed calendar/new allocation;
+  existing promises stay visible for explicit incident resolution.
+- Physical bundle issue requires every prepared component, preserves per-line
+  custody/partial return; wholly physical open bundles extend atomically.
+- Automated acceptance: `tests/test_phase7.py`, existing booking/lending/calendar
+  regression. Operator browser evidence and full results: Phase-7 review document.

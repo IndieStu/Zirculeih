@@ -61,7 +61,18 @@ def sign_in(request):
             return throttled()
         if form.is_valid():
             login(request, form.get_user())
-            return redirect("account")
+            from django.utils.http import url_has_allowed_host_and_scheme
+
+            from .navigation import operational_user
+
+            target = request.GET.get("next", "")
+            if target and url_has_allowed_host_and_scheme(
+                target, {request.get_host()}, require_https=request.is_secure()
+            ):
+                return redirect(target)
+            return redirect(
+                "inventory_dashboard" if operational_user(form.get_user()) else "account"
+            )
     return page(request, "Anmelden", form, login=True, oidc_enabled=settings.OIDC_ENABLED)
 
 
@@ -122,6 +133,8 @@ def token_consume(request, raw, purpose):
 @login_required
 @require_http_methods(["GET", "POST"])
 def account(request):
+    from resources.requirements import account_status
+
     form = forms.ProfileForm(request.POST or None, instance=request.user)
     if request.method == "POST" and form.is_valid():
         services.save_profile(request.user, form.cleaned_data)
@@ -132,6 +145,7 @@ def account(request):
         "Mein Konto",
         form,
         account=True,
+        requirement_statuses=account_status(request.user),
         oidc_enabled=settings.OIDC_ENABLED,
         groups_admin=allowed(request.user, "permissions.manage"),
     )
@@ -314,3 +328,52 @@ def oidc_unlink(request):
         form,
         text="Eine lokale Anmeldung muss weiter möglich bleiben.",
     )
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def people(request):
+    require(request.user, "user.invite")
+    form = forms.EmailForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        if not take(request, "invite", str(request.user.pk), limit=30):
+            return throttled()
+        try:
+            services.invite_user(request.user, form.cleaned_data["email"])
+            messages.success(
+                request,
+                "Einladung vorbereitet. Die Person bestätigt ihre E-Mail "
+                "und legt ihr Passwort selbst fest.",
+            )
+            return redirect("people")
+        except ValidationError as exc:
+            error(form, exc)
+    from django.core.paginator import Paginator
+
+    rows = User.objects.order_by("email")
+    query = request.GET.get("q", "")[:200].strip()
+    if query:
+        rows = rows.filter(email__icontains=query)
+    return render(
+        request,
+        "accounts/people.html",
+        {"form": form, "page_obj": Paginator(rows, 30).get_page(request.GET.get("page"))},
+    )
+
+
+@require_http_methods(["GET", "POST"])
+def invitation_accept(request, raw):
+    form = forms.InvitationAcceptForm(request.POST or None)
+    if request.method == "POST":
+        if not take(request, "consume-invitation"):
+            return throttled()
+        if form.is_valid():
+            try:
+                services.accept_invitation(
+                    raw, form.cleaned_data["password"], form.cleaned_data["privacy"]
+                )
+                messages.success(request, "Konto eingerichtet. Du kannst dich anmelden.")
+                return redirect("login")
+            except ValidationError as exc:
+                error(form, exc)
+    return page(request, "Einladung annehmen", form, signup=True)

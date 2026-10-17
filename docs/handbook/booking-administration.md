@@ -12,7 +12,7 @@
 
 Wochentag 0 ist Montag, 6 Sonntag. Ende am Folgetag erlaubt maximal 24 Stunden. 00:00 bis 00:00 am Folgetag ist ein ganzer Tag. Datumsbezogene Ausnahmen ersetzen Wochenfenster an diesem lokalen Datum einschließlich hineinragender Nachtfenster. Für einen geschlossenen Tag setze „geschlossen“ ohne Uhrzeiten; für Sonderöffnung gib ein gültiges Fenster an. Mehrere Fenster am Datum können zusammen eine Sonderöffnung bilden.
 
-Abholung und Rückgabe sind bereits getrennte Zeitplanarten, werden bei Vor-Ort-Buchungen jedoch nicht herangezogen. Die [Ausleihbedienung](loans.md) verwendet diese Pläne und prüft Profil, Verträge und Haftpflicht. Einweisungspflicht sperrt bis Phase 7. Zugeordnete Zusatzvereinbarungen sind bei physischer Reservierung/Ausgabe Pflicht; die separate Policyoption verlangt zusätzlich mindestens eine solche Zuordnung.
+Abholung und Rückgabe sind bereits getrennte Zeitplanarten, werden bei Vor-Ort-Buchungen jedoch nicht herangezogen. Die [Ausleihbedienung](loans.md) verwendet diese Pläne und prüft Profil, Verträge und Haftpflicht. Erforderliche Qualifikationen werden durch berechtigtes Personal vergeben; eine Vereinbarungsbestätigung ersetzt sie nicht. Zugeordnete Zusatzvereinbarungen sind bei physischer Reservierung/Ausgabe Pflicht; die separate Policyoption verlangt zusätzlich mindestens eine solche Zuordnung.
 
 Die Parallelgrenze der gerade angefragten Angebotsregel zählt gleichzeitig bestätigte/aktive Buchungen des Kontos über alle Angebote; sie zählt keine bereits stornierten Vorgänge. Bestehende Buchungen behalten den unveränderlichen Regelsnapshot, insbesondere die ursprüngliche Stornofrist. Technische Grenzen: Nutzungsdauer höchstens 366 Tage, Horizont höchstens 3660 Tage; Vorlauf, Puffer und Stornofrist höchstens 3660 Tage in Minuten.
 
@@ -26,4 +26,41 @@ Zeitfenster/Ausnahmen werden bewusst entfernt und neu angelegt, nicht still übe
 
 ## Betreiberjob
 
-Der Betreiber führt regelmäßig `python backend/manage.py advance_onsite_bookings` in der konfigurierten Umgebung aus. Der Job setzt Vor-Ort-Buchungen bei Beginn aktiv und bei Ende abgeschlossen; abgeschlossene Claims werden freigegeben. Verpasste Läufe werden beim nächsten Lauf nachgeholt. Wiederholung ist sicher. Kein eingebauter Scheduler und keine physische Ausleih-/Gewahrsamsänderung. Zeitpunkt, Intervalle und vorhandene Zusagen bleiben nachvollziehbar.
+Der Betreiber führt regelmäßig `python backend/manage.py advance_onsite_bookings` in der konfigurierten Umgebung aus. Der Job setzt Vor-Ort-Buchungen bei Beginn aktiv und bei Ende abgeschlossen; abgeschlossene Claims werden inaktiv. Die noch laufende Übergangszeit bleibt für neue Vor-Ort-Buchungen gesperrt. Verpasste Läufe werden beim nächsten Lauf nachgeholt. Wiederholung ist sicher. Kein eingebauter Scheduler und keine physische Ausleih-/Gewahrsamsänderung. Zeitpunkt, Intervalle und vorhandene Zusagen bleiben nachvollziehbar.
+
+## Zeiten & Schließtage
+
+Unter Einstellungen → **Öffnungszeiten & Schließtage** regelmäßige Zeit oder
+Schließtag/Sonderzeit hinzufügen. Genau einen Bereich auswählen: gesamte Organisation,
+Kategorie, Standort oder einzelner Artikel/Raum. Nutzung, Gebäudezugang, betreute
+Öffnung, Abholung und Rückgabe werden getrennt eingerichtet. Mittwoch bis Freitag
+werden als drei Wochenzeitfenster angelegt. Ein Ferienzeitraum kann mit Von und
+**Bis einschließlich** als Datumsbereich (höchstens ein Jahr) angelegt werden.
+
+Alle betroffenen Bereiche wirken gemeinsam einschränkend. Eine Raum-Sonderzeit
+öffnet keinen organisationsweiten Schließtag. Die Berechtigung für unbetreute Nutzung
+ersetzt ausschließlich betreute Öffnung. Bestehende Buchungen werden bei Änderungen
+zur Klärung markiert, nicht gelöscht. Falsch konfigurierte Einträge entfernen und
+mit den korrekten Zeiten anlegen.
+
+Die Übersicht lässt sich nach **Bereich** und **Zeitplan** filtern. Wochenzeiten und
+Sonderzeiten stehen in kompakten Tabellen mit jeweils höchstens 30 Zeilen pro Seite.
+
+## Kalenderregeln zusammen einstellen
+
+Bei „Regeln“ stehen Nutzungsart, Zeitmodus, Raster, Mindest-/Höchstdauer und
+Vorbereitung/Übergangszeit zusammen. Für Räume und Maschinen (Nutzung vor Ort)
+sind insgesamt mindestens 30 Minuten erforderlich; etwa 45 Minuten sind möglich.
+Die beiden vorhandenen Pufferfelder bilden gemeinsam den Abstand zwischen
+aufeinanderfolgenden Buchungen. Physische Ausleihe hat eigene Regeln.
+
+Die Monatsansicht kennzeichnet nicht buchbare Tage; der Tag zeigt Belegung,
+Übergangszeit, Sperren und zulässige Nutzung. Höchstdauer und Zeitraster begrenzen
+die Auswahl sofort. Bestehende Buchungen und ihre ursprünglichen Claims werden
+bei einer Regeländerung nicht umgeschrieben. Neue Anfragen berücksichtigen
+aktuelle Übergangszeiten auch neben älteren Buchungen. Nutzungszeiten erreichst
+du über den Link zu „Öffnungszeiten & Schließtage“.
+
+## Phase-7-Erweiterung
+
+[Einweisungsbereiche, Exemplare/Pools und gemeinsam reservierte Bundle-Komponenten](qualifications-and-bundles.md) beschreiben die zusätzlichen Abläufe und Rechte.

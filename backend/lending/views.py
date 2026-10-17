@@ -348,7 +348,12 @@ def checkout(request):
             valid = True
             for uid in cart["units"]:
                 unit = ResourceUnit.objects.select_related("resource__bookingpolicy").get(pk=uid)
-                entry = BookingForm(unit.resource.bookingpolicy, request.POST, prefix="u_" + uid)
+                entry = BookingForm(
+                    unit.resource.bookingpolicy,
+                    request.POST,
+                    prefix="u_" + uid,
+                    choose_capacity=False,
+                )
                 if not entry.is_valid():
                     valid = False
                     message = "Bitte alle Zeiträume und Termine gültig ausfüllen."
@@ -408,6 +413,7 @@ def checkout(request):
                     unit.resource.bookingpolicy,
                     request.POST if request.POST.get("action") == "confirm" else None,
                     prefix="u_" + uid,
+                    choose_capacity=False,
                 ),
             }
         )
@@ -486,7 +492,15 @@ def extend(request, line_id):
     return render(
         request,
         "bookings/form.html",
-        {"title": "Ausleihe verlängern: " + line.booking.resource.title, "form": form},
+        {
+            "title": "Ausleihe verlängern: " + line.booking.resource.title,
+            "form": form,
+            "text": "Bei einem Bundle gilt die Verlängerung gemeinsam "
+            "für alle noch offenen Komponenten. "
+            "Alle Voraussetzungen werden erneut geprüft."
+            if hasattr(line.booking, "bundle_member")
+            else None,
+        },
     )
 
 

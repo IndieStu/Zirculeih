@@ -1,0 +1,34 @@
+{
+  "application_commit": "c0135156a74e0927988dab0ebf3daca6d34d1171",
+  "ci_run": 38913523571,
+  "ci_job": 117015046411,
+  "ci_conclusion": "success",
+  "ci_tests": 232,
+  "ci_seconds": 156.51,
+  "local_tests": 232,
+  "local_seconds": 82.55,
+  "calendar_anchor": "2026-10-21",
+  "preserved": {
+    "users": 11,
+    "assets": 19,
+    "asset_media": 1,
+    "resources": 10,
+    "units": 12,
+    "bookings": 7,
+    "claims": 7,
+    "loans": 2,
+    "loan_lines": 3,
+    "acceptances": 16,
+    "byte_equal_media_files": 2,
+    "password_hashes_unchanged": true,
+    "existing_transaction_fields_unchanged": true
+  },
+  "added": {
+    "assets": 1,
+    "resources": 1,
+    "units": 1,
+    "bookings": 4,
+    "claims": 4
+  },
+  "phase7_started": false
+}

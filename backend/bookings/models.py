@@ -65,6 +65,10 @@ class ScheduleOwner(models.Model):
     location = models.ForeignKey(
         "inventory.Location", null=True, blank=True, on_delete=models.PROTECT
     )
+    category = models.ForeignKey(
+        "inventory.Category", null=True, blank=True, on_delete=models.PROTECT
+    )
+    organization = models.BooleanField(default=False)
     purpose = models.CharField(
         max_length=10,
         choices=[
@@ -80,8 +84,32 @@ class ScheduleOwner(models.Model):
         abstract = True
         constraints = [
             models.CheckConstraint(
-                condition=Q(resource__isnull=False, location__isnull=True)
-                | Q(resource__isnull=True, location__isnull=False),
+                condition=(
+                    Q(
+                        resource__isnull=False,
+                        location__isnull=True,
+                        category__isnull=True,
+                        organization=False,
+                    )
+                    | Q(
+                        resource__isnull=True,
+                        location__isnull=False,
+                        category__isnull=True,
+                        organization=False,
+                    )
+                    | Q(
+                        resource__isnull=True,
+                        location__isnull=True,
+                        category__isnull=False,
+                        organization=False,
+                    )
+                    | Q(
+                        resource__isnull=True,
+                        location__isnull=True,
+                        category__isnull=True,
+                        organization=True,
+                    )
+                ),
                 name="%(class)s_one_owner",
             ),
             models.CheckConstraint(
@@ -93,7 +121,13 @@ class ScheduleOwner(models.Model):
 
 class ScheduleWindow(ScheduleOwner):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    weekday = models.PositiveSmallIntegerField()
+    weekday = models.PositiveSmallIntegerField(
+        choices=list(
+            enumerate(
+                ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
+            )
+        )
+    )
     start_time = models.TimeField()
     end_time = models.TimeField()
     end_next_day = models.BooleanField(default=False)
@@ -257,3 +291,20 @@ class IdempotencyRecord(models.Model):
                 fields=["actor", "operation", "key"], name="booking_idempotency_unique"
             )
         ]
+
+
+class BundleReservation(models.Model):
+    expected_resources = models.JSONField(default=list)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    root = models.OneToOneField(
+        Booking, on_delete=models.PROTECT, related_name="bundle_reservation"
+    )
+    created_at = models.DateTimeField(default=dj_timezone.now)
+
+
+class BundleMember(models.Model):
+    reservation = models.ForeignKey(
+        BundleReservation, on_delete=models.PROTECT, related_name="members"
+    )
+    booking = models.OneToOneField(Booking, on_delete=models.PROTECT, related_name="bundle_member")
+    required = models.BooleanField(default=True)

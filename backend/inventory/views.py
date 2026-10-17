@@ -68,7 +68,9 @@ def any_action(actor, action):
         return False
     if allowed(actor, action):
         return True
-    if action.startswith(("resource.", "identifier.", "booking.", "loan.", "agreement.")):
+    if action.startswith(
+        ("resource.", "identifier.", "booking.", "loan.", "agreement.", "qualification.")
+    ):
         from resources.models import Resource
         from resources.services import resource_scope
 
@@ -116,6 +118,9 @@ def dashboard(request):
         and not assets.exists()
         and not booking_can_operate
         and not loan_can_operate
+        and not allowed(request.user, "permissions.manage")
+        and not allowed(request.user, "user.invite")
+        and not allowed(request.user, "qualification.issue")
     ):
         return redirect("account")
     from datetime import datetime, time, timedelta

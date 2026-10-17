@@ -1,0 +1,24 @@
+{
+  "source_commit": "9e6cb73ced1b6048b97819e6e0e5ba10e29b9e31",
+  "run_id": 38871170512,
+  "url": "https://github.com/IndieStu/Zirculeih/actions/runs/38871170512",
+  "status": "completed",
+  "conclusion": "success",
+  "job_id": 116875346115,
+  "tests_passed": 207,
+  "test_seconds": 152.69,
+  "validation": [
+    "Docker/Linux/PostgreSQL 17",
+    "lint/format/mypy",
+    "model check and no missing migrations",
+    "health and static assets",
+    "explicit seed and preserved re-run",
+    "forced local mail capture"
+  ],
+  "nctest_regression": {
+    "tests_passed": 207,
+    "test_seconds": 348.07,
+    "source_commit": "9e6cb73ced1b6048b97819e6e0e5ba10e29b9e31",
+    "platform": "NCtest Linux Docker PostgreSQL 17"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "application_commit": "218f712e03602194ee8f3846ff94c3205d6f4e66",
+  "workflow_run_id": 38884152250,
+  "workflow_job_id": 116917729090,
+  "workflow_url": "https://github.com/IndieStu/Zirculeih/actions/runs/38884152250",
+  "local": {
+    "tests_passed": 219,
+    "duration_seconds": 68.7,
+    "database": "PostgreSQL 16",
+    "ruff": "passed",
+    "format": "passed",
+    "mypy": "passed",
+    "migration_check": "passed",
+    "docs": "passed"
+  },
+  "nc_test_data_preservation": {
+    "existing_users": 7,
+    "existing_bookings": 7,
+    "existing_loans": 2,
+    "existing_loan_lines": 3,
+    "existing_assets": 16,
+    "existing_resources": 7,
+    "existing_units": 9,
+    "existing_acceptances": 12,
+    "existing_asset_media": 1,
+    "existing_media_files_byte_equal": 2,
+    "existing_password_hashes": "unchanged",
+    "reset": false
+  },
+  "ci": {
+    "conclusion": "success",
+    "tests_passed": 219,
+    "duration_seconds": 179.64,
+    "database": "PostgreSQL 17",
+    "docker_linux": true,
+    "review_seed_and_additive_rerun": "passed",
+    "health_and_static": "passed"
+  },
+  "new_review_credentials": "pending explicit owner approval"
+}

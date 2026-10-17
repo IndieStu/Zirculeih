@@ -209,7 +209,9 @@ def callback(request):
             login(request, user, backend="accounts.backends.EmailBackend")
             audit(user, "oidc.login", subject=user)
         messages.success(request, "Mit Authentik angemeldet.")
-        return redirect("account")
+        from accounts.navigation import operational_user
+
+        return redirect("inventory_dashboard" if operational_user(user) else "account")
     except Exception:
         # Provider errors may embed tokens; never log exception bodies.
         return page(

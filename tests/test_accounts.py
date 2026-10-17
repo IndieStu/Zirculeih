@@ -783,3 +783,33 @@ def test_real_csrf_origin_login_and_profile_post(users):
         ).status_code
         == 403
     )
+
+
+def test_invitation_requires_self_verification_privacy_and_password(staff, settings):
+    from accounts import services
+    from accounts.models import ActionToken, Grant, Group, User
+    from django.core.exceptions import PermissionDenied, ValidationError
+
+    settings.PRIVACY_NOTICE_TEXT = "Testdatenschutz"
+    settings.PRIVACY_NOTICE_VERSION = "test-invite-v1"
+    Group.objects.get_or_create(is_baseline=True, defaults={"name": "Baseline invitation"})
+    group = staff.membership_set.get(removed_at=None).group
+    Grant.objects.create(group=group, action="user.invite", effect="allow")
+    user = services.invite_user(staff, "new-invited@example.test")
+    assert not user.has_usable_password() and user.email_verified_at is None
+    assert user.privacy_acknowledged_at is None and not user.is_system_admin
+    with pytest.raises(PermissionDenied):
+        services.invite_user(user, "other@example.test")
+    raw = services.issue_token(user, "invite")
+    with pytest.raises(ValidationError):
+        services.accept_invitation(raw, "Quiet-River-8941!Cloud", False)
+    user.refresh_from_db()
+    assert user.email_verified_at is None
+    accepted = services.accept_invitation(raw, "Quiet-River-8941!Cloud", True)
+    assert accepted.email_verified_at and accepted.privacy_acknowledged_at
+    assert accepted.check_password("Quiet-River-8941!Cloud")
+    assert accepted.privacy_version == "test-invite-v1"
+    assert not accepted.is_system_admin and not ActionToken.objects.filter(user=user).exists()
+    with pytest.raises(ValidationError):
+        services.accept_invitation(raw, "Another-Password-8941!Cloud", True)
+    assert User.objects.filter(email="new-invited@example.test").count() == 1

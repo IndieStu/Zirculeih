@@ -35,3 +35,7 @@ Zukunftsreservierungen nach erwarteter Rückgabe bleiben möglich, soweit Zeitcl
 Mit loan.extend kannst du eine offene Position verlängern: neues Ende, Rückgabetermin, Herbstinstanz falls nötig und Grund. Aktuelle Rechte/Profile/Texte/Regeln/Termine und Folgebelegungen werden geprüft. Die Änderung wird mit vorheriger/nachheriger Grenze dauerhaft dokumentiert; ein veraltetes Formular wird abgewiesen. Die ursprüngliche Identität und der ursprüngliche Regelsnapshot bleiben erhalten. Eine geänderte Zeitmodus-/Zeitzonenkonfiguration verlangt Klärung.
 
 Nach erreichtem Abholtermin kann berechtigtes Personal eine noch nie ausgegebene Reservierung mit booking.manage_all und loan.checkout ausdrücklich als „Nicht abgeholt“ abschließen. Grund und Revision sind erforderlich. Der Claim wird freigegeben, kein Loan oder Rückgabeereignis erzeugt. Eine bereits ausgegebene Position darf so nicht verschwinden.
+
+## Phase-7-Erweiterung
+
+[Einweisungsbereiche, Exemplare/Pools und gemeinsam reservierte Bundle-Komponenten](qualifications-and-bundles.md) beschreiben die zusätzlichen Abläufe und Rechte.

@@ -94,7 +94,10 @@ def test_confirm_claim_and_adjacent_intervals(configured):
     assert first.status == "confirmed" and first.unit_id == u.pk
     assert first.claim.during.lower == local_instant(s, "Europe/Berlin")
     assert services.availability(user, r.pk, s, e).code == "reserved"
-    second = services.confirm(user, r.pk, e, e + timedelta(hours=1), uuid4())
+    assert services.availability(user, r.pk, e, e + timedelta(hours=1)).code == "reserved"
+    second = services.confirm(
+        user, r.pk, e + timedelta(minutes=30), e + timedelta(minutes=90), uuid4()
+    )
     assert second.pk != first.pk and AllocationClaim.objects.filter(is_active=True).count() == 2
 
 
@@ -335,7 +338,7 @@ def test_ui_preview_confirmation_retry_and_owner_detail(configured, client):
     data = {"start": s.isoformat(), "end": e.isoformat(), "key": key, "action": "preview"}
     response = client.post(url, data)
     assert response.status_code == 200 and response.context["result"].code == "available"
-    assert b"Verbindlich reservieren" in response.content and not Booking.objects.exists()
+    assert b"Reservieren" in response.content and not Booking.objects.exists()
     response = client.post(url, {**data, "action": "confirm"})
     assert response.status_code == 302
     assert client.post(url, {**data, "action": "confirm"}).url == response.url
@@ -431,11 +434,13 @@ def test_current_permission_and_suspension_rechecked_before_commit(configured):
 
 def test_buffers_and_granularity(configured):
     actor, r, _, p, user, s, e = configured
-    services.save_policy(actor, r.pk, {"buffer_after_minutes": 15}, p.revision)
+    services.save_policy(actor, r.pk, {"buffer_after_minutes": 45}, p.revision)
     book(configured)
     assert services.availability(user, r.pk, e, e + timedelta(hours=1)).code == "reserved"
     assert (
-        services.availability(user, r.pk, e + timedelta(minutes=15), e + timedelta(minutes=75)).code
+        services.availability(
+            user, r.pk, e + timedelta(minutes=45), e + timedelta(minutes=105)
+        ).code
         == "available"
     )
     assert (
@@ -766,3 +771,147 @@ def test_extreme_calendar_input_returns_validation_error(configured):
         interval(policy, date(9999, 12, 31), date(9999, 12, 31))
     with pytest.raises(ValidationError):
         local_instant(datetime(1, 1, 1), "Europe/Berlin")
+
+
+@pytest.mark.parametrize(
+    "agreement_required,qualification_required",
+    [(False, False), (True, False), (False, True), (True, True)],
+)
+def test_resource_requirements_enforced_without_ui(
+    configured, agreement_required, qualification_required
+):
+    from lending import agreements
+    from lending.models import Acceptance
+    from resources import requirements
+    from resources.models import UserQualification
+
+    staff, resource, _, _, user, start, end = configured
+    group = staff.membership_set.get(removed_at=None).group
+    for action in (
+        "agreement.edit",
+        "agreement.publish",
+        "agreement.assign",
+        "qualification.issue",
+    ):
+        Grant.objects.create(group=group, action=action, effect="allow")
+    text = agreements.create_agreement(staff, "Besondere Nutzung", "additional")
+    version = agreements.save_version(staff, text.pk, "Gültiger Text 1")
+    agreements.publish_version(staff, version.pk)
+    qualification = requirements.create_type(staff, "Einweisung Maschine")
+    requirements.configure(
+        staff,
+        resource.pk,
+        [text.pk] if agreement_required else [],
+        [qualification.pk] if qualification_required else [],
+    )
+    code = (
+        "qualification_required"
+        if qualification_required
+        else "agreement_required"
+        if agreement_required
+        else "available"
+    )
+    assert services.availability(user, resource.pk, start, end).code == code
+    if code != "available":
+        with pytest.raises(ValidationError):
+            services.confirm(user, resource.pk, start, end, uuid4())
+        assert not Booking.objects.exists()
+    if qualification_required:
+        with pytest.raises(PermissionDenied):
+            requirements.issue(user, user.pk, qualification.pk)
+        evidence = requirements.issue(staff, user.pk, qualification.pk)
+        assert requirements.issue(staff, user.pk, qualification.pk).pk == evidence.pk
+        with pytest.raises(IntegrityError), transaction.atomic():
+            UserQualification.objects.filter(pk=evidence.pk).update(note="Changed")
+    if agreement_required:
+        agreements.accept(user, [version.pk])
+        agreements.accept(user, [version.pk])
+        assert Acceptance.objects.filter(user=user, version=version).count() == 1
+        newer = agreements.save_version(staff, text.pk, "Gültiger Text 2")
+        agreements.publish_version(staff, newer.pk)
+        assert services.availability(user, resource.pk, start, end).code == "agreement_required"
+        assert Acceptance.objects.filter(user=user, version=version).exists()
+        agreements.accept(user, [newer.pk])
+    assert services.confirm(user, resource.pk, start, end, uuid4()).status == "confirmed"
+
+
+def test_anonymous_calendar_capacity_and_privacy(configured, client):
+    from resources.calendar import calendar
+
+    _, resource, _, _, user, start, end = configured
+    before = calendar(resource, start.date().isoformat())
+    instant = next(p["value"] for p in before["data"]["points"] if p["label"] == "10:00")
+    assert instant in before["data"]["starts"]
+    services.confirm(user, resource.pk, start, end, uuid4())
+    after = calendar(resource, start.date().isoformat())
+    assert instant not in after["data"]["starts"]
+    response = client.get(f"/entdecken/{resource.slug}/", {"day": start.date().isoformat()})
+    assert response.status_code == 200
+    assert user.email.encode() not in response.content
+    assert b"Verf" in response.content
+
+
+def test_booking_form_dst_only_when_needed(configured):
+    from bookings.forms import BookingForm
+    from django.forms import HiddenInput, Select
+
+    _, _, _, policy, _, _, _ = configured
+    ordinary = BookingForm(
+        policy, {"start": "2026-10-22T10:00", "end": "2026-10-22T11:00", "key": uuid4()}
+    )
+    assert isinstance(ordinary.fields["start_fold"].widget, HiddenInput)
+    assert ordinary.is_valid()
+    repeated = BookingForm(
+        policy, {"start": "2026-10-25T02:00", "end": "2026-10-25T03:00", "key": uuid4()}
+    )
+    assert isinstance(repeated.fields["start_fold"].widget, Select)
+    assert not repeated.is_valid()
+    skipped = BookingForm(
+        policy, {"start": "2027-03-28T02:00", "end": "2027-03-28T03:00", "key": uuid4()}
+    )
+    assert isinstance(skipped.fields["start_fold"].widget, HiddenInput)
+    assert not skipped.is_valid()
+    assert skipped.errors.as_data()["start"][0].code == "nonexistent_time"
+
+
+def test_organization_category_closures_intersect_resource_hours(configured):
+    _, resource, _, policy, _, start, end = configured
+    from bookings import schedules
+    from bookings.models import ScheduleException
+
+    a = local_instant(start, policy.timezone)
+    b = local_instant(end, policy.timezone)
+    assert schedules.covers(resource, policy, "usage", a, b)
+    ScheduleException.objects.create(
+        organization=True, purpose="usage", date=start.date(), is_closed=True
+    )
+    assert not schedules.covers(resource, policy, "usage", a, b)
+    assert schedules.covers(resource, policy, "usage", a + timedelta(days=1), b + timedelta(days=1))
+
+
+def test_hours_admin_filters_paginates_and_checks_permission(configured, client):
+    actor, resource, _, _, user, _, _ = configured
+    for weekday in range(7):
+        for purpose in ("usage", "access", "opening"):
+            services.save_schedule(
+                actor,
+                {
+                    "organization": True,
+                    "purpose": purpose,
+                    "weekday": weekday,
+                    "start_time": time(9),
+                    "end_time": time(17),
+                },
+            )
+    client.force_login(actor)
+    response = client.get("/buchungen/betrieb/zeiten/")
+    assert response.status_code == 200
+    assert response.context["windows"].paginator.count == 42
+    assert len(response.context["windows"]) == 30
+    response = client.get(
+        "/buchungen/betrieb/zeiten/", {"owner": "resource:" + str(resource.pk), "purpose": "usage"}
+    )
+    assert response.context["windows"].paginator.count == 7
+    assert all(row.resource_id == resource.pk for row in response.context["windows"])
+    client.force_login(user)
+    assert client.get("/buchungen/betrieb/zeiten/").status_code == 404

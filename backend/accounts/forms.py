@@ -175,3 +175,7 @@ class SuspensionForm(forms.Form):
 
 class ReauthenticateForm(forms.Form):
     password = forms.CharField(label="Lokales Passwort zur Bestätigung", widget=forms.PasswordInput)
+
+
+class InvitationAcceptForm(ResetForm):
+    privacy = forms.BooleanField(label="Ich habe die Datenschutzhinweise gelesen.")

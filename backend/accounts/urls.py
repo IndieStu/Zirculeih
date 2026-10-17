@@ -3,6 +3,8 @@ from django.urls import path
 from . import oidc, views
 
 urlpatterns = [
+    path("personen/", views.people, name="people"),
+    path("einladung/<str:raw>/", views.invitation_accept, name="invitation_accept"),
     path("", views.account, name="account"),
     path("registrieren/", views.signup, name="signup"),
     path("anmelden/", views.sign_in, name="login"),

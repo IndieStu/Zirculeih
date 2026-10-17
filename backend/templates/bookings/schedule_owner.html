@@ -1,0 +1,1 @@
+{% if row.organization %}Organisation{% elif row.category_id %}Kategorie: {{ row.category.name }}{% elif row.resource_id %}{{ row.resource.title }}{% else %}{{ row.location.name }}{% endif %}

@@ -41,6 +41,7 @@ ACTIONS = (
             "resource.manage",
             "maintenance.manage",
             "qualification.issue",
+            "user.invite",
             "agreement.edit",
             "agreement.publish",
             "agreement.assign",
@@ -65,7 +66,7 @@ INVENTORY_ACTIONS = {
     "booking.block": "Harte Ressourcensperren verwalten",
     "booking.read_all": "Buchungen im Betriebsbereich ansehen",
     "resource.publish": "Angebote veröffentlichen oder zurückziehen",
-    "resource.type_manage": "Angebotstypen konfigurieren",
+    "resource.type_manage": "Arten konfigurieren",
     "asset.archive": "Inventar archivieren oder ausmustern",
     "asset.read_sensitive": "Seriennummern und interne Inventarnotizen ansehen/bearbeiten",
     "asset.import": "Inventar per CSV importieren",
@@ -194,6 +195,7 @@ def require_beneficiary(actor, beneficiary, action, scope, **restrictions):
 
 
 ACTION_LABELS = {
+    "user.invite": "Personen einladen",
     "catalog.view_public": "Öffentlichen Katalog ansehen",
     "catalog.view_private": "Internen Katalog ansehen",
     "booking.create_own": "Eigene Reservierungen erstellen",
@@ -213,8 +215,8 @@ ACTION_LABELS = {
     "asset.manage": "Inventar bearbeiten",
     "asset.read_financial": "Anschaffungsdaten ansehen",
     "asset.export": "Inventar exportieren",
-    "asset.move": "Standort ausdrücklich ändern",
-    "resource.manage": "Angebote verwalten",
+    "asset.move": "Standort ändern",
+    "resource.manage": "Artikel & Ressourcen verwalten",
     "maintenance.manage": "Wartung verwalten",
     "qualification.issue": "Einweisungen erteilen",
     "agreement.edit": "Vereinbarungen entwerfen",

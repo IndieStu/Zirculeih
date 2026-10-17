@@ -43,6 +43,12 @@ jobs:
           scripts/review-deploy
           scripts/review-stack exec -T web python backend/manage.py seed_review_data
           scripts/review-stack exec -T web python backend/manage.py seed_review_data
+          scripts/review-stack exec -T web python backend/manage.py enhance_review_ux
+          scripts/review-stack exec -T web python backend/manage.py enhance_review_ux
+          scripts/review-stack exec -T web python backend/manage.py enhance_review_calendar
+          scripts/review-stack exec -T web python backend/manage.py enhance_review_calendar
+          scripts/review-stack exec -T web python backend/manage.py enhance_review_phase7
+          scripts/review-stack exec -T web python backend/manage.py enhance_review_phase7
           scripts/review-stack exec -T web python backend/manage.py review_identifiers
           curl --fail http://localhost:8766/ | grep TESTINSTANZ
           curl --fail http://localhost:8766/static/brand.css
