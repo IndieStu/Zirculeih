@@ -29,7 +29,7 @@ class BookingForm(forms.Form):
     )
     key = forms.UUIDField(widget=forms.HiddenInput, initial=uuid4)
 
-    def __init__(self, policy, *args, needs_appointments=False, **kwargs):
+    def __init__(self, policy, *args, needs_appointments=False, choose_capacity=True, **kwargs):
         super().__init__(*args, **kwargs)
         self.policy = policy
         from resources.models import ResourcePool
@@ -53,6 +53,9 @@ class BookingForm(forms.Form):
                 *[(str(p.pk), p.public_name) for p in pools],
             ],
         )
+        for name in ("unit_id", "pool_id"):
+            if not choose_capacity or len(self.fields[name].choices) == 1:
+                self.fields.pop(name)
         kind = "date" if policy.time_mode == "days" else "datetime-local"
         for field in ("start", "end"):
             self.fields[field].widget = forms.TextInput(attrs={"type": kind})

@@ -82,7 +82,7 @@ Wartungsaufträge, ICS/API, Hardware-/Kiosktests und Produktion sind nicht Phase
 
 Vollständige lokale PostgreSQL-16-Regression: **251 bestanden**, 98,47 Sekunden.
 [JUnit](test-results/phase-7-local.xml). Ein zusätzlicher gezielter Lauf umfasst
-26 Phase-7-/Reviewtests ([Nachweise](test-results/phase-7-targeted.xml)).
+43 gezielte Phase-7-/Ausleihtests ([Nachweise](test-results/phase-7-targeted.xml)).
 AC-07 wird direkt am produktiven Pooldienst mit sechs gleichzeitigen Anfragen auf
 fünf echte Pool-Einheiten geprüft; ein freies Exemplar außerhalb des gewählten
 Pools bleibt unangetastet. Breite Einweisungstypen prüfen ausdrücklich aktuelle

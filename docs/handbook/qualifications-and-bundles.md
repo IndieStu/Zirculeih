@@ -67,7 +67,8 @@ verändern bereits bestätigte Zusammenstellungen nicht.
 ## Ausgabe, Rückgabe und Wartung
 
 Alle reservierten physischen Bundle-Komponenten gemeinsam scannen/vorbereiten und
-Zustand/Zubehör für jedes Exemplar ausdrücklich prüfen. Eine Teil-Ausgabe des
+Zustand/Zubehör für jedes Exemplar ausdrücklich prüfen. In der Scanausgabe steht
+das vorbereitete Exemplar fest; dort gibt es keine abweichende Pool-/Exemplarauswahl. Eine Teil-Ausgabe des
 reservierten Bundles wird abgelehnt. Spontane Bundle-Ausgabe benötigt ebenfalls
 alle physischen Komponenten mit identischen Zeiträumen und Terminen; die Buchungen
 und tatsächliche Ausgabe entstehen gemeinsam. Ein Scan allein schreibt nichts.
