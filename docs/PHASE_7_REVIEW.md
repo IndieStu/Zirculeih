@@ -80,14 +80,14 @@ Wartungsaufträge, ICS/API, Hardware-/Kiosktests und Produktion sind nicht Phase
 
 ## Bisherige Verifikation
 
-Vollständige lokale PostgreSQL-16-Regression: **248 bestanden**, 95,98 Sekunden.
-[JUnit](test-results/phase-7-local.xml). Nach dem letzten Privacy-/Status-Härtungsfall
-zusätzlich **25 gezielte Phase-7-/Reviewtests bestanden**, 28,87 Sekunden
-([gezielte Nachweise](test-results/phase-7-targeted.xml)); die abschließende CI prüft
-die gesamte endgültige Fassung. Breite Einweisungstypen prüfen zusätzlich aktuelle Unterbereichsverbote und
-Vererbung. AC-07 wird zusätzlich direkt am produktiven
-Pooldienst mit sechs gleichzeitigen Anfragen auf fünf echte Pool-Einheiten geprüft;
-ein sechstes Exemplar außerhalb des gewählten Pools bleibt dabei unangetastet. Ruff, Formatierung, Mypy (132 Dateien),
+Vollständige lokale PostgreSQL-16-Regression: **251 bestanden**, 98,47 Sekunden.
+[JUnit](test-results/phase-7-local.xml). Ein zusätzlicher gezielter Lauf umfasst
+26 Phase-7-/Reviewtests ([Nachweise](test-results/phase-7-targeted.xml)).
+AC-07 wird direkt am produktiven Pooldienst mit sechs gleichzeitigen Anfragen auf
+fünf echte Pool-Einheiten geprüft; ein freies Exemplar außerhalb des gewählten
+Pools bleibt unangetastet. Breite Einweisungstypen prüfen ausdrücklich aktuelle
+Unterbereichsverbote und Vererbung.
+Ruff, Formatierung, Mypy (132 Dateien),
 Django-Systemprüfung, Migrationskonsistenz und Dokumentlinks bestanden.
 
 Tatsächliche Browserprüfung an der isolierten lokalen Preview: öffentliches
@@ -95,6 +95,9 @@ Lastenrad-Bundle zeigt Akku/Ladegerät/Schloss, gemeinsamer Tagesbereich 21.–2
 320px ohne horizontalen Überlauf. Temporäre Sperre nur am Akku deaktiviert die
 betroffenen Tage des gesamten Bundles; 28.–30.10. bleibt auswählbar. Reservieren
 führt ohne Konto zur Anmeldung. Test-Sperre anschließend regulär aufgehoben.
+Der zusätzliche gemischte Bundle-Test beweist: Raum bleibt Booking ohne LoanLine,
+physische Verlängerung verändert keine Vor-Ort-Zeit, Rückgabe und automatischer
+Vor-Ort-Abschluss bleiben getrennt.
 Authentifizierte Verwaltungs-/Vergabe-/Buchungsansichten sind durch Django-Client-
 Tests geprüft; keine manuelle Passwortanlage oder behauptete Hardwareabnahme.
 

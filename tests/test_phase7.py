@@ -586,3 +586,48 @@ def test_broad_qualification_cannot_bypass_narrow_deny(configured):
     )
     with pytest.raises(PermissionDenied):
         requirements.issue(teacher, user.pk, global_q.pk)
+
+
+def test_mixed_bundle_keeps_room_out_of_physical_custody(lending_setup, monkeypatch):
+    from lending import services as loans
+    from lending.models import LoanLine
+
+    actor, r, _, _, user, s, e, pickup, due, _ = lending_setup
+    room = component(lending_setup[:7], "onsite-component")
+    bundles.configure(actor, r.pk, [(room, True)], r.revision)
+    root = services.confirm(user, r.pk, s, e, uuid4(), pickup_at=pickup, return_at=due)
+    room_booking = Booking.objects.get(resource=room)
+    assert room_booking.policy_snapshot["use_mode"] == "onsite"
+    loans.identity_check(actor, user.pk)
+    monkeypatch.setattr(timezone, "now", lambda: pickup + timedelta(minutes=1))
+    loan = loans.checkout(
+        actor,
+        user.pk,
+        [root.pk],
+        uuid4(),
+        checks={str(root.pk): {"condition": "good", "accessories_checked": True}},
+    )
+    assert loan.lines.count() == 1 and not LoanLine.objects.filter(booking=room_booking).exists()
+    room_booking.refresh_from_db()
+    assert room_booking.status == "confirmed"
+    line = loan.lines.select_related("booking").get()
+    with pytest.raises(ValidationError):
+        loans.extend_line(
+            actor,
+            line.pk,
+            e + timedelta(hours=1),
+            due + timedelta(hours=1),
+            line.booking.revision,
+            "Must preserve onsite interval",
+        )
+    room_booking.refresh_from_db()
+    from bookings.time_rules import local_instant
+
+    assert room_booking.end == local_instant(e, room_booking.timezone)
+    loans.return_lines(
+        actor, loan.pk, {str(line.pk): {"condition": "good", "accessories_checked": True}}, uuid4()
+    )
+    monkeypatch.setattr(timezone, "now", lambda: due + timedelta(hours=1))
+    services.advance_onsite_bookings()
+    room_booking.refresh_from_db()
+    assert room_booking.status == "completed" and LoanLine.objects.count() == 1
