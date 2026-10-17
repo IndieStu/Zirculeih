@@ -1,5 +1,10 @@
 # Deelvo — Kalenderkorrektur und Teamreview
 
+> Historical Phase-6 review handover. Owner accepted this review on 2026-10-17
+> and authorized [Phase 7](../OWNER_APPROVAL_PHASE_7.md). The stop/gate statements
+> below record the prior delivery, not the current development authorization.
+
+
 Phase 6 ist merged, aber **nicht abgenommen**. Die Owner-Kalenderkorrektur ist
 auf dem bestehenden Branch `review/phase-6-ux-gate` umgesetzt. **STOP für den
 Owner-/Teamreview. Keine Phase 7.**

@@ -1,6 +1,6 @@
 # Entwicklungsplan
 
-Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phase 2 ist akzeptiert und gemerged; Phase 3 ist akzeptiert und gemerged; Phase 4 wurde am 15.10.2026 ausdrücklich freigegeben und ist in Arbeit. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
+Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phasen 1–6 einschließlich Owner-/Team-UX-Review sind akzeptiert. Phase 7 wurde am 17.10.2026 ausdrücklich freigegeben. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
 
 | Phase | Kleine Lieferinkremente / Abhängigkeiten | Gate |
 | --- | --- | --- |
@@ -66,3 +66,15 @@ Der Dashboard-Ausbau folgt den produktiven Domänen: Phase 5 Bookings/Heute, Pha
 ## Phase 6 — owner authorized 16.10.2026
 
 Base Main 96456d3, [authorization](docs/OWNER_APPROVAL_PHASE_6.md). P6.1 agreements/profile/identity gates and appointments; P6.2 actual Loan/lines/custody and scanner preparation, reservation reuse and atomic spontaneous loan; P6.3 partial/damage return, overdue incidents, guarded extension/no-show and scoped dashboard; P6.4 handbook/ADR/migrations, PostgreSQL concurrency/regression, browser/mobile and Docker/PG17 evidence. No Phase 7 or production without a new review gate.
+
+## Phase 7 — owner authorized 17.10.2026
+
+[Authorization](docs/OWNER_APPROVAL_PHASE_7.md), accepted review 0595653 / application c013515 plus main 1ed5bbc.
+P7.1 resource/category qualification scopes and scoped issuer UI, immutable
+unlimited evidence, no individual revocation. P7.2 selected units and active pools
+through common allocation and forms. P7.3 bounded acyclic required/optional bundle
+configuration and atomic component reservations, all component permissions/policies,
+cancellation and physical custody consistency. P7.4 maintenance/block integration,
+concurrency/security regression, handbook, migration and browser acceptance.
+No series/approval engine (Phase 8), full maintenance work orders (Phase 10),
+production or credential changes. Stop at the Phase-7 owner review gate.

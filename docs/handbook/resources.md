@@ -52,3 +52,7 @@ Im einzelnen Eintrag führt **Voraussetzungen bearbeiten** zu den benötigten
 Zusatzvereinbarungen und Einweisungen. Mehrere Einträge sind möglich. Allgemeine
 Ausleihvereinbarung und Versicherung gelten bei Mitnahmen weiterhin zusätzlich.
 Veröffentlichte Texte und frühere Bestätigungen bleiben erhalten.
+
+## Phase-7-Erweiterung
+
+[Einweisungsbereiche, Exemplare/Pools und gemeinsam reservierte Bundle-Komponenten](qualifications-and-bundles.md) beschreiben die zusätzlichen Abläufe und Rechte.

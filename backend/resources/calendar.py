@@ -6,11 +6,12 @@ from urllib.parse import urlencode
 
 from accounts.authorization import _grants_allow
 from bookings.models import BookingPolicy
-from bookings.occupancy import Occupancy
 from bookings.time_rules import interval, local_instant, zone
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils import timezone
+
+from .bundle_calendar import occupancy as Occupancy
 
 LABELS = {
     "available": "Frei",
@@ -100,6 +101,9 @@ def validate_period(snapshot, start, end, *, start_fold=None, end_fold=None):
                 return "Außerhalb der betreuten Öffnung nicht verfügbar."
     if not snapshot.free_units(s, e):
         return "Dieser Zeitraum ist belegt oder benötigt zusätzliche Übergangszeit."
+    for child in getattr(snapshot, "children", ()):
+        if validate_period(child, start, end, start_fold=start_fold, end_fold=end_fold):
+            return "Eine benötigte Komponente ist in diesem Zeitraum nicht verfügbar."
     return None
 
 
@@ -352,6 +356,29 @@ def current_status(resource):
         schedules.covers(resource, p, purpose, s, e) for purpose in ("usage", "access")
     ):
         return "Zurzeit geschlossen"
+    if resource.bundle_components.exists():
+        from .bundles import expansion
+
+        try:
+            for component, _required in expansion(resource)[1:]:
+                cp = BookingPolicy.objects.filter(resource=component).first()
+                if cp is None or not component.booking_enabled:
+                    return "Zurzeit belegt / gesperrt"
+                if cp.use_mode == "onsite" and not all(
+                    schedules.covers(component, cp, purpose, s, e)
+                    for purpose in ("usage", "access")
+                ):
+                    return "Zurzeit geschlossen"
+                cu = capacity_units(component, cp, s, e)
+                held = set(
+                    LoanLine.objects.filter(unit__in=cu, returned_at__isnull=True).values_list(
+                        "unit_id", flat=True
+                    )
+                )
+                if not cu or all(u.pk in held for u in cu):
+                    return "Zurzeit belegt / gesperrt"
+        except ValidationError:
+            return "Zurzeit belegt / gesperrt"
     units = capacity_units(resource, p, s, e)
     custody = set(
         LoanLine.objects.filter(unit__in=units, returned_at__isnull=True).values_list(

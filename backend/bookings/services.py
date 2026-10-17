@@ -242,6 +242,7 @@ def evaluate(
     end,
     *,
     unit_id=None,
+    pool_id=None,
     now=None,
     lock=False,
     start_fold=None,
@@ -249,6 +250,7 @@ def evaluate(
     pickup_at=None,
     return_at=None,
     existing_booking=None,
+    parallel_group=None,
 ):
     now = now or timezone.now()
     scope = resource_scope(resource)
@@ -334,17 +336,38 @@ def evaluate(
         schedules.owner_filter(resource), is_active=True, start__lt=claim_end, end__gt=claim_start
     ).exists():
         return Availability("hard_block")
+    from django.db.models.functions import Coalesce
+
+    from .models import BundleMember
+
+    same_group = (
+        parallel_group
+        or BundleMember.objects.filter(booking_id=getattr(existing_booking, "pk", None))
+        .values_list("reservation_id", flat=True)
+        .first()
+    )
+    parallel = Booking.objects.filter(
+        beneficiary=beneficiary, status__in=["confirmed", "active"], start__lt=e, end__gt=s
+    ).exclude(pk=getattr(existing_booking, "pk", None))
+    if same_group:
+        parallel = parallel.exclude(bundle_member__reservation_id=same_group)
     if (
-        Booking.objects.filter(
-            beneficiary=beneficiary, status__in=["confirmed", "active"], start__lt=e, end__gt=s
-        )
-        .exclude(pk=getattr(existing_booking, "pk", None))
+        parallel.annotate(logical=Coalesce("bundle_member__reservation_id", "pk"))
+        .values("logical")
+        .distinct()
         .count()
         >= policy.max_parallel
     ):
         return Availability("parallel_limit")
     units = capacity_units(
-        resource, policy, s, e, unit_id=unit_id, lock=lock, existing_booking=existing_booking
+        resource,
+        policy,
+        s,
+        e,
+        unit_id=unit_id,
+        pool_id=pool_id,
+        lock=lock,
+        existing_booking=existing_booking,
     )
     for unit in units:
         if policy.use_mode == "physical_loan":
@@ -363,7 +386,7 @@ def evaluate(
 
 
 def capacity_units(
-    resource, policy, start, end, *, unit_id=None, lock=False, existing_booking=None
+    resource, policy, start, end, *, unit_id=None, pool_id=None, lock=False, existing_booking=None
 ):
     """Shared capacity calculation for anonymous occupancy and binding allocation.
 
@@ -371,6 +394,12 @@ def capacity_units(
     beneficiary, requirements, schedules and appointments under allocation locks.
     """
     units = candidates(resource)
+    if pool_id:
+        units = units.filter(
+            pool_membership__pool_id=pool_id,
+            pool_membership__pool__resource=resource,
+            pool_membership__pool__is_active=True,
+        )
     if unit_id:
         units = units.filter(pk=unit_id)
     if lock:
@@ -415,7 +444,7 @@ def capacity_units(
     return [u for u in units if u.pk not in blocked]
 
 
-def availability(
+def _availability_single(
     actor,
     resource_id,
     start,
@@ -423,6 +452,7 @@ def availability(
     *,
     beneficiary=None,
     unit_id=None,
+    pool_id=None,
     start_fold=None,
     end_fold=None,
     pickup_at=None,
@@ -444,6 +474,7 @@ def availability(
         start,
         end,
         unit_id=unit_id,
+        pool_id=pool_id,
         start_fold=start_fold,
         end_fold=end_fold,
         pickup_at=pickup_at,
@@ -469,7 +500,7 @@ def require_active_actor(actor):
         raise PermissionDenied("Konto nicht freigegeben.")
 
 
-def confirm(
+def _confirm_single(
     actor,
     resource_id,
     start,
@@ -478,11 +509,13 @@ def confirm(
     *,
     beneficiary=None,
     unit_id=None,
+    pool_id=None,
     start_fold=None,
     end_fold=None,
     pickup_at=None,
     return_at=None,
     walk_in=False,
+    _parallel_group=None,
 ):
     beneficiary = beneficiary or actor
     try:
@@ -498,6 +531,8 @@ def confirm(
         "start_fold": start_fold,
         "end_fold": end_fold,
     }
+    if pool_id:
+        payload["pool"] = str(pool_id)
     if pickup_at is not None or return_at is not None:
         payload.update(
             pickup_at=pickup_at.isoformat() if pickup_at else None,
@@ -544,12 +579,14 @@ def confirm(
             start,
             end,
             unit_id=unit_id,
+            pool_id=pool_id,
             lock=True,
             start_fold=start_fold,
             end_fold=end_fold,
             pickup_at=pickup_at,
             return_at=return_at,
             existing_booking=existing,
+            parallel_group=_parallel_group,
         )
         if result.code != "available":
             raise ValidationError(result.code)
@@ -602,7 +639,7 @@ def confirm(
         return booking
 
 
-def cancel(actor, booking_id, revision, reason):
+def _cancel_single(actor, booking_id, revision, reason):
     with authorization_write():
         booking = Booking.objects.select_for_update().get(pk=booking_id)
         require_active_actor(actor)
@@ -694,3 +731,58 @@ def advance_onsite_bookings():
             audit(None, "booking." + next_state, object_id=row.pk)
             changed += 1
     return changed
+
+
+def availability(actor, resource_id, start, end, *, optional_ids=(), **kwargs):
+    result = _availability_single(actor, resource_id, start, end, **kwargs)
+    if result.code != "available" or kwargs.get("existing_booking") is not None:
+        return result
+    from resources.bundles import expansion
+
+    for resource, _required in expansion(Resource.objects.get(pk=resource_id), optional_ids)[1:]:
+        component_kwargs = dict(kwargs)
+        component_kwargs.pop("unit_id", None)
+        component_kwargs.pop("pool_id", None)
+        if resource.bookingpolicy.use_mode != "physical_loan":
+            component_kwargs.pop("pickup_at", None)
+            component_kwargs.pop("return_at", None)
+        component_result = _availability_single(actor, resource.pk, start, end, **component_kwargs)
+        if component_result.code != "available":
+            return Availability("bundle_component_unavailable")
+    return result
+
+
+def confirm(actor, resource_id, start, end, key, *, optional_ids=(), **kwargs):
+    if any(k.startswith("_") for k in kwargs):
+        raise ValidationError("Unbekannte Buchungseingabe.")
+    from resources.models import BundleComponent
+
+    if (
+        BundleComponent.objects.filter(resource_id=resource_id).exists()
+        or optional_ids
+        or IdempotencyRecord.objects.filter(
+            actor=actor, operation="bundle-confirm", key=key
+        ).exists()
+    ):
+        from .bundles import confirm as confirm_bundle
+
+        return confirm_bundle(
+            actor, resource_id, start, end, key, optional_ids=optional_ids, **kwargs
+        )
+    return _confirm_single(actor, resource_id, start, end, key, **kwargs)
+
+
+def cancel(actor, booking_id, revision, reason):
+    from .models import BundleMember
+
+    with authorization_write():
+        row = read_booking(actor, booking_id)
+        if row.revision != revision:
+            raise ValidationError("Buchung wurde inzwischen geändert.")
+        member = BundleMember.objects.filter(booking=row).first()
+        if member:
+            from .bundles import cancel as cancel_bundle
+
+            cancel_bundle(actor, member.reservation_id, reason)
+            return Booking.objects.get(pk=booking_id)
+        return _cancel_single(actor, booking_id, revision, reason)

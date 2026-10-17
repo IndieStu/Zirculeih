@@ -202,3 +202,24 @@ def test_calendar_review_additions_preserve_existing_records(settings, tmp_path)
     )
     call_command("enhance_review_calendar")
     assert Booking.objects.count() == len(prior) + 4
+
+
+def test_phase7_examples_are_explicit_additive_and_idempotent(settings, tmp_path):
+    settings.REVIEW_MODE = True
+    settings.MEDIA_ROOT = tmp_path / "media"
+    marker, _ = seed(timezone.localdate())
+    call_command("enhance_review_ux")
+    before = dict(User.objects.values_list("pk", "password"))
+    old_resources = set(Resource.objects.values_list("pk", flat=True))
+    from bookings.models import Booking
+
+    old_bookings = list(Booking.objects.values())
+    call_command("enhance_review_phase7")
+    assert Resource.objects.count() == len(old_resources) + 4
+    assert old_resources.issubset(set(Resource.objects.values_list("pk", flat=True)))
+    assert list(Booking.objects.values()) == old_bookings
+    assert all(User.objects.get(pk=pk).password == password for pk, password in before.items())
+    root = Resource.objects.get(slug="review-p7-bike")
+    assert root.bundle_components.filter(required=True).count() == 3
+    call_command("enhance_review_phase7")
+    assert Resource.objects.count() == len(old_resources) + 4

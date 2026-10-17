@@ -29,13 +29,34 @@ class BookingForm(forms.Form):
     )
     key = forms.UUIDField(widget=forms.HiddenInput, initial=uuid4)
 
-    def __init__(self, policy, *args, **kwargs):
+    def __init__(self, policy, *args, needs_appointments=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.policy = policy
+        from resources.models import ResourcePool
+
+        from .services import candidates
+
+        units = candidates(policy.resource).exclude(public_name="")
+        pools = ResourcePool.objects.filter(resource=policy.resource, is_active=True).exclude(
+            public_name=""
+        )
+        self.fields["unit_id"] = forms.ChoiceField(
+            label="Exemplar / Platz",
+            required=False,
+            choices=[("", "Automatisch zuweisen"), *[(str(u.pk), u.public_name) for u in units]],
+        )
+        self.fields["pool_id"] = forms.ChoiceField(
+            label="Pool",
+            required=False,
+            choices=[
+                ("", "Alle geeigneten Exemplare"),
+                *[(str(p.pk), p.public_name) for p in pools],
+            ],
+        )
         kind = "date" if policy.time_mode == "days" else "datetime-local"
         for field in ("start", "end"):
             self.fields[field].widget = forms.TextInput(attrs={"type": kind})
-        if policy.use_mode == "physical_loan":
+        if policy.use_mode == "physical_loan" or needs_appointments:
             for field, label in (
                 ("pickup_at", "Abholung"),
                 ("return_at", "Rückgabe"),
@@ -94,7 +115,7 @@ class BookingForm(forms.Form):
                         local_instant(data[field], self.policy.timezone, data[field + "_fold"])
                     except forms.ValidationError as exc:
                         self.add_error(field, exc)
-        if self.policy.use_mode == "physical_loan":
+        if "pickup_at" in self.fields:
             for field in ("pickup_at", "return_at"):
                 if data.get(field):
                     try:

@@ -3,6 +3,12 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path("verwaltung/<uuid:resource_id>/bundle/", views.bundle_edit, name="resource_bundle"),
+    path(
+        "verwaltung/kategorien/<uuid:category_id>/einweisungen/",
+        views.category_requirements,
+        name="category_requirements",
+    ),
     path("verwaltung/einweisungen/", views.qualifications_admin, name="qualifications_admin"),
     path(
         "verwaltung/<uuid:resource_id>/voraussetzungen/",

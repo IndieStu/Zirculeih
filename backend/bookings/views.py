@@ -50,6 +50,9 @@ MESSAGES = {
         "Physische Ausleihreservierungen sind für dieses Angebot noch nicht "
         "freigeschaltet. Bitte beim Team melden."
     ),
+    "bundle_component_unavailable": (
+        "Eine benötigte Komponente ist nicht verfügbar oder eine Voraussetzung fehlt."
+    ),
     "qualification_required": "Die erforderliche Einweisung fehlt. Bitte wende dich an das Team.",
     "agreement_required": "Bitte die erforderlichen aktuellen Vereinbarungen bestätigen.",
 }
@@ -95,18 +98,65 @@ def create(request, resource_id):
         )
     from django import forms as django_forms
     from lending import agreements
+    from resources.bundles import expansion
+    from resources.models import BundleComponent
     from resources.requirements import outstanding
 
+    optional_rows: list[Resource] = []
+    from uuid import UUID
+
+    frontier = [resource.pk]
+    seen: set[UUID] = set()
+    visible = set(visible_resources(request.user).values_list("pk", flat=True))
+    while frontier and len(seen) <= 20:
+        seen.update(frontier)
+        links = list(
+            BundleComponent.objects.filter(resource_id__in=frontier).select_related("component")
+        )
+        optional_rows.extend(
+            link.component for link in links if not link.required and link.component_id in visible
+        )
+        frontier = [link.component_id for link in links if link.component_id not in seen]
+    selected = request.POST.getlist("optional_ids") if request.method == "POST" else []
     try:
-        missing_versions, missing_qualifications = outstanding(request.user, resource)
+        entries = expansion(resource, selected)
     except ValidationError:
-        missing_versions, missing_qualifications = [], []
+        entries = [(resource, True)]
+    missing_versions: list = []
+    missing_qualifications: list = []
+    for entry, _required in entries:
+        if entry.pk not in visible:
+            continue
+        try:
+            versions, qualifications = outstanding(request.user, entry)
+            missing_versions.extend(
+                v for v in versions if v.pk not in {x.pk for x in missing_versions}
+            )
+            missing_qualifications.extend(
+                q for q in qualifications if q.pk not in {x.pk for x in missing_qualifications}
+            )
+        except ValidationError:
+            pass
+    needs_appointments = any(
+        hasattr(entry, "bookingpolicy") and entry.bookingpolicy.use_mode == "physical_loan"
+        for entry, _required in entries
+    )
     initial = {
         key: request.GET[key]
         for key in ("start", "end", "pickup_at", "return_at", "start_fold", "end_fold")
         if key in request.GET
     }
-    form = forms.BookingForm(policy, request.POST or None, initial=initial)
+    form = forms.BookingForm(
+        policy, request.POST or None, initial=initial, needs_appointments=needs_appointments
+    )
+    if optional_rows:
+        form.fields["optional_ids"] = django_forms.MultipleChoiceField(
+            label="Optionale Komponenten",
+            required=False,
+            choices=[(str(r.pk), r.title) for r in optional_rows],
+            widget=django_forms.CheckboxSelectMultiple,
+        )
+
     requirement_fields = []
     for version in missing_versions:
         key = "agreement_" + str(version.pk)
@@ -121,8 +171,14 @@ def create(request, resource_id):
         if form.is_valid():
             data = form.cleaned_data
             try:
-                kwargs = {"start_fold": data["start_fold"], "end_fold": data["end_fold"]}
-                if policy.use_mode == "physical_loan":
+                kwargs = {
+                    "start_fold": data["start_fold"],
+                    "end_fold": data["end_fold"],
+                    "unit_id": data.get("unit_id") or None,
+                    "pool_id": data.get("pool_id") or None,
+                    "optional_ids": data.get("optional_ids", []),
+                }
+                if "pickup_at" in form.fields:
                     kwargs.update(pickup_at=data["pickup_at"], return_at=data["return_at"])
                 if request.POST.get("action") == "confirm":
                     if any(not data["agreement_" + str(v.pk)] for v in missing_versions):
@@ -143,6 +199,7 @@ def create(request, resource_id):
         "bookings/create.html",
         {
             "resource": resource,
+            "bundle_resources": [r for r, _required in entries[1:] if r.pk in visible],
             "policy": policy,
             "form": form,
             "result": result,
@@ -174,11 +231,22 @@ def own(request):
 @require_http_methods(["GET"])
 def detail(request, booking_id):
     booking = services.read_booking(request.user, booking_id)
+    from .models import BundleMember
+
+    membership = BundleMember.objects.filter(booking=booking).first()
+    group_rows = []
+    if membership:
+        for member in membership.reservation.members.select_related("booking__resource"):
+            try:
+                group_rows.append(services.read_booking(request.user, member.booking_id))
+            except PermissionDenied:
+                continue
     return render(
         request,
         "bookings/detail.html",
         {
             "booking": booking,
+            "bundle_bookings": group_rows,
             "last_date": booking.end_date_exclusive - timedelta(days=1)
             if booking.end_date_exclusive
             else None,
@@ -211,7 +279,18 @@ def cancel(request, booking_id):
             return redirect("booking_detail", booking_id=booking.pk)
         except ValidationError as exc:
             form.add_error(None, error_message(exc))
-    return render(request, "bookings/form.html", {"title": "Buchung stornieren", "form": form})
+    return render(
+        request,
+        "bookings/form.html",
+        {
+            "title": "Buchung stornieren",
+            "form": form,
+            "text": "Alle gemeinsam reservierten Bundle-Komponenten werden ebenfalls storniert. "
+            "Jede Stornofrist und Berechtigung wird geprüft."
+            if hasattr(booking, "bundle_member")
+            else None,
+        },
+    )
 
 
 @page

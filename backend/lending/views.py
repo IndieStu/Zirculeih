@@ -486,7 +486,15 @@ def extend(request, line_id):
     return render(
         request,
         "bookings/form.html",
-        {"title": "Ausleihe verlängern: " + line.booking.resource.title, "form": form},
+        {
+            "title": "Ausleihe verlängern: " + line.booking.resource.title,
+            "form": form,
+            "text": "Bei einem Bundle gilt die Verlängerung gemeinsam "
+            "für alle noch offenen Komponenten. "
+            "Alle Voraussetzungen werden erneut geprüft."
+            if hasattr(line.booking, "bundle_member")
+            else None,
+        },
     )
 
 

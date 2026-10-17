@@ -1,6 +1,6 @@
 # Deelvo — Product & Engineering Specification
 
-**Version:** 0.7 · **Status:** Phase 5 accepted and merged; Phase 6 merged, not accepted; owner/team UX review gate active · **Date:** 2026-10-16
+**Version:** 0.8 · **Status:** Phase 6 and owner/team UX review accepted; Phase 7 authorized and in progress · **Date:** 2026-10-17
 **Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
@@ -499,3 +499,14 @@ transition. PostgreSQL locking and deferred conflict protection remain authorita
 Requirements follow period selection. Additive fictional calendar examples only;
 full regression and green CI before preserving-data NCtest deployment. Stop for
 owner/team review; no Phase 7 authorization.
+
+## 29. Phase-6/team-review acceptance and Phase-7 authorization — 2026-10-17
+
+Owner: “review durch starte mit p7”. [Record](docs/OWNER_APPROVAL_PHASE_7.md).
+Accepted review 0595653 includes application c013515; main 1ed5bbc contains an
+earlier review snapshot. The Phase-7 branch preserves the later corrections. Phase 7 extends existing
+qualifications with granular authorization, selected units/pools and atomic required
+bundle components while preserving resource/asset/loan distinctions and all current
+booking guarantees. AC-05/07/08/14 and concurrency/security regression are the gate.
+Earlier review-stop statements are historical. Phase 8 and production still need
+separate owner approval.

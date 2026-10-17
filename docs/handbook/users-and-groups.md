@@ -40,3 +40,7 @@ Unter **Einweisungen** dokumentiert berechtigtes Personal die erteilte Einweisun
 für ein verifiziertes Konto. Nutzer können dies nicht selbst bestätigen. Erteilungen
 bleiben unveränderlich; keine Ablauffrist oder Einzelentziehung. Bei Bedarf wird das
 Konto gesperrt. Die benötigten Typen werden in den einzelnen Ressourcen ausgewählt.
+
+## Phase-7-Erweiterung
+
+[Einweisungsbereiche, Exemplare/Pools und gemeinsam reservierte Bundle-Komponenten](qualifications-and-bundles.md) beschreiben die zusätzlichen Abläufe und Rechte.

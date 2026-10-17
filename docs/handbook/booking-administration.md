@@ -60,3 +60,7 @@ die Auswahl sofort. Bestehende Buchungen und ihre ursprünglichen Claims werden
 bei einer Regeländerung nicht umgeschrieben. Neue Anfragen berücksichtigen
 aktuelle Übergangszeiten auch neben älteren Buchungen. Nutzungszeiten erreichst
 du über den Link zu „Öffnungszeiten & Schließtage“.
+
+## Phase-7-Erweiterung
+
+[Einweisungsbereiche, Exemplare/Pools und gemeinsam reservierte Bundle-Komponenten](qualifications-and-bundles.md) beschreiben die zusätzlichen Abläufe und Rechte.

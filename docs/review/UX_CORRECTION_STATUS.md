@@ -1,5 +1,10 @@
 # Owner UX correction — implementation and review gate
 
+> Historical Phase-6 review handover. Owner accepted this review on 2026-10-17
+> and authorized [Phase 7](../OWNER_APPROVAL_PHASE_7.md). The stop/gate statements
+> below record the prior delivery, not the current development authorization.
+
+
 2026-10-16. Branch `review/phase-6-ux-gate`. Phase 7 remains unauthorized.
 
 ## Delivered scope

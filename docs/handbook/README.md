@@ -1,6 +1,6 @@
 # Deelvo-Handbuch
 
-Stand: Phase 6, 16.10.2026. Dieses Handbuch beschreibt die tatsächlich vorhandene Oberfläche. Die Anwendung befindet sich vor dem Echtbetrieb; Beispiele verwenden synthetische Daten.
+Stand: Phase 7, 17.10.2026. Dieses Handbuch beschreibt die tatsächlich vorhandene Oberfläche. Die Anwendung befindet sich vor dem Echtbetrieb; Beispiele verwenden synthetische Daten.
 
 Deelvo verwaltet gemeinsam nutzbare Ressourcen und deren Inventar. Aktuell verfügbar: Konten, Gruppenrechte, Inventar, Standorte, Kategorien, Identifier, Inventar-Betriebsübersicht sowie Ressourcen, Einheiten, Pools und veröffentlichter Katalog. Vor-Ort-Buchungen und Buchungskonfiguration sind hinzugekommen. Physische Ausleihen und versionierte Vereinbarungen sind hinzugekommen. Inventurläufe, Kalenderabos und Integrations-API folgen später.
 
@@ -28,3 +28,9 @@ Der Katalog mit eigener Veröffentlichung ist jetzt implementiert: [Angebote, Ei
 ## Fiktive Teamtestinstanz
 
 Für den Phase-6-Review: [Aufgaben je Rolle](../review/UX_REVIEW_PHASE_6.md) und [Feedbackvorlage](../review/UX_FEEDBACK_TEMPLATE.md). Die Testinstanz zeigt TESTINSTANZ und den Build. Nur erfundene Personen/Geräte verwenden; keine echte Ausgabe. Betreiber finden Passwort-, Mail-, Backup- und Resetkommandos in der [Review-Anleitung](../deployment/REVIEW_INSTANCE.md).
+
+## Einweisungen, Pools und Bundles — Phase 7
+
+[Einweisungsbereiche, konkrete Exemplarauswahl, atomare Bundles und Wartungsauswirkung](qualifications-and-bundles.md). Qualifikationsnachweise bleiben unbefristet
+und unveränderlich; erforderliche Komponenten behalten ihre eigenen Rechte und
+Belegungsnachweise. Serien und Genehmigungen folgen erst nach neuer Freigabe.

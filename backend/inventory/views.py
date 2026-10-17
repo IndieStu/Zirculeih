@@ -68,7 +68,9 @@ def any_action(actor, action):
         return False
     if allowed(actor, action):
         return True
-    if action.startswith(("resource.", "identifier.", "booking.", "loan.", "agreement.")):
+    if action.startswith(
+        ("resource.", "identifier.", "booking.", "loan.", "agreement.", "qualification.")
+    ):
         from resources.models import Resource
         from resources.services import resource_scope
 

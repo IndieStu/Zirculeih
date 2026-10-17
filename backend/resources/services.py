@@ -205,7 +205,7 @@ def publication(actor, resource_id, expected_revision, operation, reason):
 
 
 def save_unit(actor, resource_id, data, *, unit_id=None, expected_revision=None):
-    if set(data) - {"name", "asset", "is_active"}:
+    if set(data) - {"name", "public_name", "asset", "is_active"}:
         raise ValidationError("Unbekannte Einheitsfelder.")
     with authorization_write():
         resource = read_resource(actor, resource_id)
@@ -248,7 +248,15 @@ def save_unit(actor, resource_id, data, *, unit_id=None, expected_revision=None)
 
 
 def save_pool(
-    actor, resource_id, name, units, *, pool_id=None, expected_revision=None, is_active=True
+    actor,
+    resource_id,
+    name,
+    units,
+    *,
+    pool_id=None,
+    expected_revision=None,
+    is_active=True,
+    public_name="",
 ):
     with authorization_write():
         resource = read_resource(actor, resource_id)
@@ -266,7 +274,7 @@ def save_pool(
             raise ValidationError("Nur aktive Einheiten dieses Angebots wählen.")
         if PoolMembership.objects.filter(unit_id__in=ids).exclude(pool=pool).exists():
             raise ValidationError("Eine Einheit ist bereits einem anderen Pool zugeordnet.")
-        pool.name, pool.is_active = name, is_active
+        pool.name, pool.is_active, pool.public_name = name, is_active, public_name
         pool.revision += 1
         pool.full_clean()
         pool.save()

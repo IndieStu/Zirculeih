@@ -13,6 +13,7 @@ def operational_user(user):
                 "resource.manage",
                 "booking.read_all",
                 "booking.configure",
+                "booking.configure",
                 "loan.read",
                 "loan.checkout",
                 "loan.return",
@@ -38,7 +39,8 @@ def navigation(request):
         "location_navigation": any_action(user, "location.read")
         or any_action(user, "location.manage"),
         "hours_navigation": any_action(user, "booking.configure"),
-        "qualification_navigation": allowed(user, "qualification.issue"),
+        "qualification_navigation": any_action(user, "qualification.issue")
+        or any_action(user, "booking.configure"),
     }
     flags["sidebar_navigation"] = (
         flags["staff_navigation"]

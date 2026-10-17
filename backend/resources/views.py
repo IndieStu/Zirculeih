@@ -13,7 +13,7 @@ from django.views.decorators.http import require_http_methods, require_POST
 from inventory import extensions
 from inventory.forms import IdentifierForm, ReasonForm
 from inventory.models import Category, Identifier, IdentifierNamespace
-from inventory.services import descendants
+from inventory.services import descendants, tree_scope
 
 from . import forms, services
 from .models import Resource, ResourceImage, ResourcePool, ResourceType, ResourceUnit
@@ -129,6 +129,9 @@ def detail(request, slug):
                 actor=request.user,
                 query=request.GET,
             ),
+            "bundle_components": resource.bundle_components.filter(
+                component__in=services.visible_resources(request.user)
+            ).select_related("component"),
             "description": resource.description,
             "specifications": resource.specifications,
             "safety_notes": resource.safety_notes,
@@ -263,6 +266,7 @@ def pool_edit(request, resource_id, pool_id=None):
         {
             "revision": pool.revision,
             "name": pool.name,
+            "public_name": pool.public_name,
             "is_active": pool.is_active,
             "units": pool.memberships.values_list("unit_id", flat=True),
         }
@@ -396,6 +400,7 @@ def requirements_edit(request, resource_id):
     require(request.user, "agreement.assign", services.resource_scope(resource))
     form = forms.RequirementsForm(
         request.POST or None,
+        resource=resource,
         initial={
             "agreements": AgreementAssignment.objects.filter(resource=resource).values_list(
                 "agreement_id", flat=True
@@ -425,15 +430,20 @@ def requirements_edit(request, resource_id):
 @operation
 @require_http_methods(["GET", "POST"])
 def qualifications_admin(request):
-    from . import requirements
-    from .models import QualificationType, UserQualification
+    from inventory.views import any_action
 
-    require(request.user, "qualification.issue")
+    from . import requirements
+    from .models import UserQualification
+
+    if not any_action(request.user, "qualification.issue") and not any_action(
+        request.user, "booking.configure"
+    ):
+        raise PermissionDenied
     type_form = forms.QualificationForm(
-        request.POST if request.POST.get("operation") == "type" else None
+        request.user, request.POST if request.POST.get("operation") == "type" else None
     )
     issue_form = forms.IssueQualificationForm(
-        request.POST if request.POST.get("operation") == "issue" else None
+        request.user, request.POST if request.POST.get("operation") == "issue" else None
     )
     if request.method == "POST":
         form = type_form if request.POST.get("operation") == "type" else issue_form
@@ -441,7 +451,13 @@ def qualifications_admin(request):
             try:
                 data = form.cleaned_data
                 if form is type_form:
-                    requirements.create_type(request.user, data["name"], data["description"])
+                    requirements.create_type(
+                        request.user,
+                        data["name"],
+                        data["description"],
+                        resource=data["resource"],
+                        category=data["category"],
+                    )
                 else:
                     requirements.issue(
                         request.user, data["user"].pk, data["qualification"].pk, data["note"]
@@ -456,10 +472,17 @@ def qualifications_admin(request):
         {
             "type_form": type_form,
             "issue_form": issue_form,
-            "types": QualificationType.objects.all(),
-            "issuances": UserQualification.objects.select_related("user", "qualification").order_by(
-                "-issued_at"
-            )[:100],
+            "types": requirements.visible_types(request.user),
+            "qualification_categories": [
+                c
+                for c in Category.objects.filter(is_active=True)
+                if allowed(request.user, "booking.configure", tree_scope(c))
+            ],
+            "issuances": UserQualification.objects.filter(
+                qualification__in=requirements.visible_types(request.user)
+            )
+            .select_related("user", "qualification")
+            .order_by("-issued_at")[:100],
         },
     )
 
@@ -470,9 +493,9 @@ def calendar_select(request, slug):
     from urllib.parse import urlencode
 
     from bookings.models import BookingPolicy
-    from bookings.occupancy import Occupancy
     from bookings.time_rules import interval
 
+    from .bundle_calendar import occupancy as Occupancy
     from .calendar import validate_period
 
     resource = get_object_or_404(services.visible_resources(request.user), slug=slug)
@@ -508,4 +531,75 @@ def calendar_select(request, slug):
         )
     return render(
         request, "resources/calendar_error.html", {"resource": resource, "error": error}, status=400
+    )
+
+
+@operation
+@require_http_methods(["GET", "POST"])
+def bundle_edit(request, resource_id):
+    from . import bundles
+
+    resource = services.read_resource(request.user, resource_id)
+    require(request.user, "booking.configure", services.resource_scope(resource))
+    links = resource.bundle_components.all()
+    form = forms.BundleForm(
+        request.user,
+        resource,
+        request.POST or None,
+        initial={
+            "revision": resource.revision,
+            "required_components": [r.component_id for r in links if r.required],
+            "optional_components": [r.component_id for r in links if not r.required],
+        },
+    )
+    if request.method == "POST" and form.is_valid():
+        try:
+            data = form.cleaned_data
+            bundles.configure(
+                request.user,
+                resource.pk,
+                [(r, True) for r in data["required_components"]]
+                + [(r, False) for r in data["optional_components"]],
+                data["revision"],
+            )
+            return redirect("resource_manage", resource_id=resource.pk)
+        except ValidationError as exc:
+            form.add_error(None, exc)
+    return render(
+        request,
+        "resources/form.html",
+        {"form": form, "title": "Bundle-Komponenten", "resource": resource},
+    )
+
+
+@operation
+@require_http_methods(["GET", "POST"])
+def category_requirements(request, category_id):
+    from inventory.services import tree_scope
+
+    from . import requirements
+    from .models import CategoryQualification
+
+    category = get_object_or_404(Category, pk=category_id)
+    require(request.user, "booking.configure", tree_scope(category))
+    form = forms.CategoryRequirementsForm(
+        category,
+        request.POST or None,
+        initial={
+            "qualifications": CategoryQualification.objects.filter(category=category).values_list(
+                "qualification_id", flat=True
+            )
+        },
+    )
+    if request.method == "POST" and form.is_valid():
+        try:
+            requirements.configure_category(
+                request.user, category.pk, [q.pk for q in form.cleaned_data["qualifications"]]
+            )
+            messages.success(request, "Voraussetzungen gespeichert.")
+            return redirect("qualifications_admin")
+        except ValidationError as exc:
+            form.add_error(None, exc)
+    return render(
+        request, "resources/form.html", {"form": form, "title": f"Einweisungen für {category.name}"}
     )

@@ -237,3 +237,19 @@ These are implementation checks. Owner/team UX acceptance remains pending.
   `tests/test_calendar.py`; full regression evidence in review handover.
 - Actual browser/mobile checks and additive NCtest preservation are recorded in
   `docs/review/VERIFICATION.md`; final UX acceptance belongs to owner/team.
+
+## Phase-7 implementation acceptance
+
+- AC-05: resource/category qualification scope, inherited category requirements,
+  current issuance checks at booking and checkout; no self-certification/expiry/revoke.
+- AC-07: concrete unit and active pool selection share the existing allocator;
+  only deliberately published labels appear in ordinary booking controls.
+- AC-08: bounded acyclic independent resource bundles, optional selection,
+  per-component permissions/requirements, atomic claims/rollback/idempotence,
+  immutable complete member set and group cancellation; shared-component race.
+- AC-14: component maintenance blocks the composed calendar/new allocation;
+  existing promises stay visible for explicit incident resolution.
+- Physical bundle issue requires every prepared component, preserves per-line
+  custody/partial return; wholly physical open bundles extend atomically.
+- Automated acceptance: `tests/test_phase7.py`, existing booking/lending/calendar
+  regression. Operator browser evidence and full results: Phase-7 review document.

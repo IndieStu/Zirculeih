@@ -47,3 +47,7 @@ und Öffnungszeiten. Tagesangebote verwenden stattdessen einen Datumsbereich
 mit „Bis einschließlich“. Erst „Reservieren“ öffnet die Voraussetzungen und
 Bestätigung. Eine freie Vorschau ersetzt weder persönliche Berechtigung noch
 die abschließende Konfliktprüfung.
+
+## Phase-7-Erweiterung
+
+[Einweisungsbereiche, Exemplare/Pools und gemeinsam reservierte Bundle-Komponenten](qualifications-and-bundles.md) beschreiben die zusätzlichen Abläufe und Rechte.

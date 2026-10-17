@@ -291,3 +291,20 @@ class IdempotencyRecord(models.Model):
                 fields=["actor", "operation", "key"], name="booking_idempotency_unique"
             )
         ]
+
+
+class BundleReservation(models.Model):
+    expected_resources = models.JSONField(default=list)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    root = models.OneToOneField(
+        Booking, on_delete=models.PROTECT, related_name="bundle_reservation"
+    )
+    created_at = models.DateTimeField(default=dj_timezone.now)
+
+
+class BundleMember(models.Model):
+    reservation = models.ForeignKey(
+        BundleReservation, on_delete=models.PROTECT, related_name="members"
+    )
+    booking = models.OneToOneField(Booking, on_delete=models.PROTECT, related_name="bundle_member")
+    required = models.BooleanField(default=True)

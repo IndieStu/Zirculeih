@@ -4,6 +4,7 @@ from inventory.models import Category, Location
 from inventory.services import visible_assets
 
 from .models import Resource, ResourceType, ResourceUnit
+from .services import resource_scope
 
 
 class ResourceForm(forms.ModelForm):
@@ -72,9 +73,10 @@ class UnitForm(forms.ModelForm):
 
     class Meta:
         model = ResourceUnit
-        fields = ["name", "asset", "is_active"]
+        fields = ["name", "public_name", "asset", "is_active"]
         labels = {
-            "name": "Bezeichnung des Exemplars",
+            "name": "Interne Bezeichnung des Exemplars",
+            "public_name": "Name für die Buchungsauswahl (optional)",
             "asset": "Inventargegenstand (optional)",
             "is_active": "Aktiv",
         }
@@ -94,6 +96,9 @@ class UnitForm(forms.ModelForm):
 
 
 class PoolForm(forms.Form):
+    public_name = forms.CharField(
+        label="Name für die Buchungsauswahl (optional)", max_length=120, required=False
+    )
     name = forms.CharField(label="Poolname", max_length=120)
     units = forms.ModelMultipleChoiceField(
         label="Äquivalente Einheiten", required=False, queryset=ResourceUnit.objects.none()
@@ -145,7 +150,7 @@ class RequirementsForm(forms.Form):
         widget=forms.CheckboxSelectMultiple,
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, resource=None, **kwargs):
         super().__init__(*args, **kwargs)
         from lending.models import Agreement
 
@@ -154,10 +159,42 @@ class RequirementsForm(forms.Form):
         self.fields["agreements"].queryset = Agreement.objects.filter(
             kind="additional", is_active=True
         )
-        self.fields["qualifications"].queryset = QualificationType.objects.filter(is_active=True)
+        from .requirements import applies
+
+        rows = QualificationType.objects.filter(is_active=True)
+        self.fields["qualifications"].queryset = rows.filter(
+            pk__in=[q.pk for q in rows if resource is None or applies(q, resource)]
+        )
 
 
 class QualificationForm(forms.Form):
+    resource = forms.ModelChoiceField(
+        label="Angebot (optional)", queryset=Resource.objects.none(), required=False
+    )
+    category = forms.ModelChoiceField(
+        label="Kategorie (alternativ)", queryset=Category.objects.none(), required=False
+    )
+
+    def __init__(self, actor, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from accounts.authorization import allowed
+        from inventory.services import tree_scope
+
+        self.fields["resource"].queryset = Resource.objects.filter(
+            pk__in=[
+                r.pk
+                for r in Resource.objects.all()
+                if allowed(actor, "booking.configure", resource_scope(r))
+            ]
+        )
+        self.fields["category"].queryset = Category.objects.filter(
+            pk__in=[
+                c.pk
+                for c in Category.objects.filter(is_active=True)
+                if allowed(actor, "booking.configure", tree_scope(c))
+            ]
+        )
+
     name = forms.CharField(label="Name", max_length=120)
     description = forms.CharField(
         label="Beschreibung", max_length=2000, required=False, widget=forms.Textarea
@@ -169,13 +206,54 @@ class IssueQualificationForm(forms.Form):
     qualification = forms.ModelChoiceField(label="Einweisung", queryset=Category.objects.none())
     note = forms.CharField(label="Notiz (optional)", max_length=500, required=False)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, actor, *args, **kwargs):
         super().__init__(*args, **kwargs)
         from accounts.models import User
-
-        from .models import QualificationType
 
         self.fields["user"].queryset = User.objects.filter(
             is_active=True, email_verified_at__isnull=False
         )
-        self.fields["qualification"].queryset = QualificationType.objects.filter(is_active=True)
+        from .requirements import visible_types
+
+        self.fields["qualification"].queryset = visible_types(actor).filter(is_active=True)
+
+
+class BundleForm(forms.Form):
+    required_components = forms.ModelMultipleChoiceField(
+        label="Erforderliche Angebote", queryset=Resource.objects.none(), required=False
+    )
+    optional_components = forms.ModelMultipleChoiceField(
+        label="Optional wählbare Angebote", queryset=Resource.objects.none(), required=False
+    )
+    revision = forms.IntegerField(widget=forms.HiddenInput)
+
+    def __init__(self, actor, resource, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from accounts.authorization import allowed
+
+        rows = Resource.objects.filter(archived_at__isnull=True).exclude(pk=resource.pk)
+        ids = [r.pk for r in rows if allowed(actor, "booking.configure", resource_scope(r))]
+        for key in ("required_components", "optional_components"):
+            self.fields[key].queryset = Resource.objects.filter(pk__in=ids)
+
+
+class CategoryRequirementsForm(forms.Form):
+    qualifications = forms.ModelMultipleChoiceField(
+        label="Erforderliche Einweisungen einschließlich Unterkategorien",
+        queryset=Category.objects.none(),
+        required=False,
+    )
+
+    def __init__(self, category, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from django.db.models import Q
+        from inventory.services import tree_scope
+
+        from .models import QualificationType
+
+        self.fields["qualifications"].queryset = QualificationType.objects.filter(
+            is_active=True, resource__isnull=True
+        ).filter(
+            Q(category__isnull=True)
+            | Q(category_id__in=[category.pk, *tree_scope(category).ancestors])
+        )
