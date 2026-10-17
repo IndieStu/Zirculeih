@@ -2,7 +2,7 @@
 
 Selbst gehostete Inventarverwaltung, Ressourcenreservierung und Ausleihe für Makerspaces.
 
-Stand: 17.10.2026. Phasen 1–6 einschließlich Owner-/Team-UX-Review sind akzeptiert. Phase 7 erweitert Einweisungen um Geltungsbereiche und ergänzt konkrete Pool-/Exemplarauswahl sowie atomare Ressourcenbundles. [Phase-7-Review und Nachweise](docs/PHASE_7_REVIEW.md). Reservierung und tatsächlicher Gewahrsam bleiben getrennt. Keine Produktion oder Phase 8 ohne eigene Freigabe.
+Stand: 17.10.2026. Phasen 1–6 einschließlich Owner-/Team-UX-Review sind akzeptiert. Phase 7 ist implementiert und steht zur Abnahme: Einweisungsbereiche, konkrete Pool-/Exemplarauswahl und atomare Ressourcenbundles; 252 Tests lokal und in CI bestanden. [Phase-7-Review und Nachweise](docs/PHASE_7_REVIEW.md). Reservierung und tatsächlicher Gewahrsam bleiben getrennt. Keine Produktion oder Phase 8 ohne eigene Freigabe.
 
 ## Start und Review
 

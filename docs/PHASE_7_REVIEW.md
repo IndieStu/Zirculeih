@@ -78,9 +78,9 @@ Wartungsaufträge, ICS/API, Hardware-/Kiosktests und Produktion sind nicht Phase
    verlängern, Konflikt an einem Teil muss die ganze Änderung zurückrollen.
 7. 320px/Tastatur, Monatskalender/Tagesbereich und fehlende Voraussetzungen prüfen.
 
-## Bisherige Verifikation
+## Verifikation
 
-Vollständige lokale PostgreSQL-16-Regression: **251 bestanden**, 98,47 Sekunden.
+Vollständige lokale PostgreSQL-16-Regression: **252 bestanden**, 98,60 Sekunden.
 [JUnit](test-results/phase-7-local.xml). Ein zusätzlicher gezielter Lauf umfasst
 43 gezielte Phase-7-/Ausleihtests ([Nachweise](test-results/phase-7-targeted.xml)).
 AC-07 wird direkt am produktiven Pooldienst mit sechs gleichzeitigen Anfragen auf
@@ -104,7 +104,17 @@ Tests geprüft; keine manuelle Passwortanlage oder behauptete Hardwareabnahme.
 [Übersicht](screenshots/phase-7-overview.png), [Bundle](screenshots/phase-7-bundle.png), [320px](screenshots/phase-7-mobile.png),
 [Komponentensperre](screenshots/phase-7-component-block.png).
 
-CI-Ergebnis wird nach dem Lauf des gepushten Anwendungscodes ergänzt.
+[CI 39023144810](https://github.com/IndieStu/Zirculeih/actions/runs/39023144810)
+für Anwendung/Teststand `d35c03d48fafeff605c28a0eb62def2c1aa67548` vollständig grün:
+**252 bestanden**, 260,60 Sekunden, Docker/Linux/PostgreSQL 17. Lint/Formatierung,
+Mypy, Migrations-/Systemprüfung, Start-/Health-/Static-Smoke und die zweimalige
+additive Phase-7-Datenanlage bestanden. [Maschinenlesbare Nachweise](test-results/phase-7-ci.json).
+Nachfolgende Dokumentationscommits ändern den geprüften Anwendungscode nicht.
+
+Die lokale Preview ist beendet, temporäre Browser-Tabs geschlossen. NCtest,
+Produktivsysteme und bestehende Zugangsdaten wurden in dieser Phase nicht geändert.
+Bitte Phase 7 anhand der oben beschriebenen Aufgaben abnehmen; Phase 8 erfordert
+anschließend eine neue ausdrückliche Freigabe.
 Phase 8 bleibt ein separates Owner-Gate.
 
 ## Review-PR
