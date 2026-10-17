@@ -55,9 +55,31 @@ def required_qualifications(resource):
     ).distinct()
 
 
+def issuance_scopes(qualification):
+    """A broad immutable certificate must not bypass a narrower current denial."""
+    from inventory.models import Category, Location
+    from inventory.services import descendants, tree_scope
+
+    scopes = [qualification_scope(qualification)]
+    if qualification.resource_id:
+        return scopes
+    categories = Category.objects.all()
+    if qualification.category_id:
+        categories = categories.filter(pk__in=descendants(Category, qualification.category_id))
+    scopes.extend(tree_scope(c) for c in categories)
+    if not qualification.category_id:
+        scopes.extend(tree_scope(n) for n in Location.objects.all())
+    scopes.extend(
+        resource_scope(r)
+        for r in Resource.objects.select_related("location").prefetch_related("categories")
+        if applies(qualification, r)
+    )
+    return scopes
+
+
 def visible_types(actor, action="qualification.issue"):
     rows = list(QualificationType.objects.select_related("resource__location", "category"))
-    decisions = allowed_many(actor, action, [qualification_scope(q) for q in rows])
+    decisions = [all(allowed_many(actor, action, issuance_scopes(q))) for q in rows]
     return QualificationType.objects.filter(
         pk__in=[q.pk for q, ok in zip(rows, decisions, strict=True) if ok]
     )
@@ -214,7 +236,12 @@ def create_type(actor, name, description="", *, resource=None, category=None):
 def issue(actor, user_id, qualification_id, note=""):
     with authorization_write():
         qualification = QualificationType.objects.get(pk=qualification_id, is_active=True)
-        require(actor, "qualification.issue", qualification_scope(qualification))
+        if not all(allowed_many(actor, "qualification.issue", issuance_scopes(qualification))):
+            from django.core.exceptions import PermissionDenied
+
+            raise PermissionDenied(
+                "Die Vergabeberechtigung muss den gesamten Einweisungsbereich abdecken."
+            )
         user = User.objects.get(pk=user_id, is_active=True, email_verified_at__isnull=False)
         row, created = UserQualification.objects.get_or_create(
             user=user, qualification=qualification, defaults={"issued_by": actor, "note": note}

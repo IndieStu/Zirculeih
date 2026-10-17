@@ -84,6 +84,7 @@ def test_scoped_issuance_and_inherited_category(configured, client):
         effect="allow",
         scope_kind="category",
         scope_id=category.pk,
+        inherit=True,
     )
     assert requirements.issue(teacher, user.pk, q.pk).qualification_id == q.pk
     assert services.availability(user, r.pk, s, e).code == "available"
@@ -534,3 +535,54 @@ def test_five_real_pool_units_six_simultaneous_requests(configured):
     assert set(winners) == {u.pk for u in units} and outside.pk not in winners
     assert Booking.objects.count() == AllocationClaim.objects.count() == 5
     assert services.availability(user, r.pk, s, e).code == "available"
+
+
+def test_broad_qualification_cannot_bypass_narrow_deny(configured):
+    from inventory.models import Category
+
+    actor, r, _, _, user, _, _ = configured
+    category = Category.objects.create(name="Machines")
+    child = Category.objects.create(name="Restricted CNC", parent=category)
+    r.categories.add(child)
+    q = requirements.create_type(actor, "Broad machinery induction", category=category)
+    teacher = User.objects.create_user(
+        "limited-teacher@example.test",
+        "Test-only-password!",
+        email_verified_at=timezone.now(),
+        privacy_version="test",
+    )
+    group = Group.objects.create(name="Broad but limited issuer")
+    Membership.objects.create(user=teacher, group=group)
+    Grant.objects.create(
+        group=group,
+        action="qualification.issue",
+        effect="allow",
+        scope_kind="category",
+        scope_id=category.pk,
+        inherit=True,
+    )
+    deny = Grant.objects.create(
+        group=group,
+        action="qualification.issue",
+        effect="deny",
+        scope_kind="category",
+        scope_id=child.pk,
+        inherit=True,
+    )
+    with pytest.raises(PermissionDenied):
+        requirements.issue(teacher, user.pk, q.pk)
+    assert not requirements.visible_types(teacher).filter(pk=q.pk).exists()
+    deny.delete()
+    assert requirements.issue(teacher, user.pk, q.pk).qualification_id == q.pk
+    # Even a global allow cannot override a specific resource denial.
+    Grant.objects.create(group=group, action="qualification.issue", effect="allow")
+    global_q = requirements.create_type(teacher, "Global induction")
+    Grant.objects.create(
+        group=group,
+        action="qualification.issue",
+        effect="deny",
+        scope_kind="resource",
+        scope_id=r.pk,
+    )
+    with pytest.raises(PermissionDenied):
+        requirements.issue(teacher, user.pk, global_q.pk)

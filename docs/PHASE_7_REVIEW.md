@@ -82,9 +82,10 @@ Wartungsaufträge, ICS/API, Hardware-/Kiosktests und Produktion sind nicht Phase
 
 Vollständige lokale PostgreSQL-16-Regression: **248 bestanden**, 95,98 Sekunden.
 [JUnit](test-results/phase-7-local.xml). Nach dem letzten Privacy-/Status-Härtungsfall
-zusätzlich **17 Phase-7-Tests bestanden**, 14,00 Sekunden
+zusätzlich **25 gezielte Phase-7-/Reviewtests bestanden**, 28,87 Sekunden
 ([gezielte Nachweise](test-results/phase-7-targeted.xml)); die abschließende CI prüft
-die gesamte endgültige Fassung. AC-07 wird zusätzlich direkt am produktiven
+die gesamte endgültige Fassung. Breite Einweisungstypen prüfen zusätzlich aktuelle Unterbereichsverbote und
+Vererbung. AC-07 wird zusätzlich direkt am produktiven
 Pooldienst mit sechs gleichzeitigen Anfragen auf fünf echte Pool-Einheiten geprüft;
 ein sechstes Exemplar außerhalb des gewählten Pools bleibt dabei unangetastet. Ruff, Formatierung, Mypy (132 Dateien),
 Django-Systemprüfung, Migrationskonsistenz und Dokumentlinks bestanden.

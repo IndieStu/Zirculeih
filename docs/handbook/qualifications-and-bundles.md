@@ -12,7 +12,10 @@ Einweisungstypen können installationsweit, für genau ein Angebot oder für ein
 Kategorie gelten. Für die Anlage eines bereichsbezogenen Typs ist das dortige
 Konfigurationsrecht nötig. Wer Einweisungen erteilt, braucht **Einweisungen erteilen**
 für den gesamten Geltungsbereich des Typs. Ein Recht nur für eine Maschine erlaubt
-keine kategorieweite oder installationsweite Einweisung. Die Übersicht zeigt nur
+keine kategorieweite oder installationsweite Einweisung. Für Kategorien müssen
+auch die Unterbereiche durch das Vergaberecht abgedeckt sein (Vererbung). Ein
+ausdrückliches Verbot in einem Teilbereich verhindert die breitere Vergabe; es
+wird nicht durch eine allgemeine Erlaubnis aufgehoben. Die Übersicht zeigt nur
 Nachweise im eigenen Zuständigkeitsbereich. Der Geltungsbereich eines angelegten
 Typs bleibt dauerhaft stabil; bei anderer Bedeutung einen neuen Typ anlegen.
 
