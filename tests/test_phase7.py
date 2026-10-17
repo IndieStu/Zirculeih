@@ -498,3 +498,39 @@ def test_private_component_does_not_publish_occupancy_or_labels(configured, clie
     with pytest.raises((PermissionDenied, ValidationError)):
         services.confirm(user, r.pk, s, e, uuid4())
     assert not Booking.objects.exists()
+
+
+@pytest.mark.django_db(transaction=True)
+def test_five_real_pool_units_six_simultaneous_requests(configured):
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Barrier
+
+    from django.db import close_old_connections
+
+    actor, r, first, _, user, s, e = configured
+    units = [
+        first,
+        *[resources.save_unit(actor, r.pk, {"name": f"Pool unit {i}"}) for i in range(4)],
+    ]
+    outside = resources.save_unit(actor, r.pk, {"name": "Outside selected pool"})
+    selected = resources.save_pool(actor, r.pk, "Five unit pool", units)
+    barrier = Barrier(6)
+
+    def attempt(_):
+        close_old_connections()
+        try:
+            barrier.wait(timeout=20)
+            try:
+                return services.confirm(user, r.pk, s, e, uuid4(), pool_id=selected.pk).unit_id
+            except ValidationError:
+                return None
+        finally:
+            close_old_connections()
+
+    with ThreadPoolExecutor(max_workers=6) as pool:
+        results = list(pool.map(attempt, range(6)))
+    winners = [u for u in results if u is not None]
+    assert len(winners) == len(set(winners)) == 5
+    assert set(winners) == {u.pk for u in units} and outside.pk not in winners
+    assert Booking.objects.count() == AllocationClaim.objects.count() == 5
+    assert services.availability(user, r.pk, s, e).code == "available"
