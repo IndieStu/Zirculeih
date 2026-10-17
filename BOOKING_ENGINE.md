@@ -102,3 +102,15 @@ Physical policies now check complete current borrower profile, organization-auth
 Active custody permits future reservation starts after expected_return when claims do not overlap. Checkout reuses confirmed Booking and rechecks actor/beneficiary, current gates, unit/asset state, actual pickup access/window and open custody. Spontaneous issuance explicitly permits a currently running interval beginning today only with zero policy lead, loan.checkout and ordinary create_for_others/beneficiary grants; Booking/Claim/Loan commit together. No accountless path.
 
 Extension re-evaluates the full period with existing Booking excluded from its own conflict/parallel count, preserves original buffers/snapshot and appends permanent amendment evidence before growing Booking end/claim. Exclusion remains authoritative. Returns complete only actual selected lines, release their claims and eventually close Loan; suspended borrower never prevents authorized return. No-show is explicit staff action after pickup for an unissued reservation only. Overdue job flags endangered promises, never fakes return. Qualifications/bundles stay Phase 7; recurrence/notifications/API/ICS retain their phases.
+
+## Phase 8 — productive request and approval boundary
+
+[ADR-023](docs/adr/023.md). `bookings/recurrence.py` expands bounded local weekly
+rules and owns non-blocking proposals. Approval simulates all occurrences in a
+rolled-back transaction through the existing allocator, reports every conflict,
+then repeats all writes inside the same protected outer transaction. No persisted
+preview hold. Current requirements, scopes, appointments, real pool units and
+bundle invariants remain authoritative. Single-resource manual policies require
+explicit approval; the existing default remains auto. Confirmed occurrence moves
+cancel/rebook atomically and retain original identity via permanent exception links.
+No arbitrary RRULE, hidden partial approval, email/ICS or physical return side effect.

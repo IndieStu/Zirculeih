@@ -1,6 +1,6 @@
 # Deelvo — Product & Engineering Specification
 
-**Version:** 0.8 · **Status:** Phase 6 and owner/team UX review accepted; Phase 7 implemented; owner review pending · **Date:** 2026-10-17
+**Version:** 0.8 · **Status:** Phase 7 accepted; Phase 8 implemented; verification and owner review pending · **Date:** 2026-10-17
 **Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
@@ -510,3 +510,13 @@ bundle components while preserving resource/asset/loan distinctions and all curr
 booking guarantees. AC-05/07/08/14 and concurrency/security regression are the gate.
 Earlier review-stop statements are historical. Phase 8 and production still need
 separate owner approval.
+
+
+## 30. Phase-7 acceptance and Phase-8 authorization — 2026-10-17
+
+Owner: “Okay ist abgenommen 8 darf gestartet werden”. [Record](docs/OWNER_APPROVAL_PHASE_8.md).
+Main de92c55 includes merged Phase 7. Phase 8 implements non-blocking single/weekly
+requests, scoped approval/rejection, bounded recurrence, transactional all-or-nothing
+approval, original-identity occurrence exceptions and audit (AC-10/11/23). Existing
+domain boundaries, calendar corrections and physical lending gates remain binding.
+Earlier Phase-8 stops are superseded. Phase 9 and production require separate approval.

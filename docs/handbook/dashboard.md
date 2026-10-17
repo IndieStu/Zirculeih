@@ -36,3 +36,6 @@ Einstellungen; auf schmalen Bildschirmen lässt sie sich über „Verwaltung“ 
 Abholungen, Rückgaben, überfällige Rückgaben, heutige Buchungen und offene Hinweise
 stammen aus den tatsächlichen Vorgängen im berechtigten Bereich. Schnellaktionen
 führen direkt zu Ausgabe/Rückgabe, Inventar, Ressourcen und Personen/Gruppen.
+
+Mit passendem Lese- und Genehmigungsrecht zeigt „Anträge prüfen“ offene Einzel-
+und Serienanfragen im erlaubten Bereich. [Freigabeablauf](requests-and-series.md).

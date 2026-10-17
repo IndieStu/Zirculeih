@@ -12,6 +12,7 @@ def operational_user(user):
                 "asset.read",
                 "resource.manage",
                 "booking.read_all",
+                "booking.approve",
                 "booking.configure",
                 "booking.configure",
                 "loan.read",

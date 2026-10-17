@@ -46,3 +46,11 @@ Mit produktivem Testbooking einen privaten Feed in einer eigenen Nextcloud-Calen
 CalDAV, bidirektionale Änderungen, Konfliktauflösung und Nextcloud-spezifische SDKs sind keine Phase-3-Funktionen. Bidirektionales CalDAV erst nach späterer begründeter Reviewentscheidung.
 
 Quellen: [RFC 5545](https://www.rfc-editor.org/rfc/rfc5545), [Nextcloud Calendar-Handbuch](https://docs.nextcloud.com/server/latest/user_manual/en/groupware/calendar.html). CAL-01–06 sind geplante Akzeptanzfälle, keine heute bestandenen Tests.
+
+## Phase 8 status
+
+Requests, approvals and recurrence exceptions currently use authenticated, CSRF-
+protected web forms and shared services. No public `/api/v1/` request endpoint or
+ICS feed is introduced. Future API/ICS integration must preserve non-blocking
+proposal status, scoped decisions, all-or-nothing allocation and original local
+occurrence identity from [ADR-023](adr/023.md).

@@ -9,6 +9,7 @@ def navigation(request):
 
     return {
         "personal_bookings_navigation": True,
+        "approval_navigation": any_action(request.user, "booking.approve"),
         "loan_navigation": any(
             any_action(request.user, a) for a in ("loan.read", "loan.checkout", "loan.return")
         ),

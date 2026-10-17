@@ -44,3 +44,5 @@ Mit eigenen fachlichen Rechten konfigurierst du [Buchungsregeln, Zeitpläne und 
 ## Vereinbarungen und Ausleihe
 
 [Texte schreiben, veröffentlichen und zuordnen](agreements.md), [Personalabläufe und Rechte](loans.md). Eine Ausweisprüfung wird nur durch ausdrücklich berechtigtes Personal bei tatsächlicher persönlicher Prüfung dokumentiert. Es gibt kein Feld für Ausweisnummern oder Kopien.
+
+Anträge/Serien: [Berechtigungen, Freigabe und Grenzen](requests-and-series.md).

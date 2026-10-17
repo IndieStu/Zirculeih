@@ -69,6 +69,8 @@ def save_policy(actor, resource_id, data, expected_revision=None):
                 )
             policy.buffer_after_minutes = 30 - policy.buffer_before_minutes
         zone(policy.timezone)
+        if policy.approval_mode not in {"auto", "manual"} or not 1 <= policy.max_occurrences <= 366:
+            raise ValidationError("Serienlimit muss zwischen 1 und 366 liegen.")
         # Technical expansion bounds; explicit rather than unbounded schedule work.
         if (
             policy.max_days > 366
@@ -516,6 +518,7 @@ def _confirm_single(
     return_at=None,
     walk_in=False,
     _parallel_group=None,
+    approval=False,
 ):
     beneficiary = beneficiary or actor
     try:
@@ -554,6 +557,10 @@ def _confirm_single(
         policy = BookingPolicy.objects.select_for_update().filter(resource=resource).first()
         if policy is None:
             raise ValidationError("Buchung noch nicht konfiguriert.")
+        if policy.approval_mode == "manual" or approval:
+            require(actor, "booking.approve", resource_scope(resource))
+            if not approval and not walk_in:
+                raise ValidationError("approval_required")
         existing = None
         if walk_in:
             require(actor, "loan.checkout", resource_scope(resource))

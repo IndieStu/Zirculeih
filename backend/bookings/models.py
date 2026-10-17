@@ -34,10 +34,24 @@ class BookingPolicy(models.Model):
     cancellation_notice_minutes = models.PositiveIntegerField(default=0)
     requires_qualification = models.BooleanField(default=False)
     requires_agreement = models.BooleanField(default=False)
+    approval_mode = models.CharField(
+        max_length=10,
+        choices=[("auto", "Sofort bestätigen"), ("manual", "Teamfreigabe")],
+        default="auto",
+    )
+    max_occurrences = models.PositiveIntegerField(default=52)
     revision = models.PositiveIntegerField(default=0)
 
     class Meta:
         constraints = [
+            models.CheckConstraint(
+                condition=Q(
+                    approval_mode__in=["auto", "manual"],
+                    max_occurrences__gte=1,
+                    max_occurrences__lte=366,
+                ),
+                name="booking_approval_limits",
+            ),
             models.CheckConstraint(
                 condition=Q(use_mode__in=["onsite", "physical_loan"]), name="booking_use_mode_valid"
             ),
@@ -308,3 +322,116 @@ class BundleMember(models.Model):
     )
     booking = models.OneToOneField(Booking, on_delete=models.PROTECT, related_name="bundle_member")
     required = models.BooleanField(default=True)
+
+
+class ReservationRequest(models.Model):
+    """Non-blocking proposal; binding allocations only exist after atomic approval."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="reservation_requests_created",
+    )
+    beneficiary = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="reservation_requests"
+    )
+    resource = models.ForeignKey("resources.Resource", on_delete=models.PROTECT)
+    timezone = models.CharField(max_length=64)
+    time_mode = models.CharField(max_length=10)
+    resources_snapshot = models.JSONField(default=list)
+    expected_occurrences = models.PositiveIntegerField()
+    rule = models.JSONField(default=dict)
+    options = models.JSONField(default=dict)
+    key = models.UUIDField()
+    payload_hash = models.CharField(max_length=64)
+    status = models.CharField(
+        max_length=10,
+        default="requested",
+        choices=[
+            ("requested", "Angefragt – noch nicht reserviert"),
+            ("approved", "Genehmigt"),
+            ("rejected", "Abgelehnt"),
+            ("cancelled", "Zurückgezogen / storniert"),
+        ],
+    )
+    revision = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(default=dj_timezone.now)
+    decided_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        on_delete=models.PROTECT,
+        related_name="reservation_decisions",
+    )
+    decided_at = models.DateTimeField(null=True)
+    reason = models.CharField(max_length=500, blank=True)
+
+    class Meta:
+        ordering = ["created_at", "id"]
+        constraints = [
+            models.UniqueConstraint(fields=["actor", "key"], name="request_actor_key"),
+            models.CheckConstraint(
+                condition=Q(status__in=["requested", "approved", "rejected", "cancelled"]),
+                name="request_status_valid",
+            ),
+        ]
+
+
+class RequestOccurrence(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    request = models.ForeignKey(
+        ReservationRequest, on_delete=models.PROTECT, related_name="occurrences"
+    )
+    position = models.PositiveIntegerField()
+    # Original local identity survives DST and subsequent exceptions.
+    local_start = models.CharField(max_length=30)
+    local_end = models.CharField(max_length=30)
+    options = models.JSONField(default=dict)
+    booking = models.OneToOneField(
+        Booking, null=True, on_delete=models.PROTECT, related_name="requested_occurrence"
+    )
+
+    class Meta:
+        ordering = ["position"]
+        constraints = [
+            models.UniqueConstraint(fields=["request", "position"], name="request_position_unique")
+        ]
+
+
+class OccurrenceException(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    occurrence = models.ForeignKey(
+        RequestOccurrence, on_delete=models.PROTECT, related_name="exceptions"
+    )
+    previous = models.OneToOneField(
+        Booking, on_delete=models.PROTECT, related_name="replacement_exception"
+    )
+    replacement = models.OneToOneField(
+        Booking, null=True, on_delete=models.PROTECT, related_name="replaces_exception"
+    )
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    reason = models.CharField(max_length=500)
+    created_at = models.DateTimeField(default=dj_timezone.now)
+
+
+class RequestAdjustment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    occurrence = models.ForeignKey(
+        RequestOccurrence, on_delete=models.PROTECT, related_name="adjustments"
+    )
+    revision = models.PositiveIntegerField()
+    local_start = models.CharField(max_length=30)
+    local_end = models.CharField(max_length=30)
+    options = models.JSONField(default=dict)
+    cancelled = models.BooleanField(default=False)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    reason = models.CharField(max_length=500)
+    created_at = models.DateTimeField(default=dj_timezone.now)
+
+    class Meta:
+        ordering = ["revision"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["occurrence", "revision"], name="request_adjustment_revision"
+            )
+        ]

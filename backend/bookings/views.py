@@ -14,7 +14,7 @@ from django.views.decorators.http import require_http_methods, require_POST
 from resources.models import Resource
 from resources.services import resource_scope, visible_resources
 
-from . import forms, services
+from . import forms, recurrence, services
 from .models import (
     Booking,
     BookingIncident,
@@ -25,6 +25,7 @@ from .models import (
 )
 
 MESSAGES = {
+    "approval_required": "Für diese Reservierung ist eine Teamfreigabe erforderlich.",
     "borrower_profile_required": "Bitte zuerst dein Ausleihprofil vollständig ausfüllen.",
     "physical_unit_required": "Eine physische Einheit muss eingerichtet sein.",
     "pickup_unavailable": "Abholtermin außerhalb eines erlaubten Abholfensters oder Zeitraums.",
@@ -164,11 +165,21 @@ def create(request, resource_id):
             label="Ich akzeptiere " + version.agreement.title + ".", required=False
         )
         requirement_fields.append((version, form[key]))
+    recurrence_form = forms.RecurrenceForm(request.POST or None)
+    can_direct = allowed(request.user, "booking.approve", resource_scope(resource))
+    if allowed(request.user, "booking.create_for_others", resource_scope(resource)):
+        form.fields["beneficiary_email"] = django_forms.EmailField(
+            label="Für anderes registriertes Konto (E-Mail)", required=False
+        )
+    if can_direct:
+        form.fields["approval_reason"] = django_forms.CharField(
+            label="Grund für direkte Teamfreigabe", required=False, max_length=500
+        )
     result = None
     if request.method == "POST":
         if not take(request, "booking-submit", str(request.user.pk), limit=120):
             return throttled()
-        if form.is_valid():
+        if form.is_valid() and recurrence_form.is_valid():
             data = form.cleaned_data
             try:
                 kwargs = {
@@ -180,17 +191,75 @@ def create(request, resource_id):
                 }
                 if "pickup_at" in form.fields:
                     kwargs.update(pickup_at=data["pickup_at"], return_at=data["return_at"])
-                if request.POST.get("action") == "confirm":
+                beneficiary = request.user
+                if data.get("beneficiary_email"):
+                    from accounts.models import User
+
+                    beneficiary = User.objects.filter(
+                        email=data["beneficiary_email"].strip().lower(),
+                        is_active=True,
+                        email_verified_at__isnull=False,
+                    ).first()
+                    if beneficiary is None:
+                        raise ValidationError(
+                            "Kein freigegebenes registriertes Konto für diese Reservierung."
+                        )
+                if request.POST.get("action") in {"confirm", "direct"}:
                     if any(not data["agreement_" + str(v.pk)] for v in missing_versions):
                         raise ValidationError("Bitte die erforderlichen Vereinbarungen bestätigen.")
+                    if missing_versions and beneficiary.pk != request.user.pk:
+                        raise ValidationError(
+                            "Vereinbarungen muss das begünstigte Konto selbst bestätigen."
+                        )
                     if missing_versions:
                         agreements.accept(request.user, [v.pk for v in missing_versions])
+                    rule = recurrence_form.cleaned_data
+                    if (
+                        rule["weekdays"]
+                        or request.POST.get("action") == "direct"
+                        or any(
+                            entry.bookingpolicy.approval_mode == "manual" for entry, _ in entries
+                        )
+                    ):
+                        method = (
+                            recurrence.create_approved
+                            if request.POST.get("action") == "direct"
+                            else recurrence.submit
+                        )
+                        direct_options = (
+                            {"reason": data.get("approval_reason", "")}
+                            if request.POST.get("action") == "direct"
+                            else {}
+                        )
+                        proposal = method(
+                            request.user,
+                            resource.pk,
+                            data["start"],
+                            data["end"],
+                            data["key"],
+                            beneficiary=beneficiary,
+                            **direct_options,
+                            **rule,
+                            **kwargs,
+                        )
+                        return redirect("request_detail", request_id=proposal.pk)
                     booking = services.confirm(
-                        request.user, resource.pk, data["start"], data["end"], data["key"], **kwargs
+                        request.user,
+                        resource.pk,
+                        data["start"],
+                        data["end"],
+                        data["key"],
+                        beneficiary=beneficiary,
+                        **kwargs,
                     )
                     return redirect("booking_detail", booking_id=booking.pk)
                 result = services.availability(
-                    request.user, resource.pk, data["start"], data["end"], **kwargs
+                    request.user,
+                    resource.pk,
+                    data["start"],
+                    data["end"],
+                    beneficiary=beneficiary,
+                    **kwargs,
                 )
             except ValidationError as exc:
                 form.add_error(None, error_message(exc))
@@ -203,6 +272,11 @@ def create(request, resource_id):
             "policy": policy,
             "form": form,
             "result": result,
+            "recurrence_form": recurrence_form,
+            "can_direct": can_direct,
+            "request_mode": any(
+                entry.bookingpolicy.approval_mode == "manual" for entry, _ in entries
+            ),
             "requirement_fields": requirement_fields,
             "missing_qualifications": missing_qualifications,
             "booking_fields": [f for f in form if not f.name.startswith("agreement_")],
@@ -223,6 +297,7 @@ def own(request):
         {
             "page_obj": Paginator(rows, 30).get_page(request.GET.get("page")),
             "title": "Meine Vorgänge",
+            "proposals": recurrence.visible(request.user),
         },
     )
 
@@ -231,8 +306,15 @@ def own(request):
 @require_http_methods(["GET"])
 def detail(request, booking_id):
     booking = services.read_booking(request.user, booking_id)
-    from .models import BundleMember
+    from django.db.models import Q
 
+    from .models import BundleMember, RequestOccurrence
+
+    series_occurrence = (
+        RequestOccurrence.objects.filter(Q(booking=booking) | Q(exceptions__replacement=booking))
+        .select_related("request")
+        .first()
+    )
     membership = BundleMember.objects.filter(booking=booking).first()
     group_rows = []
     if membership:
@@ -246,6 +328,7 @@ def detail(request, booking_id):
         "bookings/detail.html",
         {
             "booking": booking,
+            "series_request": series_occurrence.request if series_occurrence else None,
             "bundle_bookings": group_rows,
             "last_date": booking.end_date_exclusive - timedelta(days=1)
             if booking.end_date_exclusive
