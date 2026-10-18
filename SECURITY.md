@@ -104,3 +104,14 @@ the session; no browser persistent PII or offline replay. Printing labels reveal
 only existing opaque object codes, never access credentials. Inventory CSV/aggregate
 exports recheck current scopes and formula-escape text. Permanent history/retention
 remains part of the preproduction owner/privacy gate, not an invented legal policy.
+
+## Phase 11 API credentials
+
+Header-only 256-bit bearer tokens, SHA-256 at rest, immutable client/token ceiling,
+1–90 day expiry, readonly default, revocation/retirement and current owner rights
+checked inside the common authorization lock. Web issuance needs CSRF and local
+password. Minimal DTOs, strict JSON, bounded pages/payloads, independent read/write
+quotas, private cache/referrer policy and secret-free machine errors. No PII/private
+asset projection. OIDC state consumption is unique in PostgreSQL even with parallel
+session copies; expired use records may be purged after 24h. Real provider login
+and production threat/load review remain separate acceptance.

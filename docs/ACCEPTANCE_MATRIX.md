@@ -279,3 +279,15 @@ KIOSK-AC-01–13/15–22 map to these and the existing Phase-3/6/7 tests plus
 the explicitly open manual checks; real HID/layout/suffix/printer/touch and shared-terminal pilot
 acceptance remains **pending**, not replaced by simulation. KIOSK-AC-14 self-service
 is not activated. [Review](PHASE_10_REVIEW.md), [ADR-025](adr/025.md).
+
+## Phase 11 API acceptance
+
+| Check | Evidence |
+| --- | --- |
+| Phase11 API-01 Versioned contract and bounded projection | `/api/v1/`, explicit OpenAPI registry/ref tests, private field exclusion |
+| Phase11 API-02 Revocable scoped authentication | Hash/rotation/SQL guards, readonly, live grant/suspension, scope-before-count, own-object and nested bundle tests |
+| Phase11 API-03 Shared write invariants | ETag conflict, CSV native retry/client ownership, booking idempotency and parallel allocation, existing reservation checkout/identity/actual return |
+| Phase11 API-04 Limits/errors/docs | Strict JSON/filter/media/quota/request-ID tests, handbook/OpenAPI, browser forms |
+| OIDC-11 Parallel callback and safe configuration | Unique claim race, nonce/critical-header rejection, secret-free readiness command; actual provider not exercised |
+
+Realer Authentik-Operatorlogin und Nextcloud CAL-06 bleiben manuell. Phase 12 nicht gestartet.

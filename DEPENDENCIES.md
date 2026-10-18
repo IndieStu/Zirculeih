@@ -116,3 +116,10 @@ transitive dependencies on Linux/macOS. Reviewed official wheel license and hash
 18.10.2026; no project source copied. Output contains existing opaque asset code,
 not private inventory/person data. The package's legacy “Other/Proprietary” PyPI
 classifier is not relied on; actual bundled BSD/MIT notice was inspected.
+
+## Phase 11 — API adapters
+
+No new runtime or test dependency. Explicit Django JSON/OpenAPI generation uses
+existing reviewed Django/Python components; no generic serializer, Swagger CDN,
+Google runtime or external API service. OpenAPI 3.1.1 is a contract format, not a
+new library. Existing Authentik cryptography stack unchanged.

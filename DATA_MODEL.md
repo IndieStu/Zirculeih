@@ -171,3 +171,11 @@ date/interval, explicit assignee, attachments and immutable terminal result; uni
 previous-task link prevents duplicate follow-ups. StaffedContext is an expiring
 owner/session interaction generation, not an authentication/device grant. SQL
 guards and existing global write lock protect close/scan/move/custody boundaries.
+
+## Phase 11 additive integration records
+
+IntegrationClient(owner, immutable capabilities/scope), IntegrationToken(SHA-256
+digest, immutable capability/readonly/expiry ceiling, irreversible revocation),
+APIImport(client-bound native ImportPreview). SQL triggers preserve their history.
+OIDCStateUse stores only hashed one-time state and expiry, not provider tokens.
+No existing inventory/resource/booking/loan data is rewritten.

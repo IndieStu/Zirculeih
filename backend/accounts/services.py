@@ -24,6 +24,12 @@ from .models import ActionToken, AuditEvent, Grant, Group, Membership, User
 
 
 def audit(actor, action, *, subject=None, object_id="", reason="", details=None):
+    from .limits import current
+
+    ceiling = current.get()
+    details = dict(details or {})
+    if ceiling and actor and ceiling.owner_id == actor.pk:
+        details.update(api_client=str(ceiling.client_id), api_token=str(ceiling.token_id))
     event = AuditEvent.objects.create(
         actor=actor,
         subject=subject,

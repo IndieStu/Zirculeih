@@ -111,3 +111,10 @@ and observations; P10.2 explicit discrepancies and frozen custody-aware assessme
 P10.3 maintenance/labels/bounded atomic bulk actions/aggregate reports; P10.4 staffed
 terminal reset/idle/focus/FIFO and real-HID pilot gate; P10.5 full regression, browser,
 CI, handbook and [owner review](docs/PHASE_10_REVIEW.md). No Phase 11 or deployment.
+
+## Phase 11 delivery
+
+Phase 10 accepted/merged, Phase 11 explicitly authorized. Versioned API, OpenAPI,
+scoped expiring credentials, CSV adapters and Authentik callback hardening are
+implemented for owner review. See [review](docs/PHASE_11_REVIEW.md).
+Phase 12 requires separate acceptance and authorization. No deployment performed.

@@ -1,6 +1,6 @@
 # Deelvo — Product & Engineering Specification
 
-**Version:** 0.8 · **Status:** Phase 9 accepted and merged; Phase 10 implemented for owner review · **Date:** 2026-10-18
+**Version:** 0.8 · **Status:** Phase 10 accepted and merged; Phase 11 implemented for owner review · **Date:** 2026-10-18
 **Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
@@ -445,7 +445,7 @@ Phase 3 was subsequently authorized by the owner; see section 22. No production 
 
 The operational dashboard prioritizes real actionable information and permitted quick actions before counts. Phase 3 uses asset condition/lifecycle and location information only, filtered by current scopes. No fake pickups, returns, approvals, timelines or maintenance schedules. Non-operational users use their personal account area. Later phases extend attention queues and a cross-resource Today view as those domains become productive. Initial qualifications remain non-expiring: the dashboard example of expiring qualifications does not override OD-07.
 
-The integration API uses explicit `/api/v1/` contracts, shared domain services and existing authorization. API tokens are scoped and revocable, stored hashed and bounded by the current owner's/client's rights; no global permanent key or raw model CRUD authorization bypass. Authentication, pagination, filters, errors, timestamps and rate limits are documented in [integration architecture](docs/INTEGRATIONS.md). Productive API/OpenAPI implementation is Phase 11; no API dependency is introduced in Phase 3.
+The integration API uses explicit `/api/v1/` contracts, shared domain services and existing authorization. API tokens are scoped and revocable, stored hashed and bounded by the current owner's/client's rights; no global permanent key or raw model CRUD authorization bypass. Authentication, pagination, filters, errors, timestamps and rate limits are documented in [integration architecture](docs/INTEGRATIONS.md). Phase 11 implements the bounded API/OpenAPI contract in [API handbook](docs/handbook/integrations-api.md) and [ADR-026](docs/adr/026.md), without an additional runtime dependency.
 
 Phase 9 delivers standards-compliant subscribable ICS after Booking exists: stable event UIDs, update/cancellation semantics, IANA timezone/DST correctness, privacy-aware minimal content and revocable hashed private feed credentials. Nextcloud Calendar is an acceptance client for one-way subscription, not a proprietary runtime dependency. No fake feeds or CalDAV in Phase 3. CAL acceptance scenarios remain planned until implementation.
 
@@ -556,3 +556,15 @@ NCtest upgrade, credential changes or Phase 11 are authorized.
 Phase-10 implementation verified: 326 tests passed locally and in Docker/PostgreSQL-17
 CI. [Review](docs/PHASE_10_REVIEW.md). Owner acceptance pending; real HID/printer/touch
 pilot checks and later owner Nextcloud check remain explicit. No deployment or Phase 11.
+
+## Phase 11 authorized implementation
+
+Owner accepted and merged Phase 10 and authorized the next phase. Main `5e49a5b`
+is the accepted baseline. [Authorization](docs/OWNER_APPROVAL_PHASE_11.md).
+Bounded `/api/v1/` adapters use current owner rights intersected with immutable
+client/token ceilings. Explicit integration.manage grants no operational powers.
+Opaque SHA-256-only 256-bit tokens, 1–90 days, default readonly, current revoke
+checks under the shared authorization lock. No account/group/qualification writes
+or automatic consent/identity bypass. Actor/beneficiary and inventory/resource/loan
+remain distinct. [Review](docs/PHASE_11_REVIEW.md), [contract](docs/api/deelvo-openapi-v1.json).
+No deployment, credential changes or Phase 12 authorization is implied.
