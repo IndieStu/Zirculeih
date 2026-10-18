@@ -47,12 +47,12 @@ OpenAPI-Link HTTP 200. 320px: clientWidth = scrollWidth = 320, keine doppelten I
 [Screenshot](screenshots/phase-11-integrations.png), [mobil](screenshots/phase-11-mobile.png).
 Keine echten Credentials erzeugt, kein Kontopasswort geändert. Vorschau/Tab beendet.
 Temporärer Testclient liegt außerhalb des Repos, kein ausgelieferter Loginbypass.
-Vollständige lokale PostgreSQL-Regression: **360 bestanden**, 142,45 Sekunden,
+Vollständige lokale PostgreSQL-Regression: **361 bestanden**, 141,28 Sekunden,
 [JUnit](test-results/phase-11-local.xml). 35 neue API-/OIDC-Fälle einschließlich nicht-ASCII Callback-State.
 Ruff Check/Format: 212 Dateien; Mypy: 191 Quelldateien; Dokumentationsprüfung:
 138 Markdowndateien. Django-Systemcheck und Migrationskonsistenz bestanden.
-Nach den kleinen Browserkorrekturen wurden die betroffenen Phase-11-Fälle erneut
-geprüft; finaler Gesamtstand wird zusätzlich in GitHub-CI ausgeführt.
+Finaler Anwendungsstand nach Browser-/OIDC-Korrekturen vollständig lokal geprüft;
+zusätzlich 75 gezielte API-/Accounttests bestanden. Der finale CI-Stand ergänzt ausschließlich die fehlende OpenAPI-Datei im Docker-Testimage.
 Gezielte API-/OIDC-Tests: 35 bestanden, einschließlich PostgreSQL-Konkurrenz,
 Client-/Objektgrenzen, verschachtelter Bundles, Widerruf zwischen Vorprüfung und
 Lock, CSV-Wiederholung, Ausgabe mit Identitätsgate und tatsächlicher Rücknahme.
@@ -66,7 +66,7 @@ Nach vollständigem Review STOP; keine Phase 12 ohne Ownerfreigabe.
 
 ## GitHub-Übergabe
 
-Anwendungsstand `5f3cd1c08063f551c2c87833b4d9b488c06dae3c` ist auf
+Geprüfter CI-Stand `5e56e1f87bd1326a627c62d8a490f808f0109e49` ist auf
 `origin/phase-11-api-integrations` gepusht. Automatische PR-Erstellung scheitert am
 GitHub-Connector mit HTTP 403 „Resource not accessible by integration“; kein PR
 wurde dadurch angelegt. [Compare / PR anlegen](https://github.com/IndieStu/Zirculeih/compare/main...phase-11-api-integrations?expand=1).
@@ -76,3 +76,20 @@ gemeinsamen Autorisierungslock. Das schützt gegen Entzug während einer Anfrage
 serialisiert aber auch API-Lesevorgänge und skaliert mit der Kandidatenmenge.
 Produktionslast/-fairness und große Datenmengen müssen in Phase 12 gemessen werden;
 Seiten-/Quotengrenzen sind kein Lastnachweis.
+
+## Finaler CI-Nachweis
+
+[GitHub Actions](https://github.com/IndieStu/Zirculeih/actions/runs/39144873197):
+**361 bestanden**, 364,63 Sekunden. Zusätzlich Compose-Build, Ruff/Mypy,
+Django-/Migrationskonsistenz, Bootstrap/Health, isoliertes Reviewdeployment mit
+wiederholtem Seed/UX-Upgrade und Dateimail-Smokecheck bestanden.
+[Metadaten](test-results/phase-11-ci.json). Kein lokales Docker-Ergebnis behauptet.
+Der vorherige Lauf fand die fehlende Schema-Datei ausschließlich im Testimage
+(360 bestanden/1 fehlgeschlagen); der finale Lauf prüft den korrigierten Stand.
+
+Lokal vollständig geprüfter Anwendungscode `7c0b184`; finaler CI-Commit `5e56e1f`
+ändert zusätzlich nur die Testimage-Kopie. Anschließender Übergabecommit enthält
+ausschließlich Dokumentation und Nachweise. Keine spätere Anwendungsänderung.
+Eigener lokaler PostgreSQL-Prüfcluster sauber beendet, bestehende Entwicklungs-/
+NCtest-Prozesse unberührt. Finale Reviewunterlagen liegen als normale ZIP im
+Projekt und zusätzlich in Downloads; Inhalt/Hash geprüft, keine versteckten Dateien.
