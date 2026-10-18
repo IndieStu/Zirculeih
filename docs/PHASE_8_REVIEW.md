@@ -110,3 +110,9 @@ Commit `8996be51c654e78f8511e9772c8fd48dbfbb9c5b` ist über SSH gepusht.
 Der GitHub-Connector verweigert die automatische PR-Erstellung weiterhin mit
 403 `Resource not accessible by integration`; es wurde kein PR angelegt.
 [Branch vergleichen / PR erstellen](https://github.com/IndieStu/Zirculeih/compare/main...phase-8-approvals-recurrence?expand=1).
+
+## Owner-Abnahme 18.10.2026
+
+Der Owner hat Phase 8 mit „ist abgenommen“ akzeptiert.
+[Abnahmenachweis](OWNER_ACCEPTANCE_PHASE_8.md). Phase 9 ist noch nicht zum Start
+freigegeben; Merge und Deployment werden nicht durch diese Abnahme behauptet.
