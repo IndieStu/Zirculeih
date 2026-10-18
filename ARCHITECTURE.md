@@ -85,3 +85,11 @@ The `bookings` module owns BookingPolicy, typed schedules/exceptions, ResourceBl
 ## Phase 6 implementation
 
 The lending module owns Agreement/immutable Version, Assignment, Acceptance, IdentityCheck, Appointment, Loan/LoanLine, Extension and actor-bound Operation idempotency. Booking confirmation calls the same current policy/grant/allocation engine with lending gates, not a second kiosk engine. The existing global authorization lock serializes configuration/consent/checkout/return/extension/booking. PostgreSQL active-custody uniqueness and deferred loan/line/booking/claim consistency supplement temporal exclusion. No new infrastructure/dependency. [ADR-018](docs/adr/018.md).
+
+## Phase 9: notifications adapter
+
+`notifications` consumes an explicit allowlist of service-authored audit events
+inside the originating transaction. Its encrypted outbox and explicit scheduled
+worker do not own Booking/Loan state. Current authorization is rechecked before
+SMTP. The calendar adapter uses the central scoped booking projection and stores
+only feed credentials and public event revisions. See [ADR-024](docs/adr/024.md).

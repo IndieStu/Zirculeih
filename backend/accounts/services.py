@@ -24,7 +24,7 @@ from .models import ActionToken, AuditEvent, Grant, Group, Membership, User
 
 
 def audit(actor, action, *, subject=None, object_id="", reason="", details=None):
-    AuditEvent.objects.create(
+    event = AuditEvent.objects.create(
         actor=actor,
         subject=subject,
         action=action,
@@ -32,6 +32,10 @@ def audit(actor, action, *, subject=None, object_id="", reason="", details=None)
         reason=reason,
         details=details or {},
     )
+
+    from notifications.services import from_event
+
+    from_event(event)
 
 
 def issue_token(user, purpose):
@@ -44,32 +48,26 @@ def issue_token(user, purpose):
         password_hash=user.password,
         expires_at=timezone.now() + timedelta(hours=24 if purpose in {"verify", "invite"} else 1),
     )
+    from notifications.services import absolute, enqueue
+
+    path = {"verify": "bestaetigen", "reset": "passwort-neu", "invite": "einladung"}[purpose]
+    enqueue(
+        user,
+        "auth." + purpose,
+        "token:" + hashlib.sha256(raw.encode()).hexdigest(),
+        url=absolute(f"/konto/{path}/{raw}/"),
+        token_digest=hashlib.sha256(raw.encode()).hexdigest(),
+    )
     return raw
 
 
 def email_token(user, purpose, raw):
-    path = {"verify": "bestaetigen", "reset": "passwort-neu", "invite": "einladung"}[purpose]
-    url = f"{settings.PUBLIC_BASE_URL}/konto/{path}/{raw}/"
-    subject = {
-        "verify": "E-Mail bestätigen",
-        "reset": "Passwort zurücksetzen",
-        "invite": "Einladung zu Deelvo",
-    }[purpose]
-    # Tokens are never logged; SMTP errors leave the generic response unchanged.
-    try:
-        send_mail(
-            subject,
-            f"{subject}:\n{url}\n\nFalls du dies nicht angefordert hast, ignoriere diese E-Mail.",
-            settings.DEFAULT_FROM_EMAIL,
-            [user.email],
-        )
-    except Exception:
-        # No exception text: SMTP responses can contain addresses or credentials.
-        import logging
+    from notifications.models import Delivery
+    from notifications.services import deliver_one
 
-        logging.getLogger("deelvo.mail").warning(
-            "mail_delivery_failed", extra={"event": "mail_delivery_failed"}
-        )
+    row = Delivery.objects.filter(key="token:" + hashlib.sha256(raw.encode()).hexdigest()).first()
+    if row:
+        deliver_one(row.pk, sender=send_mail)
 
 
 def signup(email, password, privacy_acknowledged):

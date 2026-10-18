@@ -37,10 +37,12 @@ class AccountPrivacyMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
         if request.path == "/" or request.path.startswith(
-            ("/konto/", "/inventar/", "/entdecken/", "/buchungen/", "/ausleihen/")
+            ("/konto/", "/inventar/", "/entdecken/", "/buchungen/", "/ausleihen/", "/kalender/")
         ):
             response["Cache-Control"] = "no-store, private"
-            response["Referrer-Policy"] = "same-origin"
+            response.setdefault("Referrer-Policy", "same-origin")
+            if request.path.startswith("/kalender/abo/"):
+                response["Referrer-Policy"] = "no-referrer"
             response["Content-Security-Policy"] = (
                 "default-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
             )

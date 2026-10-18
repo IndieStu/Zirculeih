@@ -119,3 +119,12 @@ bundle component and occurrence is checked. Current beneficiary eligibility alwa
 applies; neither employee nor system-admin status grants approval implicitly.
 Own cancellation uses `booking.cancel_own`; moving confirmed occurrences also
 requires approval. See [ADR-023](docs/adr/023.md).
+
+## Phase 9: messages and calendar access
+
+Only explicit `system.configure` may change templates/reminder settings or retry
+failed messages. That view exposes no recipients/content. Personal preferences
+and feeds belong to the active verified account. Operational calendar scopes
+require current `booking.read_all` at that scope plus per-resource visibility
+and explicit denies on each fetch. Employee/admin labels add no implicit scope.
+Feed secrets grant no writes; expiry/revocation/suspension/rights loss close access.

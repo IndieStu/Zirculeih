@@ -374,6 +374,7 @@ def return_lines(actor, loan_id, selections, key):
         Operation.objects.create(
             actor=actor, kind="return", key=key, payload_hash=digest, loan=loan
         )
+        audit(actor, "loan.returned", subject=loan.borrower, object_id=loan.pk)
         return loan
 
 
