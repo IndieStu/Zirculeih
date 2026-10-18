@@ -596,3 +596,35 @@ def test_report_reserved_hours_use_elapsed_time_across_dst(configured):
     bookings.confirm(user, resource.pk, datetime(2026, 10, 25), datetime(2026, 10, 26), uuid4())
     data = reports.aggregate(actor, date(2026, 10, 25), date(2026, 10, 25))
     assert data["bookings"][0][1]["reserved_hours"] == 25.0
+
+
+def test_terminal_checkout_fifo_adapter_prepares_only_and_deduplicates(lending_setup, client):
+    from lending.models import Loan
+    from test_lending import reserve
+
+    actor, _, unit, _, borrower, *_ = lending_setup
+    booking = reserve(lending_setup)
+    client.force_login(actor)
+    client.post(reverse("staffed_terminal"), {"mode": "checkout"})
+    old = client.session["staffed_terminal"]["generation"]
+    client.post(
+        reverse("loan_checkout"),
+        {"terminal_generation": old, "action": "person", "email": borrower.email},
+    )
+    generation = client.session["staffed_terminal"]["generation"]
+    assert generation != old
+    code = unit.asset.identifiers.get(kind="owned")
+    data = {
+        "terminal_generation": generation,
+        "action": "scan",
+        "namespace": code.namespace_id,
+        "code": code.raw_value,
+    }
+    for _ in range(3):
+        response = client.post(
+            reverse("loan_checkout"), data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        assert response.status_code == 200 and response.json()["prepared"] == 1
+    assert client.session["lending_cart"]["bookings"] == [str(booking.pk)]
+    assert not Loan.objects.exists()
+    assert b"data-terminal-scan" in client.get(reverse("loan_checkout")).content

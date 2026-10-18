@@ -38,11 +38,11 @@ CDNs. Projektlizenz weiterhin Ownerentscheidung.
 
 ## Prüfstand
 
-Gezielte Phase-10-Tests: **27 bestanden** (9,31 Sekunden). Vollständiger letzter
-Zwischenlauf: 324 bestanden (135,25 Sekunden); danach UTC-Normalisierung bei
-begrenzten Reservierungsstunden über die Zeitumstellung mit eigenem Test ergänzt.
-Der finale Gesamtlauf einschließlich dieses 25-Stunden-Tages wird vor Übergabe
-mit [JUnit](test-results/phase-10-local.xml) dokumentiert.
+Finale vollständige lokale PostgreSQL-Regression: **325 bestanden**, 133,19 Sekunden (vor letzter Ausgabe-FIFO-Ergänzung).
+[JUnit](test-results/phase-10-local.xml). Enthält 27 neue Phase-10-Tests mit
+unabhängigen PostgreSQL-Verbindungen für Konkurrenzfälle und tatsächlichem
+Gewahrsam, SQL-Guards, Rechten/CSV/CSRF, Terminalgeneration/-ablauf und 25-Stunden-
+Reservierungsbericht über die Herbstumstellung.
 
 Ruff Check/Format (191 Dateien), Mypy (171 Quelldateien), Dokumentationsprüfung
 (133 Markdowndateien), Django-Systemcheck und Migrationskonsistenz bestanden.
@@ -55,8 +55,12 @@ QR-Druckansicht. 320px-Terminal: clientWidth = scrollWidth = 320.
 [Wartung](screenshots/phase-10-maintenance.png), [Etikett](screenshots/phase-10-labels.png).
 Keine echte Hardwareprüfung oder reale Wartung. Temporärer Testclient liegt nur
 außerhalb des Repos; kein ausgelieferter Loginzugang oder Passwortwechsel.
+Die Browserprüfung ist beendet; synthetische Daten bleiben getrennt erhalten.
 
-CI-Nachweis wird nach Source-Push ergänzt.
+Letzte Ergänzung: FIFO auch in betreuter Ausgabevorbereitung; erst nach bewusstem
+Neuladen der Vorbereitung werden alle Positionen gemeinsam zur Bestätigung gezeigt.
+Ein zusätzlicher Integrationstest prüft mehrfache Aliasscans ohne Loananlage.
+Finale Regression/CI werden für diesen Stand vor Übergabe aktualisiert.
 
 ## Manuelle Abnahme / verbleibende Grenzen
 
@@ -82,3 +86,10 @@ Produktionsgate organisatorisch festzulegen. Kein geplanter Auftrag sperrt sofor
 
 CAL-06 bleibt unverändert als spätere manuelle Nextcloud-Prüfung beim Owner.
 Phase 11 wird erst nach eigener Ownerfreigabe gestartet.
+
+## Branch / PR
+
+Anwendungscommit `945703d83e68c250d20dd37273680e2ef8d9dca3` ist über SSH gepusht.
+GitHub-Connector verweigert die automatische PR-Erstellung weiterhin mit 403
+`Resource not accessible by integration`; kein PR angelegt.
+[Branchvergleich / PR erstellen](https://github.com/IndieStu/Zirculeih/compare/main...phase-10-asset-operations?expand=1).

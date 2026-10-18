@@ -100,9 +100,10 @@ Normal mit dem eigenen Personalkonto anmelden, **Scannerterminal** öffnen und d
 Arbeitsmodus ausdrücklich starten. Das Gerät hat keine Sonderrechte. Ein Wechsel
 leert den Ausgabekorb und invalidiert alte Formulare. „Vorgang leeren / nächste
 Person“ leert Personenanzeige und Vorbereitung; „Terminal beenden“ verlässt den
-Modus. Inventur und Lookup haben eine begrenzte FIFO-Verarbeitung für schnelle
+Modus. Inventur, Lookup und Ausgabevorbereitung haben eine begrenzte FIFO-Verarbeitung für schnelle
 Scanfolgen, sichtbare Ergebnisse und „Scanner fortsetzen“. Eingaben in andere
-Felder behalten ihren Fokus. Ausgabe und Rücknahme verwenden die bestehenden
+Felder behalten ihren Fokus. Nach der Ausgabe-Scanfolge „Vorbereitung neu laden“ wählen, alle Gegenstände
+und Voraussetzungen prüfen und erst dann bestätigen. Ausgabe und Rücknahme verwenden die bestehenden
 bewussten Bestätigungsseiten samt allen Konto-, Agreement- und Einweisungsgates;
 ein Scan schließt dort nichts ab.
 

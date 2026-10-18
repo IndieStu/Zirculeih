@@ -435,6 +435,21 @@ def checkout(request):
                 ),
             }
         )
+    if (
+        request.session.get("staffed_terminal")
+        and request.method == "POST"
+        and request.POST.get("action") == "scan"
+        and request.headers.get("X-Requested-With") == "XMLHttpRequest"
+    ):
+        from django.http import JsonResponse
+
+        return JsonResponse(
+            {
+                "message": message or "Codeeingabe prüfen; nichts ausgegeben.",
+                "generation": request.session["staffed_terminal"]["generation"],
+                "prepared": len(cart["bookings"]) + len(cart["units"]),
+            }
+        )
     return render(
         request,
         "lending/checkout.html",
