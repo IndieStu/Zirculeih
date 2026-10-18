@@ -95,3 +95,12 @@ each time. Proxy access logs must omit raw URLs; production requires HTTPS. A
 client may retain previously downloaded data after revocation. Worker retry/lease
 controls cannot guarantee SMTP exactly-once after a crash following acceptance.
 See [operator guidance](docs/handbook/notifications-and-calendars.md).
+
+## Phase 10 staffed context
+
+Terminal generation and expiry are database-serialized before protected forms and
+normal domain actions. Reset/person change invalidates older forms, idle expires
+the session; no browser persistent PII or offline replay. Printing labels reveals
+only existing opaque object codes, never access credentials. Inventory CSV/aggregate
+exports recheck current scopes and formula-escape text. Permanent history/retention
+remains part of the preproduction owner/privacy gate, not an invented legal policy.

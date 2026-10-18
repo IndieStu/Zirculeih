@@ -161,3 +161,13 @@ credential and immutable scope, and CalendarRevision for monotonic public
 projection sequence. SQL guards protect outbox identity/terminal state and feed
 identity/revocation. No existing Booking/Loan/consent is rewritten. See
 [ADR-024](docs/adr/024.md) for retention, key rotation and publication semantics.
+
+## Phase 10 implemented records
+
+InventoryRun: immutable scope/creator, draft → active → completed/cancelled,
+materialized ExpectedAsset, append-only Observation with request UUID, separate
+Discrepancy decision and frozen JSON assessment. MaintenanceTask: asset, kind, due
+date/interval, explicit assignee, attachments and immutable terminal result; unique
+previous-task link prevents duplicate follow-ups. StaffedContext is an expiring
+owner/session interaction generation, not an authentication/device grant. SQL
+guards and existing global write lock protect close/scan/move/custody boundaries.

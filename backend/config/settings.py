@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "lending",
     "review",
     "notifications",
+    "assetops",
 ]
 AUTH_USER_MODEL = "accounts.User"
 AUTHENTICATION_BACKENDS = ["accounts.backends.EmailBackend"]
@@ -90,6 +91,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "assetops.terminal.TerminalGuardMiddleware",
 ]
 ROOT_URLCONF = "config.urls"
 TEMPLATES = [
@@ -100,6 +102,7 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
+                "assetops.terminal.context",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "inventory.context_processors.navigation",
@@ -201,3 +204,8 @@ if REVIEW_MODE:
     EMAIL_FILE_PATH = os.environ.get(
         "REVIEW_EMAIL_DIR", str(BASE_DIR.parent / ".local/review-mail")
     )
+
+# Staffed terminal idle lock; no device or self-service authentication.
+TERMINAL_IDLE_SECONDS = int(os.environ.get("TERMINAL_IDLE_SECONDS", "180"))
+if not 60 <= TERMINAL_IDLE_SECONDS <= 1800:
+    raise ImproperlyConfigured("TERMINAL_IDLE_SECONDS must be between 60 and 1800")

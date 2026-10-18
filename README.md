@@ -2,7 +2,7 @@
 
 Selbst gehostete Inventarverwaltung, Ressourcenreservierung und Ausleihe für Makerspaces.
 
-Stand: 18.10.2026. Phasen 1–8 sind akzeptiert. Phase 9 ergänzt transaktionale Benachrichtigungen, Erinnerungen, persönlichen/Betriebskalender und private ICS-Abos. 298 Tests lokal und in CI bestanden; [Phase-9-Review](docs/PHASE_9_REVIEW.md) dokumentiert CI und verbleibende manuelle Abnahme. Nextcloud prüft der Owner später selbst, ohne Testcloud. Reservierung und Gewahrsam bleiben getrennt. Keine Produktion oder Phase 10 ohne eigene Freigabe.
+Stand: 18.10.2026. Phasen 1–9 sind akzeptiert und gemerged. Phase 10 ergänzt Inventurläufe mit festem Erwartungsstand, Wartung, lokale QR-Etiketten, atomare Sammelaktionen, Betriebsberichte und ein betreutes Scannerterminal. [Phase-10-Review](docs/PHASE_10_REVIEW.md) enthält Prüfnachweise und manuelle Aufgaben. Nextcloud prüft der Owner später selbst, ohne Testcloud. Keine Produktion oder Phase 11 ohne eigene Freigabe.
 
 ## Start und Review
 

@@ -1,0 +1,1 @@
+<nav aria-label="Ergebnisseiten">{% if rows.has_previous %}<a href="?page={{ rows.previous_page_number }}">Zurück</a>{% endif %} Seite {{ rows.number }} von {{ rows.paginator.num_pages }} {% if rows.has_next %}<a href="?page={{ rows.next_page_number }}">Weiter</a>{% endif %}</nav>
