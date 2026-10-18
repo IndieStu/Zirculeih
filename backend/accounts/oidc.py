@@ -111,7 +111,7 @@ def validate_id_token(encoded, nonce):
     if not isinstance(encoded, str) or len(encoded) > 32768:
         raise ValueError("Oversized ID token")
     header = jwt.get_unverified_header(encoded)
-    if header.get("crit"):
+    if "crit" in header:
         raise ValueError("Unsupported critical JOSE extensions")
     if header.get("alg") != "RS256" or not header.get("kid"):
         raise ValueError("Unsupported signing key")
@@ -137,7 +137,9 @@ def validate_id_token(encoded, nonce):
     )
     if not isinstance(claims["sub"], str) or not 0 < len(claims["sub"]) <= 255:
         raise ValueError("Invalid subject")
-    if not isinstance(claims["nonce"], str) or not secrets.compare_digest(claims["nonce"], nonce):
+    if not isinstance(claims["nonce"], str) or not secrets.compare_digest(
+        claims["nonce"].encode(), nonce.encode()
+    ):
         raise ValueError("Invalid nonce")
     if (
         isinstance(claims["aud"], list) and len(claims["aud"]) > 1 or "azp" in claims
@@ -166,7 +168,9 @@ def callback(request):
     flow = request.session.pop("oidc_flow", None)
     # Persist consumption before processing: a callback URL cannot be replayed later.
     request.session.save()
-    if not flow or not secrets.compare_digest(flow["state"], request.GET.get("state", "")):
+    if not flow or not secrets.compare_digest(
+        flow["state"].encode(), request.GET.get("state", "").encode()
+    ):
         return HttpResponse("Anmeldung konnte nicht bestätigt werden.", status=400)
     if not 0 <= time.time() - flow["created"] <= 300 or not request.GET.get("code"):
         return HttpResponse("Anmeldung ist abgelaufen oder wurde abgebrochen.", status=400)

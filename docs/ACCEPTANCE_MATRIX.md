@@ -117,10 +117,10 @@ Originalaufträge: [Phase 3](OWNER_APPROVAL_PHASE_3.md), [Dashboard/API/Handbuch
 | DASH-02 | nur implementierte erlaubte Schnellaktionen; persönlicher Bereich getrennt | 3+ | positive/negative Link- und Redirecttests |
 | DASH-03 | prüfbare Inventarhinweise vor Bestandszahlen, keine Fakecharts/-Loans | 3+ | Dashboardinhalt/Hierarchie, manuelle Browserabnahme |
 | DASH-04 | Phase-3-Dashboard ohne Booking/Loan/InventoryRun produktiv | 3 | reale Inventardaten/Scope-Tests; Timeline erst in ihren Phasen |
-| API-01 | APIadapter ruft gemeinsame Services/Schreiblocks, keine Regeldoppelung | 11 | geplant, noch keine externen Endpunkte |
-| API-02 | /api/v1/, explizite DTOs und OpenAPI, bounded Pagination/Filter/Fehler | 11 | geplant, dokumentierter Vertragsrahmen |
-| API-03 | Tokenrechte höchstens Owner/Client ∩ Token, Widerruf/Sperre aktuell | 11 | geplant, kein Tokenmodell vorgezogen |
-| API-04 | kein internes Modell-/Feld-/Objekt-Bypass; API-IDOR und read-only Token | 11 | geplant, negative Transporttests erforderlich |
+| API-01 | APIadapter ruft gemeinsame Services/Schreiblocks, keine Regeldoppelung | 11 | implementiert/geprüft, gemeinsame Dienste und native Konkurrenztests (Phase 11) |
+| API-02 | /api/v1/, explizite DTOs und OpenAPI, bounded Pagination/Filter/Fehler | 11 | implementiert/geprüft, OpenAPI-/Filter-/Fehlertests (Phase 11) |
+| API-03 | Tokenrechte höchstens Owner/Client ∩ Token, Widerruf/Sperre aktuell | 11 | implementiert/geprüft, SQL-Guards/Rotation/aktueller Widerruf (Phase 11) |
+| API-04 | kein internes Modell-/Feld-/Objekt-Bypass; API-IDOR und read-only Token | 11 | implementiert/geprüft, IDOR/readonly/verschachtelte Bereiche (Phase 11) |
 | CAL-01 | RFC-5545-konformes UTF-8-ICS aus produktiven Bookingdaten | 9 | implementiert; unabhängiger Parser, Escape-/UTF-8-/Faltungstests in tests/test_phase9.py |
 | CAL-02 | stabile UID bei Wiederabruf/Änderung/Storno, keine Duplikate | 9 | implementiert; wiederholter Export, Änderung/Storno und Ersatzketten mit gleicher UID getestet |
 | CAL-03 | IANA/DST/UTC, [start,end), echte DATE-Endsemantik | 9 | implementiert; UTC-/DATE-Export über DST getestet; lokale Gap-/Fold-Regression bestehend |

@@ -1,6 +1,6 @@
 # Entwicklungsplan
 
-Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phasen 1–9 einschließlich Owner-/Team-UX-Review sind akzeptiert und gemerged. Phase 10 wurde am 18.10.2026 ausdrücklich freigegeben. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
+Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phasen 1–10 einschließlich Owner-/Team-UX-Review sind akzeptiert und gemerged. Phase 11 wurde am 18.10.2026 ausdrücklich freigegeben und liegt zur Abnahme vor. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
 
 | Phase | Kleine Lieferinkremente / Abhängigkeiten | Gate |
 | --- | --- | --- |

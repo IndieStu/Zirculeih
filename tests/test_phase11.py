@@ -490,8 +490,23 @@ def test_oidc_nonce_type_and_critical_headers(settings):
     for nonce, headers in [
         (123, {"kid": "test-key"}),
         ("123", {"kid": "test-key", "crit": ["unhandled"], "unhandled": True}),
+        ("123", {"kid": "test-key", "crit": []}),
+        ("123", {"kid": "test-key", "crit": None}),
+        ("ä", {"kid": "test-key"}),
     ]:
         token = jwt.encode(claims | {"nonce": nonce}, private, algorithm="RS256", headers=headers)
         with patch("accounts.oidc.fetch_json", return_value={"keys": [jwk]}):
             with pytest.raises((ValueError, jwt.PyJWTError)):
                 validate_id_token(token, "123")
+
+
+def test_oidc_non_ascii_callback_state_rejected_without_provider(settings, client):
+    from unittest.mock import patch
+
+    settings.OIDC_ENABLED = True
+    session = client.session
+    session["oidc_flow"] = dict(state="synthetic-state", created=int(timezone.now().timestamp()))
+    session.save()
+    with patch("accounts.oidc.fetch_json", side_effect=AssertionError("No provider call")):
+        result = client.get("/konto/oidc/callback/", dict(state="ä", code="synthetic"))
+    assert result.status_code == 400
