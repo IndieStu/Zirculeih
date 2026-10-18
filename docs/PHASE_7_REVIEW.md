@@ -124,3 +124,8 @@ SSH-Push funktioniert. GitHub-Connector verweigert die PR-Erstellung weiterhin m
 [Branch vergleichen / PR erstellen](https://github.com/IndieStu/Zirculeih/compare/main...phase-7-qualifications-bundles?expand=1).
 Der Branch enthält zusätzlich die bereits akzeptierten UX-/Kalender-Follow-ups,
 die im älteren Main-Snapshot noch nicht enthalten waren.
+
+## Owner-Abnahme 17.10.2026
+
+Phase 7 ist akzeptiert; [Phase 8 ausdrücklich freigegeben](OWNER_APPROVAL_PHASE_8.md).
+Die oben dokumentierte historische Stop-Grenze ist damit überschritten.

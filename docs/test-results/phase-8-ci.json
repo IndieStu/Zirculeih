@@ -1,0 +1,106 @@
+{
+  "verified_on": "2026-10-18",
+  "repository": "IndieStu/Zirculeih",
+  "branch": "phase-8-approvals-recurrence",
+  "tested_commit": "8996be51c654e78f8511e9772c8fd48dbfbb9c5b",
+  "run_id": 39026381991,
+  "run_url": "https://github.com/IndieStu/Zirculeih/actions/runs/39026381991",
+  "job_id": 117378080814,
+  "conclusion": "success",
+  "tests": {
+    "passed": 276,
+    "failed": 0,
+    "seconds": 287.7
+  },
+  "log_excerpt": "2026-10-17T10:55:28.6668912Z ======================= 276 passed in 287.70s (0:04:47) ========================",
+  "jobs": [
+    {
+      "id": 117378080814,
+      "name": "foundation",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 39026381991,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Check documentation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Create disposable development configuration",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Validate and build Compose",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Lint and types",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Model and configuration checks",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "PostgreSQL integration and concurrency",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Bootstrap and health smoke test",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Isolated review deployment and explicit seed",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Disposable cleanup",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        }
+      ]
+    }
+  ]
+}

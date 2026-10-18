@@ -1,8 +1,15 @@
 from django.urls import path
 
-from . import views
+from . import request_views, views
 
 urlpatterns = [
+    path("antraege/", request_views.queue, name="request_queue"),
+    path("antraege/<uuid:request_id>/", request_views.detail, name="request_detail"),
+    path(
+        "termine/<uuid:occurrence_id>/ausnahme/",
+        request_views.exception,
+        name="occurrence_exception",
+    ),
     path("betrieb/zeiten/", views.hours_admin, name="hours_admin"),
     path("", views.own, name="own_bookings"),
     path("neu/<uuid:resource_id>/", views.create, name="booking_create"),

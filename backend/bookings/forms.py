@@ -142,6 +142,8 @@ class PolicyForm(forms.ModelForm):
         exclude = ["resource", "revision", "requires_qualification", "requires_agreement"]
         labels = {
             "use_mode": "Nutzungsart",
+            "approval_mode": "Bestätigung",
+            "max_occurrences": "Höchstens Termine je Serie",
             "time_mode": "Zeitmodus",
             "timezone": "Zeitzone",
             "granularity_minutes": "Zeitraster (Minuten)",
@@ -318,3 +320,31 @@ class BlockForm(forms.ModelForm):
 class ReasonForm(forms.Form):
     reason = forms.CharField(label="Grund", max_length=500)
     revision = forms.IntegerField(widget=forms.HiddenInput, required=False, min_value=0)
+
+
+class RecurrenceForm(forms.Form):
+    weekdays = forms.MultipleChoiceField(
+        label="Wöchentlich an",
+        required=False,
+        choices=list(
+            enumerate(
+                ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
+            )
+        ),
+        widget=forms.CheckboxSelectMultiple,
+    )
+    count = forms.IntegerField(label="Anzahl Termine", min_value=1, max_value=366, required=False)
+    until = forms.DateField(
+        label="Oder letzter Serientag",
+        required=False,
+        widget=forms.DateInput(attrs={"type": "date"}),
+    )
+
+    def clean(self):
+        data = super().clean()
+        if data.get("weekdays") and bool(data.get("count")) == bool(data.get("until")):
+            raise forms.ValidationError("Für Serien entweder Anzahl oder Enddatum wählen.")
+        if not data.get("weekdays") and (data.get("count") or data.get("until")):
+            raise forms.ValidationError("Für Serien Wochentage auswählen.")
+        data["weekdays"] = [int(v) for v in data.get("weekdays", [])]
+        return data

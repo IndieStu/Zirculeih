@@ -82,3 +82,14 @@ production or credential changes. Stop at the Phase-7 owner review gate.
 Phase-7-Implementierung zur Owner-Abnahme bereit: [Review](docs/PHASE_7_REVIEW.md),
 252 Tests lokal und in Docker/PostgreSQL-17-CI bestanden. Keine Phase-8-Freigabe
 und kein Produktions-/NCtest-Upgrade durch diese Übergabe.
+
+
+## Phase 8 — owner authorized 17.10.2026
+
+[Authorization](docs/OWNER_APPROVAL_PHASE_8.md), merged Phase 7 / main de92c55.
+P8.1 additive request/occurrence/exception schema and permanent audit evidence.
+P8.2 bounded weekly expansion in local time, non-blocking proposals and atomic
+all-or-nothing approval through existing allocation services. P8.3 scoped staff
+queue, personal request tracking and individual exceptions. P8.4 PostgreSQL
+concurrency/security/full regression, handbook and owner review. No Phase 9,
+production or credential changes.

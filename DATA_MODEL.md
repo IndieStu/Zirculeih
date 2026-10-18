@@ -135,3 +135,19 @@ Migrations bookings/0001–0003 add independent tables, reviewed btree_gist, ide
 Agreement kinds general/insurance/additional; immutable published AgreementVersion plus unique Acceptance(user,version). Multiple AgreementAssignments have exactly one Resource/Asset owner. IdentityCheck is one permanent minimal actor/time proof per User. Appointment is one pickup/return pair per physical Booking. Loan owns registered borrower/actor/issue/closure/evidence; LoanLine references exactly one original Booking, concrete Unit and Asset, expected and actual return, condition/accessory evidence and revision. Multiple lines preserve separate original Booking links and independent returns. Conditional uniqueness forbids two open lines per Unit or Asset.
 
 Extensions append immutable old/new ends/dates, actor/reason/revision/current policy evidence. Additive guards permit only a matching positive end/claim growth; original start/identity/snapshot stay immutable. LoanOperation key is actor+kind+UUID with canonical payload hash, bound to Loan. Booking adds terminal no_show; no physical return is inferred. Deferred constraints require actual lines and closure consistent with line returns, and custody consistent with Booking status. Original migrations remain unchanged. [Operator migration notes](docs/DEVELOPMENT.md).
+
+## Phase 8 — non-blocking proposals and permanent occurrence identity
+
+`ReservationRequest` retains original actor/beneficiary, resource membership,
+local timezone/mode, bounded weekly rule, expected occurrence count, options,
+idempotency digest/key, revision and explicit decision actor/time/reason.
+`RequestOccurrence` retains original local start/end and position; approved
+occurrences link to their original root Booking, with ordinary bundle membership
+for its components. Requests have no AllocationClaim/Loan. `RequestAdjustment`
+appends pending changes/omissions; `OccurrenceException` links cancelled originals
+to replacement bookings after approval. All history remains permanent.
+
+Additive bookings/0011–0012; existing Bookings, Claims, Loans and consent evidence
+are not rewritten. Deferred PostgreSQL guards enforce complete request occurrence
+sets and complete approved linkage, immutable identities and terminal decisions.
+[ADR-023](docs/adr/023.md) documents local expansion, approval and exception rules.

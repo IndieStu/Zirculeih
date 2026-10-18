@@ -58,3 +58,8 @@ Phase 5 accepted and merged, [authorization](../OWNER_APPROVAL_PHASE_6.md).
 | ADR | Thema | Status | Gate |
 | --- | --- | --- | --- |
 | ADR-018 | [Physische Ausleihe, Nachweise und Gewahrsam](018.md) | Phase 6 autorisiert; Umsetzung zur Review | Consent/custody/races, UI/Migration/Handbook, owner review before Phase 7 |
+
+## Phase 8
+
+[ADR-023: Non-blocking requests and atomic local weekly series](023.md) implements
+accepted ADR-003/008 under the [owner authorization](../OWNER_APPROVAL_PHASE_8.md).

@@ -107,3 +107,15 @@ booking.create_own and booking.cancel_own are scoped to the current Resource con
 loan.checkout/loan.read/loan.return/loan.extend are checked in current Resource scopes. Foreign eligibility still needs booking.create_for_others plus the beneficiary's own complete profile/grants. Employee/Systemadmin alone grants nothing. Whole-loan staff reads require loan.read for every contained Resource; own active verified borrower can read own receipt. Scoped loan.return authorizes actual return and operational condition update; beneficiary activity/consent is deliberately irrelevant to returns.
 
 borrower.read_contact and loan.inspect_identity are explicit organization-wide permissions for exact-email selection and first identity proof, respectively; neither is inferred from checkout. agreement.edit/publish are separate organization-wide text actions. agreement.assign is checked on each Resource/Asset and applies to assign/remove. Acceptance is always by the authenticated beneficiary; no staff impersonation. No-show also requires booking.manage_all. Operator jobs have no user-facing bypass endpoint.
+
+## Phase 8 — Anträge und Serien
+
+`booking.request_recurrence` permits non-blocking own weekly requests within each
+resource scope; `booking.create_own` remains necessary. A request does not authorize
+binding allocations. `booking.approve` plus ordinary own/for-others create grants
+permits complete approval/direct creation; `booking.read_all` controls staff
+visibility, `booking.manage_all` controls management for others. Every selected
+bundle component and occurrence is checked. Current beneficiary eligibility always
+applies; neither employee nor system-admin status grants approval implicitly.
+Own cancellation uses `booking.cancel_own`; moving confirmed occurrences also
+requires approval. See [ADR-023](docs/adr/023.md).

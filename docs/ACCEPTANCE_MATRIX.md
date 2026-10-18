@@ -253,3 +253,15 @@ These are implementation checks. Owner/team UX acceptance remains pending.
   custody/partial return; wholly physical open bundles extend atomically.
 - Automated acceptance: `tests/test_phase7.py`, existing booking/lending/calendar
   regression. Operator browser evidence and full results: Phase-7 review document.
+
+## Phase-8 implemented scenarios
+
+`tests/test_phase8.py` covers AC-10 (eight non-blocking weekly occurrences, atomic
+approval and later single cancellation), AC-11 (employee marker and current scoped
+rights), AC-23 (every conflicting date, no partial approval), plus selected pool,
+bundle component scopes, current physical agreements/appointments across DST,
+explicit pending exceptions, immutable SQL history, direct staff planning,
+idempotence, CSRF/foreign URLs, configurable cap above 52 and real PostgreSQL
+approval/single-booking and approval/withdrawal races. Executed evidence and exact
+counts are recorded in [Phase-8 review](PHASE_8_REVIEW.md); earlier phase evidence
+is not a claim that these scenarios had already passed.
