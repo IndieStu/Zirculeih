@@ -63,3 +63,8 @@ Phase 5 accepted and merged, [authorization](../OWNER_APPROVAL_PHASE_6.md).
 
 [ADR-023: Non-blocking requests and atomic local weekly series](023.md) implements
 accepted ADR-003/008 under the [owner authorization](../OWNER_APPROVAL_PHASE_8.md).
+
+## Phase 9
+
+[ADR-024: Transactional notifications and private calendar subscriptions](024.md).
+Implementierung zur Owner-Abnahme; reale Nextcloud-Prüfung bleibt manuell offen.

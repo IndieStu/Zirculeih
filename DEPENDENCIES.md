@@ -85,3 +85,21 @@ MIT-CMU erlaubt unveränderte Nutzung/Verteilung unter Erhalt von Copyright-/Liz
 Deelvo verwendet über Pillow Bestandteile des FreeType Project; die betreffenden Teile stehen unter der FreeType License, Copyright der FreeType-Projektautoren. This software is based in part on the work of the Independent JPEG Group. Die vollständigen dazugehörigen Bedingungen/Copyrights werden mit dem oben verlinkten Notice ausgeliefert.
 
 Keine QR-/Barcode-/Scanner-SDK-, HTMX-, DRF/OpenAPI-, Kalender-, Cloudstorage-, Redis- oder Celery-Abhängigkeit in Phase 3 hinzugefügt. HID-/manuelle Eingabe verwenden HTMLformulare. Visuelle Labels, API-/ICS-Pakete werden erst in der jeweils freigegebenen Phase konkret geprüft.
+
+## Phase 9 — independent calendar parser (tests only)
+
+Reviewed 18.10.2026 from exact official PyPI metadata and SHA-256-verified wheel
+license files. No new runtime package; serialization uses the standard library.
+Existing reviewed cryptography encrypts transient mail envelopes (Fernet).
+
+| Package | Version | SPDX / source | Use and notices |
+| --- | --- | --- | --- |
+| icalendar | 7.3.0 | BSD-2-Clause, [PyPI](https://pypi.org/project/icalendar/7.3.0/) | Independent ICS parser in tests, retain copyright/disclaimer |
+| python-dateutil | 2.9.0.post0 | BSD-3-Clause AND Apache-2.0, [PyPI](https://pypi.org/project/python-dateutil/2.9.0.post0/) | Parser dependency, preserve both original BSD and contributor Apache notices |
+| six | 1.17.0 | MIT, [PyPI](https://pypi.org/project/six/1.17.0/) | Test parser dependency; preserve MIT notice |
+| tzdata | 2026.2 | Apache-2.0 (packaging), IANA data public domain; [PyPI](https://pypi.org/project/tzdata/2026.2/) | Test parser zone data; preserve bundled Apache/IANA notices |
+
+All are hash-pinned in requirements-dev.lock, not requirements.lock. Reviewed
+permissive licenses retain intended AGPL-3.0-or-later distribution compatibility;
+final project license remains the owner release gate. Wheels retain their notices;
+no upstream implementation code is copied into application source.

@@ -128,7 +128,20 @@ def affected_bookings(resource_id=None, location_id=None, category_id=None, orga
 
 def flag_incidents(bookings, code):
     for booking in bookings:
-        BookingIncident.objects.get_or_create(booking=booking, code=code, is_open=True)
+        incident, created = BookingIncident.objects.get_or_create(
+            booking=booking, code=code, is_open=True
+        )
+        if created:
+            from django.urls import reverse
+            from notifications.services import absolute, enqueue
+
+            enqueue(
+                booking.beneficiary,
+                "maintenance",
+                "incident:" + str(incident.pk),
+                url=absolute(reverse("booking_detail", args=[booking.pk])),
+                booking=booking,
+            )
 
 
 def save_schedule(actor, data, *, exception=False):
@@ -680,11 +693,14 @@ def _cancel_single(actor, booking_id, revision, reason):
         return booking
 
 
-def visible_bookings(actor, *, operational=False):
+def visible_bookings(actor, *, operational=False, start=None, end=None):
     require_active_actor(actor)
     rows = Booking.objects.select_related("resource__location", "beneficiary").order_by(
         "start", "id"
     )
+    if start is not None or end is not None:
+        aware_interval(start, end)
+        rows = rows.filter(end__gt=start, start__lt=end)
     if not operational:
         return rows.filter(beneficiary=actor)
     from accounts.authorization import allowed_many

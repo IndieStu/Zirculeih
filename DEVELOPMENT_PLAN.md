@@ -93,3 +93,13 @@ all-or-nothing approval through existing allocation services. P8.3 scoped staff
 queue, personal request tracking and individual exceptions. P8.4 PostgreSQL
 concurrency/security/full regression, handbook and owner review. No Phase 9,
 production or credential changes.
+
+## Phase 9 — owner authorized 18.10.2026
+
+[Freigabe](docs/OWNER_APPROVAL_PHASE_9.md), akzeptierte Phase 8 als Basis.
+P9.1 verschlüsselte transaktionale Outbox, SMTP-Worker, begrenzte Retries und Vorlagen.
+P9.2 aktuelle Erinnerungen aus Buchungen und tatsächlichem Gewahrsam.
+P9.3 scoped Monatskalender und widerrufbare private ICS-Feeds mit stabilen
+Serienterminidentitäten. P9.4 Parser-/Privacy-/Concurrency-/Regressionstests,
+Handbuch und [Owner-Review](docs/PHASE_9_REVIEW.md). CAL-06 prüft der Owner später
+manuell; keine Nextcloud-Testinstanz einrichten. Kein Deployment oder Phase 10.

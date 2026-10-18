@@ -1,6 +1,6 @@
 # Deelvo — Integrations- und Kalenderarchitektur
 
-Stand: 15.10.2026. Verbindliche [Owner-Ergänzung](OWNER_ADDITION_DASHBOARD_API_HANDBOOK.md), konkretisiert in [ADR-015](adr/015.md). **Planung**, keine bereits implementierte öffentliche API, keine Kalenderfeeds oder CalDAV in Phase 3.
+Stand: 18.10.2026. Verbindliche [Owner-Ergänzung](OWNER_ADDITION_DASHBOARD_API_HANDBOOK.md), konkretisiert in [ADR-015](adr/015.md). Die Integrations-API bleibt Planung für Phase 11; private ICS-Feeds sind in Phase 9 implementiert. Kein CalDAV.
 
 ## Gemeinsame Domänengrenze
 
@@ -25,7 +25,7 @@ Die genaue Token-Lebensdauer, Clientadministration und endgültige v1-Schemata w
 
 ## Kalender: einseitige abonnierbare iCalendar-Feeds in Phase 9
 
-Buchungen werden ab Phase 5 produktiv; abonnierbare ICS folgen Phase 9 (Kalender/Benachrichtigungen), Härtung und Integrationsdokumentation Phase 11. Kein Feed mit erfundenen Phase-3-Terminen. Ziel: Deelvo → Nextcloud Calendar und andere standardkonforme Clients, ohne Scraping, Mailparsing oder proprietäre Middleware.
+Abonnierbare ICS sind in Phase 9 implementiert; weitere API-Härtung folgt Phase 11. Kein Feed mit erfundenen Phase-3-Terminen. Ziel: Deelvo → Nextcloud Calendar und andere standardkonforme Clients, ohne Scraping, Mailparsing oder proprietäre Middleware.
 
 Feed-Scope: persönlich, einzelne Resource, Kategorie, Standort und ausdrücklich berechtigte Organisationsübersicht. Jede Anfrage benutzt aktuelle Sichtbarkeits-/Feldregeln und zentrale Buchungsprojektion. Öffentliche bzw. breitere Feeds enthalten keine Borrower-Namen, Kontaktdaten, internen Notizen, Personen-IDs oder private Sicherheitshinweise. Auch Ereignistitel/Ortsbeschreibungen dürfen keine eingeschränkten Resources verraten. Standort-/Kategoriefeeds sind keine stillen Organisations-Masterfeeds.
 
@@ -41,16 +41,40 @@ Ein abonnierbarer privater URL-Token ist ein Credential. Kryptografisch starker 
 
 ### Interoperabilitätsabnahme
 
-Mit produktivem Testbooking einen privaten Feed in einer eigenen Nextcloud-Calendar-Testinstanz abonnieren. Wiederholter Abruf/Änderung aktualisiert denselben UID statt Duplikate; Storno-/Zeit-/DST-/ganztägige Fälle, Rechteentzug und Tokenregeneration tatsächlich testen. Clients pollen selbst; keinen sofortigen Push oder ein fixes Refreshintervall versprechen. Allgemeine ICS-Konformität zusätzlich unabhängig von Nextcloud parserprüfen.
+Der Owner prüft CAL-06 später manuell in seiner Nextcloud. Es wird ausdrücklich keine Nextcloud-Testinstanz eingerichtet. Mit einer freigegebenen Reservierung einen privaten Feed abonnieren. Wiederholter Abruf/Änderung aktualisiert denselben UID statt Duplikate; Storno-/Zeit-/DST-/ganztägige Fälle, Rechteentzug und Tokenregeneration tatsächlich testen. Clients pollen selbst; keinen sofortigen Push oder ein fixes Refreshintervall versprechen. Allgemeine ICS-Konformität zusätzlich unabhängig von Nextcloud parserprüfen.
 
 CalDAV, bidirektionale Änderungen, Konfliktauflösung und Nextcloud-spezifische SDKs sind keine Phase-3-Funktionen. Bidirektionales CalDAV erst nach späterer begründeter Reviewentscheidung.
 
-Quellen: [RFC 5545](https://www.rfc-editor.org/rfc/rfc5545), [Nextcloud Calendar-Handbuch](https://docs.nextcloud.com/server/latest/user_manual/en/groupware/calendar.html). CAL-01–06 sind geplante Akzeptanzfälle, keine heute bestandenen Tests.
+Quellen: [RFC 5545](https://www.rfc-editor.org/rfc/rfc5545), [Nextcloud Calendar-Handbuch](https://docs.nextcloud.com/server/latest/user_manual/en/groupware/calendar.html). CAL-01–05 sind automatisiert geprüft; CAL-06 bleibt als reale Owner-Clientabnahme offen.
 
 ## Phase 8 status
 
 Requests, approvals and recurrence exceptions currently use authenticated, CSRF-
 protected web forms and shared services. No public `/api/v1/` request endpoint or
-ICS feed is introduced. Future API/ICS integration must preserve non-blocking
+ICS feed was introduced in Phase 8; the feed adapter is now implemented in Phase 9. Future API/ICS integration must preserve non-blocking
 proposal status, scoped decisions, all-or-nothing allocation and original local
 occurrence identity from [ADR-023](adr/023.md).
+
+## Implementierter ICS-Vertrag — Phase 9
+
+`GET /kalender/abo/<privater-token>.ics` (auch HEAD) benötigt den einmalig
+ausgegebenen Feedtoken statt einer Browsersession. Keine Queryfilter oder Writes.
+200: `text/calendar; charset=utf-8`, VCALENDAR mit einzelnen VEVENTs;
+404 ohne Objektdetails: unbekannt, abgelaufen, widerrufen oder aktuell unberechtigt.
+429: begrenzte Abrufrate (240 pro Zeitfenster der bestehenden Rate-Limit-Schicht),
+`Retry-After`. Kein 304/öffentlicher Cache. Alle Antworten no-store/private und
+no-referrer. Aktuelle Rechte werden bei jedem Abruf geprüft.
+
+`/kalender/abos/` ist die Session-/CSRF-geschützte Verwaltung. Bereiche:
+`personal`, `resource`, `category`, `location`, `organization`; Objektbereiche
+benötigen eine passende UUID und aktuelle scoped Betriebsrechte. 1–366 Tage Laufzeit,
+20 aktive Feeds je Owner, 30 Einträge je Verwaltungsseite. Widerruf/Regeneration
+verändern keine Buchungen. Der Rohlink wird nur einmal angezeigt, nur sein Hash bleibt.
+
+Feedfenster: 90 Tage zurück, 366 voraus; mehr als 5000 sichtbare Ereignisse ergibt
+einen expliziten Fehler statt stiller Kürzung. UTC-Z-Instantwerte und DATE mit
+exklusivem Ende; logische Serienvorkommen behalten UID bei Verschiebung/Storno.
+SEQUENCE und LAST-MODIFIED folgen der minimalen veröffentlichten Projektion. Keine
+Borrower-/Kontakt-/Inventarnotizdaten, keine RRULE-Eingabe, keine Rücksynchronisation.
+Siehe [ADR-024](adr/024.md), [Handbuch](handbook/notifications-and-calendars.md) und
+[Nachweise](PHASE_9_REVIEW.md). Private URL niemals als echtes Beispiel veröffentlichen.

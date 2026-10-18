@@ -121,12 +121,12 @@ Originalaufträge: [Phase 3](OWNER_APPROVAL_PHASE_3.md), [Dashboard/API/Handbuch
 | API-02 | /api/v1/, explizite DTOs und OpenAPI, bounded Pagination/Filter/Fehler | 11 | geplant, dokumentierter Vertragsrahmen |
 | API-03 | Tokenrechte höchstens Owner/Client ∩ Token, Widerruf/Sperre aktuell | 11 | geplant, kein Tokenmodell vorgezogen |
 | API-04 | kein internes Modell-/Feld-/Objekt-Bypass; API-IDOR und read-only Token | 11 | geplant, negative Transporttests erforderlich |
-| CAL-01 | RFC-5545-konformes UTF-8-ICS aus produktiven Bookingdaten | 9 | geplant, kein Phase-3-Fakefeed |
-| CAL-02 | stabile UID bei Wiederabruf/Änderung/Storno, keine Duplikate | 9 | geplant, Parser-/Clienttests |
-| CAL-03 | IANA/DST/UTC, [start,end), echte DATE-Endsemantik | 9 | geplant, Berlin Gap/Fold und Tagesausleihe |
-| CAL-04 | persönliche/Resource-/Kategorie-/Ort-/Org-Sicht ohne PII-/Privatleck | 9/11 | geplant, Scope-/Feld-Negativtests |
-| CAL-05 | starke gehashte private Feedtokens, Widerruf/Regeneration/Rechteentzug | 9/11 | geplant, keine globalen öffentlichen Kalenderlinks |
-| CAL-06 | Nextcloud-Abo über offene ICS-Standards, Update/Refresh/Widerruf real geprüft | 9/11 | geplant, eigene Testinstanz; kein CalDAV nötig |
+| CAL-01 | RFC-5545-konformes UTF-8-ICS aus produktiven Bookingdaten | 9 | implementiert; unabhängiger Parser, Escape-/UTF-8-/Faltungstests in tests/test_phase9.py |
+| CAL-02 | stabile UID bei Wiederabruf/Änderung/Storno, keine Duplikate | 9 | implementiert; wiederholter Export, Änderung/Storno und Ersatzketten mit gleicher UID getestet |
+| CAL-03 | IANA/DST/UTC, [start,end), echte DATE-Endsemantik | 9 | implementiert; UTC-/DATE-Export über DST getestet; lokale Gap-/Fold-Regression bestehend |
+| CAL-04 | persönliche/Resource-/Kategorie-/Ort-/Org-Sicht ohne PII-/Privatleck | 9/11 | implementiert; Scope-/Feld-Negativtests und aktuelle per-resource Denies |
+| CAL-05 | starke gehashte private Feedtokens, Widerruf/Regeneration/Rechteentzug | 9/11 | implementiert; Hashspeicherung, Widerruf, Regeneration, Ablauf und Kontosperre getestet |
+| CAL-06 | Nextcloud-Abo über offene ICS-Standards, Update/Refresh/Widerruf real geprüft | 9/11 | OFFEN: Owner prüft später manuell in eigener Nextcloud; ausdrücklich keine Testcloud |
 | DOC-01 | Handbuch existiert und ist von Architektur-/API-/Betriebsdokumenten getrennt | 3+ | docs/handbook/README.md, CI-Struktur-/Linkprüfung |
 | DOC-02 | tatsächliche Phase-2-Konten/Gruppen/Authentik/Sperre dokumentiert | 3+ | Getting-started / Users-and-groups, redaktionelle Review |
 | DOC-03 | tatsächliche Phase-3-Inventar-/Orts-/Code-/Rechte-/Dashboardaufgaben dokumentiert | 3+ | Inventar-/Location-/Identifier-/Admin-/Dashboardkapitel |

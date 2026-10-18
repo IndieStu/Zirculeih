@@ -1,6 +1,6 @@
 # Deelvo — Product & Engineering Specification
 
-**Version:** 0.8 · **Status:** Phase 8 accepted; Phase 9 authorization pending · **Date:** 2026-10-18
+**Version:** 0.8 · **Status:** Phase 8 accepted; Phase 9 implemented for owner review · **Date:** 2026-10-18
 **Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
@@ -529,3 +529,17 @@ Phase-8-Umsetzung verifiziert: 276 Tests lokal und in Docker/PostgreSQL-17-CI be
 Owner: “ist abgenommen”. [Acceptance record](docs/OWNER_ACCEPTANCE_PHASE_8.md).
 Phase 8 is accepted with the delivered 276-test local/CI evidence. No merge or
 deployment is implied. Phase 9 requires a separate explicit start authorization.
+
+## 32. Phase-9 authorization — 2026-10-18
+
+Owner: “starte 9”. [Record](docs/OWNER_APPROVAL_PHASE_9.md). Notifications,
+reminders and privacy-preserving calendar subscriptions are authorized; no
+Phase 10, production, NCtest upgrade or existing credential changes.
+
+Owner clarification: no Nextcloud test instance exists or will be provisioned.
+The owner will perform real Nextcloud subscription acceptance manually later.
+CAL-06 remains pending; automated ICS conformance does not claim client acceptance.
+
+Phase-9 implementation verified: 298 tests passed locally and in Docker/PostgreSQL-17
+CI. [Review](docs/PHASE_9_REVIEW.md). Owner acceptance pending; CAL-06 remains manual
+and pending separately. No deployment, Phase 10 or credential changes.

@@ -151,3 +151,13 @@ Additive bookings/0011–0012; existing Bookings, Claims, Loans and consent evid
 are not rewritten. Deferred PostgreSQL guards enforce complete request occurrence
 sets and complete approved linkage, immutable identities and terminal decisions.
 [ADR-023](docs/adr/023.md) documents local expansion, approval and exception rules.
+
+## Phase 9: notification/publication records
+
+Notifications migrations 0001/0002 add settings (singleton), bounded versioned
+plain-text templates, personal locale/optional preference, encrypted Delivery
+outbox with unique idempotency key/leases, CalendarFeed with hashed expiring
+credential and immutable scope, and CalendarRevision for monotonic public
+projection sequence. SQL guards protect outbox identity/terminal state and feed
+identity/revocation. No existing Booking/Loan/consent is rewritten. See
+[ADR-024](docs/adr/024.md) for retention, key rotation and publication semantics.

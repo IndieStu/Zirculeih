@@ -80,3 +80,18 @@ All operational mutations serialize with current authorization changes, lock con
 Published agreement text, personal Acceptance and identity-check evidence are immutable DB records; no identity-document or insurance-policy data fields. Current profile/terms/rights rechecked under shared authz lock at binding reservation and issuance. Staff cannot accept text for another account. Exact-email person lookup requires borrower.read_contact and audits the access. Receipts avoid postal/contact data; whole-loan staff reads require all scopes. Private routes use CSRF/no-store/same-origin/CSP. Scans only resolve identity and prepare server-session references; completion revalidates, records actor and clears transaction context. Explicit reset/logout discards the cart. No public self-service/device trust/offline activation.
 
 Conditional custody uniqueness covers Unit and Asset; deferred lifecycle checks prevent closed receipt/open custody or active physical booking without consistent line state. Exclusion still protects temporal promises. Extension records authorize only positive matching end changes and keep original identity/snapshot. Return remains possible after beneficiary suspension; actor rights remain current. Damage makes the specific Asset/Unit unavailable rather than blocking every healthy pooled unit. Existing promises receive review incidents. Retention/anonymization/backup and real shared-terminal inactivity/hardware audits remain production/pilot gates.
+
+## Phase 9: mail and subscription secrets
+
+Outbox recipients, rendered content and action links are encrypted using the
+reviewed existing Fernet primitive with a domain-separated signing-secret key.
+Back up signing secrets with DB; retain controlled SECRET_KEY_FALLBACKS during
+rotation until old queued payloads are retired. Terminal payload purge preserves
+idempotency/status. No raw SMTP errors or mail bodies in audit/status views.
+
+Private subscription URLs are bearer credentials: only SHA-256 digests persist,
+no-store/private/no-referrer on all subscription responses, current rights checked
+each time. Proxy access logs must omit raw URLs; production requires HTTPS. A
+client may retain previously downloaded data after revocation. Worker retry/lease
+controls cannot guarantee SMTP exactly-once after a crash following acceptance.
+See [operator guidance](docs/handbook/notifications-and-calendars.md).
