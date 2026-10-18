@@ -1,6 +1,6 @@
 # Deelvo — Product & Engineering Specification
 
-**Version:** 0.8 · **Status:** Phase 9 accepted and merged; Phase 10 in progress · **Date:** 2026-10-18
+**Version:** 0.8 · **Status:** Phase 9 accepted and merged; Phase 10 implemented for owner review · **Date:** 2026-10-18
 **Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
@@ -552,3 +552,7 @@ Owner: “freigegeben und merged go 10”. Main 5d37437 contains PR #9/#10.
 authorized per existing roadmap and ADR-011. CAL-06 remains later manual owner
 Nextcloud acceptance, no test cloud. No self-service, offline writes, production,
 NCtest upgrade, credential changes or Phase 11 are authorized.
+
+Phase-10 implementation verified: 326 tests passed locally and in Docker/PostgreSQL-17
+CI. [Review](docs/PHASE_10_REVIEW.md). Owner acceptance pending; real HID/printer/touch
+pilot checks and later owner Nextcloud check remain explicit. No deployment or Phase 11.

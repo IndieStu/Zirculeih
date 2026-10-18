@@ -55,15 +55,22 @@ QR-Druckansicht. 320px-Terminal: clientWidth = scrollWidth = 320.
 [Wartung](screenshots/phase-10-maintenance.png), [Etikett](screenshots/phase-10-labels.png).
 Keine echte Hardwareprüfung oder reale Wartung. Temporärer Testclient liegt nur
 außerhalb des Repos; kein ausgelieferter Loginzugang oder Passwortwechsel.
-Die Browserprüfung ist beendet; synthetische Daten bleiben getrennt erhalten.
+Die Browserprüfung und der eigens gestartete PostgreSQL-Prüfcluster sind beendet;
+synthetische Daten bleiben getrennt erhalten. Vorhandene Entwicklungsprozesse und
+Reviewzugänge blieben unberührt.
 
 Letzte Ergänzung: FIFO auch in betreuter Ausgabevorbereitung; erst nach bewusstem
 Neuladen der Vorbereitung werden alle Positionen gemeinsam zur Bestätigung gezeigt.
 Ein zusätzlicher Integrationstest prüft mehrfache Aliasscans ohne Loananlage.
 Ausgabe-FIFO im Browser mit fiktivem Mikrofon geprüft: Vorbereitung, Duplikatscan,
 bewusster Prüfschritt, Kontextende ohne Loananlage.
-[Ausgabe-Scans](screenshots/phase-10-checkout-scans.png). CI-Nachweis folgt für
-den finalen Browserfix.
+[Ausgabe-Scans](screenshots/phase-10-checkout-scans.png). [CI 39140936109](https://github.com/IndieStu/Zirculeih/actions/runs/39140936109)
+für finalen Anwendungscommit `161b9ce8e64c8d8cb0194d3beddbc7287d6f7ffe`
+vollständig grün: **326 bestanden**, 344,23 Sekunden unter Linux/Docker/PostgreSQL 17.
+Dockerbuild, Lint/Typen, Modell-/Migrationschecks, Start-/Health-Smoke und isolierte
+Testdatenanlage mit wiederholten additiven Erweiterungen bestanden.
+[Maschinenlesbare CI-Nachweise](test-results/phase-10-ci.json).
+Nachfolgende Dokumentationscommits ändern den geprüften Anwendungscode nicht.
 
 ## Manuelle Abnahme / verbleibende Grenzen
 
@@ -92,7 +99,7 @@ Phase 11 wird erst nach eigener Ownerfreigabe gestartet.
 
 ## Branch / PR
 
-Anwendungscommit `945703d83e68c250d20dd37273680e2ef8d9dca3` ist über SSH gepusht.
+Finaler Anwendungscommit `161b9ce8e64c8d8cb0194d3beddbc7287d6f7ffe` ist über SSH gepusht.
 GitHub-Connector verweigert die automatische PR-Erstellung weiterhin mit 403
 `Resource not accessible by integration`; kein PR angelegt.
 [Branchvergleich / PR erstellen](https://github.com/IndieStu/Zirculeih/compare/main...phase-10-asset-operations?expand=1).
