@@ -25,7 +25,7 @@
       const pending=queue.shift();
       const data=pending.data;
       try {
-        const response=await fetch(form.action,{method:'POST',body:data,headers:{'X-Requested-With':'XMLHttpRequest'},credentials:'same-origin',redirect:'error'});
+        const response=await fetch(form.getAttribute('action') || window.location.href,{method:'POST',body:data,headers:{'X-Requested-With':'XMLHttpRequest'},credentials:'same-origin',redirect:'error'});
         if([401,409].includes(response.status)) { lock(); break; }
         const value=await response.json();
         if(!valid || value.generation!==generation) break;

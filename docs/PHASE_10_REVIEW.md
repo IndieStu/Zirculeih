@@ -38,8 +38,8 @@ CDNs. Projektlizenz weiterhin Ownerentscheidung.
 
 ## Prüfstand
 
-Finale vollständige lokale PostgreSQL-Regression: **325 bestanden**, 133,19 Sekunden (vor letzter Ausgabe-FIFO-Ergänzung).
-[JUnit](test-results/phase-10-local.xml). Enthält 27 neue Phase-10-Tests mit
+Finale vollständige lokale PostgreSQL-Regression: **326 bestanden**, 136,22 Sekunden.
+[JUnit](test-results/phase-10-local.xml). Enthält 28 neue Phase-10-Tests mit
 unabhängigen PostgreSQL-Verbindungen für Konkurrenzfälle und tatsächlichem
 Gewahrsam, SQL-Guards, Rechten/CSV/CSRF, Terminalgeneration/-ablauf und 25-Stunden-
 Reservierungsbericht über die Herbstumstellung.
@@ -60,7 +60,10 @@ Die Browserprüfung ist beendet; synthetische Daten bleiben getrennt erhalten.
 Letzte Ergänzung: FIFO auch in betreuter Ausgabevorbereitung; erst nach bewusstem
 Neuladen der Vorbereitung werden alle Positionen gemeinsam zur Bestätigung gezeigt.
 Ein zusätzlicher Integrationstest prüft mehrfache Aliasscans ohne Loananlage.
-Finale Regression/CI werden für diesen Stand vor Übergabe aktualisiert.
+Ausgabe-FIFO im Browser mit fiktivem Mikrofon geprüft: Vorbereitung, Duplikatscan,
+bewusster Prüfschritt, Kontextende ohne Loananlage.
+[Ausgabe-Scans](screenshots/phase-10-checkout-scans.png). CI-Nachweis folgt für
+den finalen Browserfix.
 
 ## Manuelle Abnahme / verbleibende Grenzen
 
