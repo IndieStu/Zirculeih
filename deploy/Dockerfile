@@ -20,5 +20,6 @@ COPY --chown=app:app pyproject.toml ./
 COPY --chown=app:app prototypes ./prototypes
 COPY --chown=app:app tests ./tests
 COPY --chown=app:app docs/branding-artifacts.json ./docs/branding-artifacts.json
+COPY --chown=app:app docs/api ./docs/api
 USER app
 CMD ["python", "-m", "pytest"]
