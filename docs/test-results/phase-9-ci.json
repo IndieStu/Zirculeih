@@ -1,0 +1,120 @@
+{
+  "source_commit": "beccda17715346ae0de2e59012bb4079f5ce240f",
+  "run_id": 39114091979,
+  "url": "https://github.com/IndieStu/Zirculeih/actions/runs/39114091979",
+  "verified_date": "2026-10-18",
+  "jobs": [
+    {
+      "id": 117636192049,
+      "name": "foundation",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-18T09:07:23Z",
+          "completed_at": "2026-10-18T09:07:24Z"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-18T09:07:24Z",
+          "completed_at": "2026-10-18T09:07:25Z"
+        },
+        {
+          "name": "Check documentation",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-18T09:07:25Z",
+          "completed_at": "2026-10-18T09:07:25Z"
+        },
+        {
+          "name": "Create disposable development configuration",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-18T09:07:25Z",
+          "completed_at": "2026-10-18T09:07:26Z"
+        },
+        {
+          "name": "Validate and build Compose",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-18T09:07:26Z",
+          "completed_at": "2026-10-18T09:07:43Z"
+        },
+        {
+          "name": "Lint and types",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-18T09:07:43Z",
+          "completed_at": "2026-10-18T09:07:59Z"
+        },
+        {
+          "name": "Model and configuration checks",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-18T09:07:59Z",
+          "completed_at": "2026-10-18T09:08:02Z"
+        },
+        {
+          "name": "PostgreSQL integration and concurrency",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-18T09:08:02Z",
+          "completed_at": "2026-10-18T09:11:08Z"
+        },
+        {
+          "name": "Bootstrap and health smoke test",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-10-18T09:11:08Z",
+          "completed_at": "2026-10-18T09:11:24Z"
+        },
+        {
+          "name": "Isolated review deployment and explicit seed",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-18T09:11:24Z",
+          "completed_at": "2026-10-18T09:11:59Z"
+        },
+        {
+          "name": "Disposable cleanup",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-18T09:11:59Z",
+          "completed_at": "2026-10-18T09:12:00Z"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22,
+          "started_at": "2026-10-18T09:12:00Z",
+          "completed_at": "2026-10-18T09:12:00Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-10-18T09:12:00Z",
+          "completed_at": "2026-10-18T09:12:00Z"
+        }
+      ]
+    }
+  ]
+}

@@ -10,8 +10,8 @@ Work branch: phase-9-notifications-calendars.
 
 Keep all accepted domain, authorization, privacy, time and booking invariants.
 No production, NCtest upgrade, existing credential changes, CalDAV, Phase 10 or
-real personal data are authorized. Nextcloud interoperability needs an isolated
-fictional acceptance client; never silently use a production account.
+real personal data are authorized. Actual Nextcloud acceptance is reserved for
+the owner; never silently use an existing account or provision a client instance.
 
 ## Owner clarification — Nextcloud acceptance
 

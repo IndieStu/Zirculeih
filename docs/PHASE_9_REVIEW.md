@@ -35,9 +35,17 @@ mit genehmigter Serie, Tagesdetail, Vorlagen/Zustellstatus und Aboverwaltung.
 [Screenshot Kalender](screenshots/phase-9-calendar.png),
 [Nachrichten](screenshots/phase-9-notifications.png), [mobil](screenshots/phase-9-mobile.png).
 Temporäre Testclient-Vorschau ist kein ausgelieferter Loginzugang; fiktive Konten
-haben unbrauchbare Passwörter. Mailausgabe nur in lokale Dateien.
+haben unbrauchbare Passwörter. Mailausgabe nur in lokale Dateien. Vorschau und eigens gestarteter lokaler
+Prüfcluster wurden beendet; vorhandene Entwicklungsprozesse blieben unberührt.
 
-CI und abschließende statische Checks werden nach dem Source-Push hier ergänzt.
+Ruff Check/Format (177 Dateien), Mypy (158 Quelldateien), Dokumentationsprüfung
+(128 Markdowndateien), Django Systemcheck und Migrationskonsistenz ohne Fehler.
+[CI 39114091979](https://github.com/IndieStu/Zirculeih/actions/runs/39114091979)
+für Anwendungscommit `beccda17715346ae0de2e59012bb4079f5ce240f` vollständig grün:
+**298 bestanden**, 184,14 Sekunden unter Linux/Docker/PostgreSQL 17. Dockerbuild,
+Lint/Typen, Modell-/Migrationschecks, Start-/Health-Smoke und isolierte Testdatenanlage
+mit wiederholten additiven Erweiterungen bestanden. [CI-Nachweise](test-results/phase-9-ci.json).
+Nachfolgende Dokumentationscommits ändern den geprüften Anwendungscode nicht.
 
 ## Migration und Betrieb
 
@@ -80,3 +88,12 @@ Nextcloud-Test behauptet. CAL-01–05 sind automatisiert nachgewiesen.
    oder entzogene scoped Rechte dürfen keine neuen Abrufe erlauben.
 
 Nach Phase 9 zur Ownerabnahme stoppen. Phase 10 wurde nicht gestartet.
+
+## Reviewbranch
+
+Anwendungscommit `beccda17715346ae0de2e59012bb4079f5ce240f` wurde über SSH gepusht.
+GitHub-Connector verweigert PR-Erstellung weiterhin mit 403
+`Resource not accessible by integration`; kein PR angelegt.
+[Phase 9 gegenüber akzeptierter Phase 8 vergleichen / PR erstellen](https://github.com/IndieStu/Zirculeih/compare/phase-8-approvals-recurrence...phase-9-notifications-calendars?expand=1).
+Phase 8 vor einem späteren Phase-9-Merge in Main integrieren oder PR-Basis dann
+kontrolliert auf Main ändern. Kein automatischer Merge durch diese Übergabe.
