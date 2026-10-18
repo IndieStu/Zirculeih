@@ -128,3 +128,13 @@ and feeds belong to the active verified account. Operational calendar scopes
 require current `booking.read_all` at that scope plus per-resource visibility
 and explicit denies on each fetch. Employee/admin labels add no implicit scope.
 Feed secrets grant no writes; expiry/revocation/suspension/rights loss close access.
+
+## Phase 10 operations
+
+Inventory_run create/start/read/observe/export/complete are separate scoped actions;
+asset.read is additionally required for all snapshot/observed assets. Observation
+requires identifier.resolve, location.read and per-asset observe. Discrepancy resolve
+does not imply asset.move; explicit moves check source/destination/current revision.
+Maintenance.manage requires asset.read; lifecycle/condition writes require normal
+asset.manage. Media retains attach/sensitive checks. Report export additionally
+requires asset.export. Terminal mode adds no rights and invalidates stale forms.

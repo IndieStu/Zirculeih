@@ -265,3 +265,17 @@ idempotence, CSRF/foreign URLs, configurable cap above 52 and real PostgreSQL
 approval/single-booking and approval/withdrawal races. Executed evidence and exact
 counts are recorded in [Phase-8 review](PHASE_8_REVIEW.md); earlier phase evidence
 is not a claim that these scenarios had already passed.
+
+## Phase 10 implementation evidence — 18.10.2026
+
+`tests/test_phase10.py` verifies inventory-only snapshots, alias deduplication,
+wrong-location/unexpected observations without master-data writes, explicit
+revision-checked moves, immutable completed reports, actual custody after later
+return, current ACL denial, CSV/privacy, bounded atomic bulk operations,
+maintenance blocking/incident flags/follow-up/release safety, private QR output,
+CSRF and database-checked terminal generation/idle/reset/return forms.
+Concurrent close/scan and close/move use independent PostgreSQL connections.
+KIOSK-AC-01–13/15–22 map to these and the existing Phase-3/6/7 tests plus
+the explicitly open manual checks; real HID/layout/suffix/printer/touch and shared-terminal pilot
+acceptance remains **pending**, not replaced by simulation. KIOSK-AC-14 self-service
+is not activated. [Review](PHASE_10_REVIEW.md), [ADR-025](adr/025.md).

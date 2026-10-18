@@ -68,3 +68,7 @@ accepted ADR-003/008 under the [owner authorization](../OWNER_APPROVAL_PHASE_8.m
 
 [ADR-024: Transactional notifications and private calendar subscriptions](024.md).
 Implementierung zur Owner-Abnahme; reale Nextcloud-Prüfung bleibt manuell offen.
+
+## Phase 10
+
+[ADR-025: Inventory snapshots and staffed asset operations](025.md), zur Ownerabnahme.

@@ -177,6 +177,14 @@ def dashboard(request):
         for n in Location.objects.filter(is_active=False)
         if allowed(request.user, "location.read", services.tree_scope(n))
     ]
+    from assetops.services import visible_runs
+
+    inventory_runs = (
+        visible_runs(request.user) if any_action(request.user, "inventory_run.read") else []
+    )
+    open_discrepancies = sum(
+        r.discrepancies.filter(resolved_at__isnull=True).count() for r in inventory_runs
+    )
     from bookings.recurrence import visible as visible_requests
 
     proposals = (
@@ -189,6 +197,8 @@ def dashboard(request):
         "inventory/dashboard.html",
         {
             **nav,
+            "inventory_discrepancy_count": open_discrepancies,
+            "inventory_runs": inventory_runs[:10],
             "request_count": proposals.count() if proposals is not None else 0,
             "requests": proposals[:10] if proposals is not None else [],
             "attention": attention[:20],

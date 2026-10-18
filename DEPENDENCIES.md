@@ -103,3 +103,16 @@ All are hash-pinned in requirements-dev.lock, not requirements.lock. Reviewed
 permissive licenses retain intended AGPL-3.0-or-later distribution compatibility;
 final project license remains the owner release gate. Wheels retain their notices;
 no upstream implementation code is copied into application source.
+
+## Phase 10 — local QR labels
+
+qrcode 8.2, **BSD-3-Clause AND MIT** (retained upstream pyqrnative notice),
+[official PyPI release](https://pypi.org/project/qrcode/8.2/), wheel SHA-256 pinned
+in requirements.lock. Complete wheel LICENSE retained in
+[notices](docs/licenses/qrcode-8.2-LICENSE.txt). Both permissive licenses compatible
+with intended AGPL-3.0-or-later distribution; project license still undecided.
+Pure Python SVG generation, no optional extras/runtime APIs/JavaScript/CDN or new
+transitive dependencies on Linux/macOS. Reviewed official wheel license and hash
+18.10.2026; no project source copied. Output contains existing opaque asset code,
+not private inventory/person data. The package's legacy “Other/Proprietary” PyPI
+classifier is not relied on; actual bundled BSD/MIT notice was inspected.

@@ -78,3 +78,13 @@ SEQUENCE und LAST-MODIFIED folgen der minimalen veröffentlichten Projektion. Ke
 Borrower-/Kontakt-/Inventarnotizdaten, keine RRULE-Eingabe, keine Rücksynchronisation.
 Siehe [ADR-024](adr/024.md), [Handbuch](handbook/notifications-and-calendars.md) und
 [Nachweise](PHASE_9_REVIEW.md). Private URL niemals als echtes Beispiel veröffentlichen.
+
+## Phase 10 web-only operations
+
+Inventory runs, maintenance, bulk previews, labels and reports are session/CSRF
+web adapters under `/betrieb/`. No `/api/v1/` or integration credential is introduced.
+The internal terminal POST `/betrieb/terminal/scan/` additionally requires current
+server-side terminal generation; it can resolve or observe, never checkout/return.
+JSON responses contain minimal scan result and generation, no borrower data.
+401 expired terminal, 409 changed context, 400 invalid scan; normal object denial
+remains 404. All private responses no-store. Public API stays Phase 11.

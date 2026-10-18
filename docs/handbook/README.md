@@ -1,8 +1,8 @@
 # Deelvo-Handbuch
 
-Stand: Phase 9, 18.10.2026. Dieses Handbuch beschreibt die tatsächlich vorhandene Oberfläche. Die Anwendung befindet sich vor dem Echtbetrieb; Beispiele verwenden synthetische Daten.
+Stand: Phase 10, 18.10.2026. Dieses Handbuch beschreibt die tatsächlich vorhandene Oberfläche. Die Anwendung befindet sich vor dem Echtbetrieb; Beispiele verwenden synthetische Daten.
 
-Deelvo verwaltet gemeinsam nutzbare Ressourcen und deren Inventar. Aktuell verfügbar: Konten, Gruppenrechte, Inventar, Standorte, Kategorien, Identifier, Inventar-Betriebsübersicht sowie Ressourcen, Einheiten, Pools und veröffentlichter Katalog. Vor-Ort-Buchungen und Buchungskonfiguration sind hinzugekommen. Physische Ausleihen und versionierte Vereinbarungen sind hinzugekommen. Kalenderabos und Benachrichtigungen sind vorhanden; Inventurläufe und Integrations-API folgen später.
+Deelvo verwaltet gemeinsam nutzbare Ressourcen und deren Inventar. Aktuell verfügbar: Konten, Gruppenrechte, Inventar, Standorte, Kategorien, Identifier, Inventar-Betriebsübersicht sowie Ressourcen, Einheiten, Pools und veröffentlichter Katalog. Vor-Ort-Buchungen und Buchungskonfiguration sind hinzugekommen. Physische Ausleihen und versionierte Vereinbarungen sind hinzugekommen. Kalenderabos und Benachrichtigungen sind vorhanden; Inventurläufe sind hinzugekommen; Integrations-API folgt später.
 
 ## Dein Einstieg
 
@@ -44,3 +44,7 @@ Anträge reservieren noch keine Kapazität; die ganze Serie wird gemeinsam gepr�
 
 [Persönlicher Kalender, private Abos, Vorlagen und Zustellung](notifications-and-calendars.md).
 Die echte Nextcloud-Abnahme übernimmt der Owner später manuell.
+
+## Assetbetrieb — Phase 10
+
+[Inventur, Wartung, Sammelaktionen, QR-Etiketten, Berichte und betreutes Terminal](asset-operations.md).

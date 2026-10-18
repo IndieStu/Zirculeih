@@ -213,6 +213,9 @@ def line_return(request, line_id):
         key = data.pop("key")
         try:
             services.return_lines(request.user, line.loan_id, {str(line.pk): data}, key)
+            from assetops.terminal import rotate
+
+            rotate(request)
             messages.success(
                 request,
                 "Gegenstand zurückgenommen. Nächsten Code scannen oder Ausleihbeleg öffnen.",
@@ -278,6 +281,9 @@ def checkout(request):
     if request.method == "POST":
         action = request.POST.get("action")
         if action == "reset":
+            from assetops.terminal import rotate
+
+            rotate(request)
             request.session.pop("lending_cart", None)
             return redirect("loan_checkout")
         if action == "person":
@@ -287,6 +293,9 @@ def checkout(request):
                 email_verified_at__isnull=False,
             ).first()
             if person:
+                from assetops.terminal import rotate
+
+                rotate(request)
                 cart.update(borrower=str(person.pk), bookings=[], units=[], key=str(uuid4()))
                 audit(request.user, "borrower.contact_read", subject=person)
             else:
@@ -388,6 +397,15 @@ def checkout(request):
                     spontaneous=pending,
                 )
                 request.session.pop("lending_cart", None)
+                if request.session.get("staffed_terminal"):
+                    from assetops.terminal import reset
+
+                    reset(request, "checkout")
+                    messages.success(
+                        request,
+                        "Ausgabe abgeschlossen. Vorbereitung für die nächste Person geleert.",
+                    )
+                    return redirect("loan_checkout")
                 return redirect("loan_detail", loan_id=loan.pk)
             except ValidationError as exc:
                 message = error_message(exc)
@@ -415,6 +433,21 @@ def checkout(request):
                     prefix="u_" + uid,
                     choose_capacity=False,
                 ),
+            }
+        )
+    if (
+        request.session.get("staffed_terminal")
+        and request.method == "POST"
+        and request.POST.get("action") == "scan"
+        and request.headers.get("X-Requested-With") == "XMLHttpRequest"
+    ):
+        from django.http import JsonResponse
+
+        return JsonResponse(
+            {
+                "message": message or "Codeeingabe prüfen; nichts ausgegeben.",
+                "generation": request.session["staffed_terminal"]["generation"],
+                "prepared": len(cart["bookings"]) + len(cart["units"]),
             }
         )
     return render(

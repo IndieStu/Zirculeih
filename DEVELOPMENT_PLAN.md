@@ -1,6 +1,6 @@
 # Entwicklungsplan
 
-Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phasen 1–6 einschließlich Owner-/Team-UX-Review sind akzeptiert. Phase 7 wurde am 17.10.2026 ausdrücklich freigegeben. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
+Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phasen 1–9 einschließlich Owner-/Team-UX-Review sind akzeptiert und gemerged. Phase 10 wurde am 18.10.2026 ausdrücklich freigegeben. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
 
 | Phase | Kleine Lieferinkremente / Abhängigkeiten | Gate |
 | --- | --- | --- |
@@ -103,3 +103,11 @@ P9.3 scoped Monatskalender und widerrufbare private ICS-Feeds mit stabilen
 Serienterminidentitäten. P9.4 Parser-/Privacy-/Concurrency-/Regressionstests,
 Handbuch und [Owner-Review](docs/PHASE_9_REVIEW.md). CAL-06 prüft der Owner später
 manuell; keine Nextcloud-Testinstanz einrichten. Kein Deployment oder Phase 10.
+
+## Phase 10 — owner authorized 18.10.2026
+
+Phase 9 accepted and merged in main 5d37437. P10.1 inventory expectation snapshots
+and observations; P10.2 explicit discrepancies and frozen custody-aware assessment;
+P10.3 maintenance/labels/bounded atomic bulk actions/aggregate reports; P10.4 staffed
+terminal reset/idle/focus/FIFO and real-HID pilot gate; P10.5 full regression, browser,
+CI, handbook and [owner review](docs/PHASE_10_REVIEW.md). No Phase 11 or deployment.
