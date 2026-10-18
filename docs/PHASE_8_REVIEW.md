@@ -73,9 +73,26 @@ NCtestdeployment und keine Änderung bestehender Reviewzugänge.
 
 ## Verifikation
 
-Finale Regression und CI werden nach Abschluss der laufenden Prüfungen hier
-mit tatsächlich ausgeführten Ergebnissen ergänzt. Frühere Fehlerläufe werden
-nicht als bestanden bezeichnet.
+Finale lokale PostgreSQL-16-Regression: **276 bestanden**, 122,19 Sekunden.
+[JUnit-Nachweis](test-results/phase-8-local.xml).
+[CI 39026381991](https://github.com/IndieStu/Zirculeih/actions/runs/39026381991)
+für Anwendungscommit `8996be51c654e78f8511e9772c8fd48dbfbb9c5b` vollständig grün:
+**276 bestanden**, 287,70 Sekunden, Linux/Docker/PostgreSQL 17. Dockerbuild,
+Lint/Typen, Modell-/Migrationsprüfungen, Start-/Health-Smoke und isolierte
+Testdatenanlage einschließlich zweimaliger additiver Erweiterungen bestanden.
+[Maschinenlesbare CI-Nachweise](test-results/phase-8-ci.json), geprüft am 18.10.2026.
+Nachfolgende Dokumentationscommits ändern den geprüften Anwendungscode nicht.
+
+Ausgeführt: `python -m ruff check .`, `python -m ruff format --check .`,
+`python -m mypy` (141 Dateien), `python scripts/verify_docs.py` (123 Markdowndateien),
+`python backend/manage.py check` und `makemigrations --check --dry-run` ohne Fehler.
+Die lokale Regression nutzt den getrennten PostgreSQL-16-Cluster; CI prüft zusätzlich
+Linux/Docker/PostgreSQL 17. Die temporäre Browserprüfung ist beendet.
+
+Ein früher kompletter Lauf bestand 275 Tests; danach wurde ein weiterer Test für
+die Lesbarkeit historischer Anfragen bei geänderter optionaler Bundle-Konfiguration
+ergänzt. Der erste lokale Fehlerlauf hatte einen fehlenden PYTHONPATH in einem
+Test-Unterprozess; der Teststarter wurde korrigiert, kein Test abgeschwächt.
 
 Browser an synthetischer isolierter Preview geprüft: achtteilige Mittwochserie,
 konkreter Konflikt am 04.11., ausdrückliche Ausnahme mit erhaltenem Original und
@@ -85,3 +102,11 @@ funktioniert. 320px: clientWidth = scrollWidth = 320.
 [genehmigt](screenshots/phase-8-approved.png), [mobil](screenshots/phase-8-mobile.png).
 
 Nach Abschluss dieser Phase Owner-Abnahme vor Phase 9. Phase 9 ist nicht gestartet.
+
+
+## Reviewbranch
+
+Commit `8996be51c654e78f8511e9772c8fd48dbfbb9c5b` ist über SSH gepusht.
+Der GitHub-Connector verweigert die automatische PR-Erstellung weiterhin mit
+403 `Resource not accessible by integration`; es wurde kein PR angelegt.
+[Branch vergleichen / PR erstellen](https://github.com/IndieStu/Zirculeih/compare/main...phase-8-approvals-recurrence?expand=1).

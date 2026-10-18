@@ -2,7 +2,7 @@
 
 Selbst gehostete Inventarverwaltung, Ressourcenreservierung und Ausleihe für Makerspaces.
 
-Stand: 17.10.2026. Phasen 1–7 einschließlich Owner-/Team-UX-Review sind akzeptiert. Phase 8 implementiert Anträge und regelmäßige Reservierungen mit atomarer Teamfreigabe, Konfliktvorschau und einzelnen Terminausnahmen. [Phase-8-Review](docs/PHASE_8_REVIEW.md). Reservierung und tatsächlicher Gewahrsam bleiben getrennt. Keine Produktion oder Phase 9 ohne eigene Freigabe.
+Stand: 17.10.2026. Phasen 1–7 einschließlich Owner-/Team-UX-Review sind akzeptiert. Phase 8 implementiert Anträge und regelmäßige Reservierungen mit atomarer Teamfreigabe, Konfliktvorschau und einzelnen Terminausnahmen. 276 Tests lokal und in CI bestanden. [Phase-8-Review](docs/PHASE_8_REVIEW.md). Reservierung und tatsächlicher Gewahrsam bleiben getrennt. Keine Produktion oder Phase 9 ohne eigene Freigabe.
 
 ## Start und Review
 
