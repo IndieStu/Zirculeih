@@ -12,7 +12,9 @@ def check(ceiling, scope):
 
 
 def asset(row, ceiling):
-    check(ceiling, asset_scope(row))
+    # Organization ceiling includes every scope; owner rights were checked by read/visible_assets.
+    if ceiling.scope_kind != "organization":
+        check(ceiling, asset_scope(row))
     return dict(
         id=str(row.pk),
         inventory_number=row.inventory_number,

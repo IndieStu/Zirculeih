@@ -35,7 +35,7 @@ def test_ready_failure_does_not_leak_database_details(client):
 def test_foundation_and_request_id(client):
     response = client.get("/")
     assert response.status_code == 200
-    assert b'lang="de"' in response.content
+    assert b'lang="de-de"' in response.content
     assert UUID(response["X-Request-ID"])
 
 

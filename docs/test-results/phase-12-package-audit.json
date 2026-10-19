@@ -1,0 +1,267 @@
+{
+  "checked_at": "2026-10-19T11:50:31.613262+00:00",
+  "sources": [
+    "https://api.osv.dev/v1/querybatch",
+    "https://pypi.org/pypi/{name}/{version}/json"
+  ],
+  "lock_sha256": {
+    "requirements.lock": "96cd1bc7d86e24da123a555c0a232bdac0df0d9ec61a1ad4a371d8f5bc0da6c3",
+    "requirements-dev.lock": "036d24e9a4b1169405b388055d58cfbd19f5fb8be78a55614a8489187aaa9609"
+  },
+  "results": [
+    {
+      "name": "Django",
+      "version": "5.2.18",
+      "role": "runtime",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "asgiref",
+      "version": "3.12.1",
+      "role": "runtime",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "sqlparse",
+      "version": "0.6.0",
+      "role": "runtime",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "psycopg",
+      "version": "3.3.6",
+      "role": "runtime",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.15.0",
+      "role": "runtime",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "gunicorn",
+      "version": "26.2.0",
+      "role": "runtime",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "cffi",
+      "version": "2.1.1",
+      "role": "runtime",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "cryptography",
+      "version": "50.0.2",
+      "role": "runtime",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "pycparser",
+      "version": "3.11",
+      "role": "runtime",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "PyJWT",
+      "version": "2.15.1",
+      "role": "runtime",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "Pillow",
+      "version": "12.3.0",
+      "role": "runtime",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "qrcode",
+      "version": "8.2",
+      "role": "runtime",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "pytest",
+      "version": "9.1.1",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "pytest-django",
+      "version": "4.14.0",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "iniconfig",
+      "version": "2.3.1",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "pluggy",
+      "version": "1.6.0",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "packaging",
+      "version": "26.3",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "pygments",
+      "version": "2.21.0",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "ruff",
+      "version": "0.15.15",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "mypy",
+      "version": "2.1.0",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "mypy_extensions",
+      "version": "1.1.0",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "pathspec",
+      "version": "1.0.4",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "librt",
+      "version": "0.11.0",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "ast-serialize",
+      "version": "0.3.0",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "icalendar",
+      "version": "7.3.0",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "python-dateutil",
+      "version": "2.9.0.post0",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "six",
+      "version": "1.17.0",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    },
+    {
+      "name": "tzdata",
+      "version": "2026.2",
+      "role": "development",
+      "osv_ids": [],
+      "pypi_ids": [],
+      "yanked": false,
+      "incomplete": false
+    }
+  ],
+  "findings": 0,
+  "limitations": "Known published package advisories only; not a container/native-library scan, pentest or future safety guarantee."
+}

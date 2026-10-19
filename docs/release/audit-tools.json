@@ -1,0 +1,18 @@
+{
+  "axe": {
+    "version": "4.14.0",
+    "source": "https://registry.npmjs.org/axe-core/-/axe-core-4.14.0.tgz",
+    "integrity": "sha512-9WTZxEjsZ7b13TH8JPmbV2z8CHbl80/2hm3XPEG4JgNdQLK81IBRXmSxHfMAOkSqQeRxT/0dwNDz2GOm3zzpcQ==",
+    "js_sha256": "20c09fe157a8a34a30e241aaa1fcdade657734f08ab379ecfbeb7d45cc46e878",
+    "license": "MPL-2.0",
+    "role": "local audit only; not app runtime"
+  },
+  "trivy": {
+    "version": "0.76.0",
+    "source": "https://github.com/aquasecurity/trivy/releases/download/v0.76.0/trivy_0.76.0_Linux-64bit.tar.gz",
+    "sha256": "e24b1c51293c1b15e4ba8d45bbc7891ba053f90278ec2698f3562c993e145fe7",
+    "checksum_source": "https://github.com/aquasecurity/trivy/releases/download/v0.76.0/trivy_0.76.0_checksums.txt",
+    "license": "Apache-2.0",
+    "role": "CI audit only; not app runtime"
+  }
+}

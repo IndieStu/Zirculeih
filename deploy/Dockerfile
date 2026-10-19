@@ -19,6 +19,8 @@ RUN python -m pip install --no-cache-dir --require-hashes -r requirements-dev.lo
 COPY --chown=app:app pyproject.toml ./
 COPY --chown=app:app prototypes ./prototypes
 COPY --chown=app:app tests ./tests
+COPY --chown=app:app scripts ./scripts
+COPY --chown=app:app docs/release ./docs/release
 COPY --chown=app:app docs/branding-artifacts.json ./docs/branding-artifacts.json
 COPY --chown=app:app docs/api ./docs/api
 USER app

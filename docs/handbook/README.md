@@ -50,3 +50,5 @@ Die echte Nextcloud-Abnahme übernimmt der Owner später manuell.
 [Inventur, Wartung, Sammelaktionen, QR-Etiketten, Berichte und betreutes Terminal](asset-operations.md).
 
 - [Integrationen und API](integrations-api.md): Zugang, Rechteobergrenzen, v1-Endpunkte, Fehler, Authentik-Betriebsprüfung.
+
+- [Produktionsbetrieb vorbereiten](production-operations.md): Konfiguration, Rollen, Backup/Restore, Upgrade, Jobs und Beobachtung.

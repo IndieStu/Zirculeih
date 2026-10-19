@@ -118,3 +118,9 @@ Phase 10 accepted/merged, Phase 11 explicitly authorized. Versioned API, OpenAPI
 scoped expiring credentials, CSV adapters and Authentik callback hardening are
 implemented for owner review. See [review](docs/PHASE_11_REVIEW.md).
 Phase 12 requires separate acceptance and authorization. No deployment performed.
+
+## Phase 12 — authorized 19.10.2026
+
+Phase 11 accepted/merged on Main `998f167`. Production-readiness engineering is
+authorized; technical review/evidence, not automatic deployment. See [review](docs/PHASE_12_REVIEW.md)
+and unsigned [staging checklist](docs/release/STAGING_ACCEPTANCE.md). Phase 13 waits.

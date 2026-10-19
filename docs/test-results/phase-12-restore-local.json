@@ -1,0 +1,18 @@
+{
+  "adapter": "local",
+  "fictional_only": true,
+  "native_postgres_dump_restore": true,
+  "authenticated_encryption": true,
+  "source_target_equal": true,
+  "restore_seconds": 0.943,
+  "total_seconds": 6.471,
+  "bundle_bytes": 419883,
+  "data_sha256": "d8ce423498ef8b4eba8ca6b69c6f321d2a274fb3353287f822b6744c192abd2d",
+  "evidence_guard": true,
+  "guards_sha256": "98141e174cfc12b3bf6e937a881c31cf093030ecd424d9531f2968d061824efb",
+  "media_count": 2,
+  "media_sha256": "5f6739d6e3263a05f18cd4b764b10fd820f85d64c5cc61dd074093a534f15742",
+  "outbox_untouched": true,
+  "rows": 1425,
+  "tables": 82
+}

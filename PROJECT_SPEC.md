@@ -1,6 +1,6 @@
 # Deelvo — Product & Engineering Specification
 
-**Version:** 0.8 · **Status:** Phase 10 accepted and merged; Phase 11 implemented for owner review · **Date:** 2026-10-18
+**Version:** 0.8 · **Status:** Phase 11 accepted and merged; Phase 12 implementation for owner/staging review · **Date:** 2026-10-19
 **Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
@@ -568,3 +568,12 @@ checks under the shared authorization lock. No account/group/qualification write
 or automatic consent/identity bypass. Actor/beneficiary and inventory/resource/loan
 remain distinct. [Review](docs/PHASE_11_REVIEW.md), [contract](docs/api/deelvo-openapi-v1.json).
 No deployment, credential changes or Phase 12 authorization is implied.
+
+## Phase 12 authorization — 2026-10-19
+
+Owner: “freigegeben und merged. Go”. Main `998f167` includes PR #12 and accepted
+Phase-11 evidence. [Authorization](docs/OWNER_APPROVAL_PHASE_12.md),
+[review](docs/PHASE_12_REVIEW.md), [ADR-027](docs/adr/027.md).
+Production-readiness work preserves all domain distinctions; no production/NCtest
+deployment, existing credential change, real mail, Nextcloud test cloud or Phase 13
+is implied. Human staging/privacy/operator signoff remains an explicit gate.

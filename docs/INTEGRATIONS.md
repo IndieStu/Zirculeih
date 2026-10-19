@@ -97,3 +97,11 @@ or runtime documentation CDN. Native transaction-safe allocation and CSV/loan
 services, context-local authorization ceilings and minimal DTOs. Authentik callback
 state is additionally consumed atomically across parallel session copies. Existing
 ICS stays one-way and independently credentialed; API tokens are not feed tokens.
+
+## Phase 12 operational checks
+
+Restore mode disables OIDC and prevents notification delivery/consumption.
+Production profile requires configured staff OIDC without granting provider claims.
+Organization inventory DTOs skip only a universally true ceiling/tree reconstruction;
+current owner rights remain batch-filtered before count/pagination. Same v1 contract.
+See [operations](handbook/production-operations.md).

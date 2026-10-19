@@ -123,3 +123,21 @@ No new runtime or test dependency. Explicit Django JSON/OpenAPI generation uses
 existing reviewed Django/Python components; no generic serializer, Swagger CDN,
 Google runtime or external API service. OpenAPI 3.1.1 is a contract format, not a
 new library. Existing Authentik cryptography stack unchanged.
+
+## Phase 12 audit tools and SBOM
+
+No new app runtime package. Existing reviewed cryptography provides AES-256-GCM
+streaming backup encryption. [Python lock SBOM](docs/release/deelvo-python-sbom.cdx.json),
+[license policy](docs/release/dependency-policy.json), [OSV/PyPI evidence](docs/test-results/phase-12-package-audit.json).
+SBOM scope is pinned Python distributions; fonts, bundled Pillow codecs and actual
+container OS packages retain separate notices/inventories, not an invented single license.
+
+Local Axe-core 4.14.0 (MPL-2.0, unchanged test-only JS) and CI Trivy 0.76.0
+(Apache-2.0, official Linux binary) are standalone audit tools, not shipped runtime
+requirements. [Pinned official sources/hashes](docs/release/audit-tools.json),
+[Axe license](docs/licenses/axe-core-4.14.0-LICENSE.txt),
+[Trivy license](docs/licenses/trivy-0.76.0-LICENSE.txt). MPL file-level obligations
+remain separate; no upstream source changes/copied runtime implementation. Tool
+licenses are compatible with the intended application distribution; project license
+remains an owner decision. OSV and package registries are engineering audit sources,
+not production runtime services. Absence of published advisories is no future guarantee.

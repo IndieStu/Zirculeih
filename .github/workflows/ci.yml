@@ -12,6 +12,10 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4, resolved 2026-10-14
       - name: Check documentation
         run: python3 scripts/verify_docs.py
+      - name: Repository secret patterns and locked SBOM
+        run: |
+          python3 scripts/secret_check.py
+          python3 scripts/security_inventory.py --sbom /tmp/deelvo-python-sbom.cdx.json --audit /tmp/deelvo-package-audit.json
       - name: Create disposable development configuration
         run: python3 scripts/dev_env.py
       - name: Validate and build Compose
@@ -53,6 +57,17 @@ jobs:
           curl --fail http://localhost:8766/ | grep TESTINSTANZ
           curl --fail http://localhost:8766/static/brand.css
           scripts/review-stack exec -T web python backend/manage.py shell -c "from django.conf import settings; from django.core.mail import send_mail; from pathlib import Path; assert settings.EMAIL_BACKEND == 'django.core.mail.backends.filebased.EmailBackend'; send_mail('Fictional review smoke', 'No delivery', None, ['fictional@example.test']); assert list(Path(settings.EMAIL_FILE_PATH).glob('*'))"
+      - name: Native PostgreSQL encrypted backup and isolated restore drill
+        run: |
+          python3 -m venv /tmp/deelvo-ops-venv
+          /tmp/deelvo-ops-venv/bin/python -m pip install --require-hashes -r requirements.lock
+          /tmp/deelvo-ops-venv/bin/python scripts/restore_drill.py --adapter compose --confirm-disposable --output /tmp/phase-12-restore.json
+      - name: Bounded fictional catalog load probe
+        run: python3 scripts/load_probe.py --url http://localhost:8766/entdecken/ --requests 60 --concurrency 8 --output /tmp/phase-12-load.json
+      - name: Runtime image security and package inventory
+        run: |
+          python3 scripts/fetch_audit_tool.py --destination /tmp/deelvo-tools/trivy
+          python3 scripts/container_audit.py --scanner /tmp/deelvo-tools/trivy --output /tmp/phase-12-container.json
       - name: Disposable cleanup
         if: always()
         run: |

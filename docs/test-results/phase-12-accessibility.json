@@ -1,0 +1,148 @@
+{
+  "date": "2026-10-19",
+  "tool": "axe-core 4.14.0",
+  "tags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21a",
+    "wcag21aa",
+    "wcag22aa"
+  ],
+  "fictional_only": true,
+  "reports": [
+    {
+      "url": "/entdecken/phase9-werkraum/",
+      "passes": 27,
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": 15,
+          "samples": [
+            {
+              "target": [
+                ".month-nav > span[aria-hidden=\"true\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters",
+              "checks": [
+                {
+                  "id": "color-contrast",
+                  "message": "Element content contains only non-text characters",
+                  "data": {
+                    "messageKey": "nonBmp"
+                  }
+                }
+              ]
+            },
+            {
+              "target": [
+                "a[aria-label=\"19.10.2026, Zeiten verfügbar\"] > span[aria-hidden=\"true\"]"
+              ],
+              "summary": "Fix any of the following:\n  Element content contains only non-text characters",
+              "checks": [
+                {
+                  "id": "color-contrast",
+                  "message": "Element content contains only non-text characters",
+                  "data": {
+                    "messageKey": "nonBmp"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "nodes": 1,
+          "samples": [
+            {
+              "target": [
+                ".month-nav"
+              ],
+              "summary": "Fix any of the following:\n  Unable to determine if the visible text is part of the accessible name",
+              "checks": [
+                {
+                  "id": "label-content-name-mismatch",
+                  "message": "Unable to determine if the visible text is part of the accessible name",
+                  "data": null
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "violations": []
+    },
+    {
+      "url": "/kalender/",
+      "passes": 24,
+      "incomplete": [],
+      "violations": []
+    },
+    {
+      "url": "/konto/integrationen/",
+      "passes": 23,
+      "incomplete": [],
+      "violations": []
+    },
+    {
+      "url": "/inventar/lookup/",
+      "passes": 21,
+      "incomplete": [],
+      "violations": []
+    },
+    {
+      "url": "/ausleihen/betrieb/",
+      "passes": 18,
+      "incomplete": [],
+      "violations": []
+    },
+    {
+      "url": "/__guest/konto/registrieren/",
+      "passes": 19,
+      "incomplete": [],
+      "violations": []
+    },
+    {
+      "url": "/__token-layout/",
+      "passes": 24,
+      "incomplete": [],
+      "violations": []
+    },
+    {
+      "url": "/__guest/entdecken/",
+      "passes": 23,
+      "incomplete": [],
+      "violations": []
+    }
+  ],
+  "responsive": [
+    {
+      "path": "/__guest/konto/registrieren/",
+      "scrollWidth": 320,
+      "width": 320
+    },
+    {
+      "path": "/__token-layout/",
+      "scrollWidth": 320,
+      "secretLayoutProbe": true,
+      "width": 320
+    },
+    {
+      "path": "/entdecken/phase9-werkraum/",
+      "scrollWidth": 320,
+      "width": 320
+    }
+  ],
+  "keyboard": [
+    "Skip link reaches main content",
+    "Tab then Tab reaches email field from content start",
+    "Native start/end selects usable; Reserve enables without submitting booking"
+  ],
+  "manual_resolution": {
+    "resource calendar incomplete color checks": "Decorative aria-hidden dot/arrow glyphs, not text; Ink on Warm Paper and labeled text/status legend checked separately. No color-only availability instruction.",
+    "resource calendar incomplete label-content-name-mismatch": "Icon-only next-month link has German accessible name and hidden decorative arrow. No visible text label displaced."
+  },
+  "limitations": "Eight initial-state views plus keyboard/time-choice and 320px checks; no full WCAG certification or real assistive-technology/user/hardware acceptance."
+}
