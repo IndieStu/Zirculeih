@@ -29,7 +29,7 @@ Stand: 19.10.2026. Phasen 1–12 sind akzeptiert und gemerged. Phase 13 bereitet
 
 [Projektbeschreibung](PROJECT_SPEC.md), [Owner-Festlegungen](docs/OWNER_DECISIONS.md), [Architektur](ARCHITECTURE.md), [Datenmodell](DATA_MODEL.md), [Buchungsengine](BOOKING_ENGINE.md), [Berechtigungen](PERMISSIONS.md), [UX](UI_UX.md), [Sicherheit](SECURITY.md), [Entwicklungsplan](DEVELOPMENT_PLAN.md), [ADRs](docs/adr/README.md), [Akzeptanzmatrix](docs/ACCEPTANCE_MATRIX.md).
 
-Historische Phase-0-Entwürfe unter docs/history/phase-0/ sind keine aktuellen Anforderungen. Keine Produktionsbereitstellung oder realen personenbezogenen Daten. Die endgültige Projektlizenz ist noch nicht festgelegt; AGPL-3.0-or-later-Kompatibilität bleibt Ziel.
+Historische Phase-0-Entwürfe unter docs/history/phase-0/ sind keine aktuellen Anforderungen. Keine Produktionsbereitstellung oder realen personenbezogenen Daten. Deelvos eigener Anwendungscode steht unter [AGPL-3.0-or-later](LICENSE); Drittkomponenten behalten ihre Lizenzen. [Entscheidung und Distributionspflichten](LICENSE_DECISION.md).
 
 ## Kiosk, Scanner und Inventur — Ergänzung 15.10.2026
 

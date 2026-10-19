@@ -154,3 +154,23 @@ into that binary; scanner severity alone is not reachability evidence. Remaining
 findings require explicit assessment; successful CI does not waive the release gate.
 Existing PostgreSQL volumes require the planned logical restore/collation procedure
 in the production operations handbook before switching operating-system images.
+
+
+## Phase-13-Sicherheitsprüfung und bestätigte Lizenz
+
+Owner bestätigt AGPL-3.0-or-later für eigenen Deelvo-Code nach Kompatibilitätsprüfung.
+Keine konkret unvereinbare aufgenommene Komponente gefunden; Drittkomponenten
+behalten ihre Bedingungen, native Distribution/Notices/Quellen bleiben Releasegate.
+Offizieller unveränderter [AGPLtext](LICENSE), Quelle GNU, SHA-256
+`0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0`.
+
+Lokale Go-1.27.2-Toolchain und govulncheck 1.1.4 (BSD-3-Clause) ausschließlich als
+Prüfinstrumente, keine Runtime-/Lockänderung. Gehashte Quelle und Go-Modulsumme im
+[Prüfmanifest](docs/release/audit-tools.json); Notices
+[Go](docs/licenses/go-audit-LICENSE.txt),
+[govulncheck](docs/licenses/govulncheck-1.1.4-LICENSE.txt).
+Gosu 1.19 im offiziellen PostgreSQLimage unter Apache-2.0;
+[unveränderter Lizenztext](docs/licenses/gosu-1.19-LICENSE.txt). Keine eigene
+Gosuänderung/Neuverteilung außerhalb des bestehenden Images.
+[Konkrete Symbolanalyse](docs/test-results/phase-13-gosu-reachability.json) und
+[Sicherheitsbewertung](docs/release/SECURITY_ASSESSMENT_PHASE_13.md).

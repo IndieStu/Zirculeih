@@ -1,0 +1,347 @@
+{
+  "checked_at": "2026-10-19T13:38:56.001941+00:00",
+  "gosu_version": "1.19",
+  "gosu_compiler": "go1.24.6",
+  "audit_compiler": "go1.27.2",
+  "tool_module": "golang.org/x/vuln/cmd/govulncheck@v1.1.4",
+  "tool_module_sum": "h1:Ju8QsuyhX3Hk8ma3CesTbO8vfJD9EvUBgHvkxHBzj0I=",
+  "source_image": "postgres:17-trixie@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3",
+  "nctest_audit_image_binary_hash_matches_official_amd64": true,
+  "results": [
+    {
+      "architecture": "amd64",
+      "binary_source": "https://github.com/tianon/gosu/releases/download/1.19/gosu-amd64",
+      "binary_sha256": "52c8749d0142edd234e9d6bd5237dff2d81e71f43537e2f4f66f75dd4b243dd0",
+      "report_sha256": "1ad67a1a52da22865c4ace81633c362403f3458bfffb4f67ef78023eef187ec2",
+      "configuration": {
+        "protocol_version": "v1.0.0",
+        "scanner_name": "govulncheck",
+        "scanner_version": "v1.1.4",
+        "db": "https://vuln.go.dev",
+        "db_last_modified": "2026-10-08T22:31:09Z",
+        "scan_level": "symbol",
+        "scan_mode": "binary"
+      },
+      "scanner_cves": [
+        {
+          "cve": "CVE-2025-61726",
+          "go_id": "GO-2026-4341",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2025-61729",
+          "go_id": "GO-2025-4155",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2025-68121",
+          "go_id": "GO-2026-4337",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-25679",
+          "go_id": "GO-2026-4601",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-27145",
+          "go_id": "GO-2026-5037",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-32280",
+          "go_id": "GO-2026-4947",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-32281",
+          "go_id": "GO-2026-4946",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-32283",
+          "go_id": "GO-2026-4870",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-33811",
+          "go_id": "GO-2026-4981",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-33814",
+          "go_id": "GO-2026-4918",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-33818",
+          "go_id": "GO-2026-5972",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-39820",
+          "go_id": "GO-2026-4986",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-39821",
+          "go_id": "GO-2026-5026",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-39822",
+          "go_id": "GO-2026-4970",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-39836",
+          "go_id": "GO-2026-4971",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-42499",
+          "go_id": "GO-2026-4977",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-42504",
+          "go_id": "GO-2026-5038",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-56853",
+          "go_id": "GO-2026-6089",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-56858",
+          "go_id": "GO-2026-6091",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-56859",
+          "go_id": "GO-2026-6088",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-56860",
+          "go_id": "GO-2026-6218",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-56862",
+          "go_id": "GO-2026-6090",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-78667",
+          "go_id": "GO-2026-6609",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-78669",
+          "go_id": "GO-2026-6611",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-97031",
+          "go_id": "GO-2026-6607",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        }
+      ]
+    },
+    {
+      "architecture": "arm64",
+      "binary_source": "https://github.com/tianon/gosu/releases/download/1.19/gosu-arm64",
+      "binary_sha256": "3a8ef022d82c0bc4a98bcb144e77da714c25fcfa64dccc57f6aba7ae47ff1a44",
+      "report_sha256": "1ad67a1a52da22865c4ace81633c362403f3458bfffb4f67ef78023eef187ec2",
+      "configuration": {
+        "protocol_version": "v1.0.0",
+        "scanner_name": "govulncheck",
+        "scanner_version": "v1.1.4",
+        "db": "https://vuln.go.dev",
+        "db_last_modified": "2026-10-08T22:31:09Z",
+        "scan_level": "symbol",
+        "scan_mode": "binary"
+      },
+      "scanner_cves": [
+        {
+          "cve": "CVE-2025-61726",
+          "go_id": "GO-2026-4341",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2025-61729",
+          "go_id": "GO-2025-4155",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2025-68121",
+          "go_id": "GO-2026-4337",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-25679",
+          "go_id": "GO-2026-4601",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-27145",
+          "go_id": "GO-2026-5037",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-32280",
+          "go_id": "GO-2026-4947",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-32281",
+          "go_id": "GO-2026-4946",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-32283",
+          "go_id": "GO-2026-4870",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-33811",
+          "go_id": "GO-2026-4981",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-33814",
+          "go_id": "GO-2026-4918",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-33818",
+          "go_id": "GO-2026-5972",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-39820",
+          "go_id": "GO-2026-4986",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-39821",
+          "go_id": "GO-2026-5026",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-39822",
+          "go_id": "GO-2026-4970",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-39836",
+          "go_id": "GO-2026-4971",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-42499",
+          "go_id": "GO-2026-4977",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-42504",
+          "go_id": "GO-2026-5038",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-56853",
+          "go_id": "GO-2026-6089",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-56858",
+          "go_id": "GO-2026-6091",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-56859",
+          "go_id": "GO-2026-6088",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-56860",
+          "go_id": "GO-2026-6218",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-56862",
+          "go_id": "GO-2026-6090",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-78667",
+          "go_id": "GO-2026-6609",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-78669",
+          "go_id": "GO-2026-6611",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        },
+        {
+          "cve": "CVE-2026-97031",
+          "go_id": "GO-2026-6607",
+          "module_version": "v1.24.6",
+          "affected_symbol_present": false
+        }
+      ]
+    }
+  ],
+  "limitations": "Symbol-based known-vulnerability analysis of these exact official binaries only; no universal future guarantee, no suppression of raw Trivy findings. All 25 scanner CVEs map to version-level findings; none to a symbol present in either binary."
+}
