@@ -1,0 +1,43 @@
+{
+  "source_commit": "cacb8c69ba5adc1d10592dfbac012f03d320ec0a",
+  "run_id": 39257616580,
+  "job_id": 118076754204,
+  "url": "https://github.com/IndieStu/Zirculeih/actions/runs/39257616580",
+  "conclusion": "success",
+  "tests": {
+    "passed": 405,
+    "seconds": 253.52
+  },
+  "review_upgrade_guard": "fresh_review_database",
+  "restore": {
+    "adapter": "compose",
+    "fictional_only": true,
+    "native_postgres_dump_restore": true,
+    "authenticated_encryption": true,
+    "source_target_equal": true,
+    "restore_seconds": 3.084,
+    "total_seconds": 16.292,
+    "bundle_bytes": 419883,
+    "data_sha256": "b713a4d987bf33e95fcd472497f3f2ed87367327f294d96ca416107ca39b2678",
+    "evidence_guard": true,
+    "guards_sha256": "08fb064b164585ee90e7ab82089313e36c9f97f108f2e346cb5848ea059b663d",
+    "media_count": 2,
+    "media_sha256": "5625ad29bef923deecf04c2921beac807bf081d38670f799ddde3c54708f2348",
+    "outbox_untouched": true,
+    "rows": 1425,
+    "tables": 82
+  },
+  "public_http_probe": {
+    "requests": 60,
+    "concurrency": 8,
+    "errors": 0,
+    "p50_ms": 1403.57,
+    "p95_ms": 1774.69,
+    "max_ms": 1807.13,
+    "elapsed_seconds": 11.029,
+    "scope": "Synthetic loopback catalog only; no production, private/API or hardware guarantee."
+  },
+  "production_release_blocked": true,
+  "actual_pilot_executed": false,
+  "limitations": "Disposable fictional CI. No existing deployment or real provider/hardware/privacy acceptance. Known container findings remain blockers."
+}

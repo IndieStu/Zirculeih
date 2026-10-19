@@ -141,3 +141,8 @@ P13.3 current handbook and release/license/third-party gates. Target instance an
 final license pending owner clarification; no actual pilot/deployment/publishing
 or blanket risk acceptance. Real results remain unexecuted until verified.
 [Review](docs/PHASE_13_REVIEW.md), [pilot guide](docs/pilot/README.md).
+
+Preparation verified: eight new local guard tests and 405 full PostgreSQL/Compose
+CI tests on `cacb8c6`, successful fresh review deployment and encrypted restore.
+Actual pilot unexecuted; target/operational signoff and final license remain open.
+This is a verified preparation increment, not completed Phase-13 pilot/release.

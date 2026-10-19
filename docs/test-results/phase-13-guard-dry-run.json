@@ -1,0 +1,8 @@
+{
+  "scope": "Offline execution of actual review-deploy/review-stack scripts with fake Docker only; no daemon or database contact",
+  "scenario": "existing Bookworm database and owned review volume",
+  "blocked": true,
+  "read_only_calls": 6,
+  "mutating_calls": 0,
+  "existing_data_touched": false
+}

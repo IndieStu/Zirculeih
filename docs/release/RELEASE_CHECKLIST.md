@@ -12,7 +12,7 @@ Commit vom Owner/Betreiber ausgefüllt; hier bleiben Ergebnisse offen.
 | Sicherheitsbefunde | [Containerbefunde](CONTAINER_FINDINGS.md) behoben oder einzeln dokumentierte Securityentscheidung, neu gescannter Releasebuild | Blockiert; keine Ausnahme |
 | Betreiber/Privacy | Ausgefüllte [Stagingabnahme](STAGING_ACCEPTANCE.md), Texte, Retention, echte Rollen/TLS/Provider, erlaubte Empfänger | Offen |
 | Daten-/OSupgrade | Verifiziertes Backup und Restore, Kollations-/Indexprüfung bei Basiswechsel, Rückfallplan; alte Reviewdaten erhalten | Reale Zielinstanz offen |
-| Regression | Vollständige PostgreSQLsuite, Lint/Typen, Migrationscheck, tatsächlicher frischer Composepfad am Kandidaten | Phase-13-CI noch auszuführen |
+| Regression | Vollständige PostgreSQLsuite, Lint/Typen, Migrationscheck, tatsächlicher frischer Composepfad am Kandidaten | 405 Tests am Vorbereitungscommit `cacb8c6` bestanden; tatsächlichen Releasekandidaten erneut zuordnen/prüfen |
 | Barrierefreiheit/Hardware | Aufgaben am realen Telefon, Tastatur/Assistenztechnik und HID/Drucker/Terminal; keine bloße Axe-Zertifizierung | Offen |
 | Kalender | CAL-06 durch Owner später manuell; falls noch offen Kalenderclientfunktion explizit nicht als abgenommen veröffentlichen | Offen, keine Testcloud |
 | Lizenz | Schriftliche [Ownerentscheidung](../../LICENSE_DECISION.md), passender unveränderter Lizenztext und eindeutige Metadaten | Offen |

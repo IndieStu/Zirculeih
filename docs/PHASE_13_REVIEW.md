@@ -32,8 +32,25 @@ verwenden; der `/tmp`-Runner ist nur eine lokale synthetische Testhilfe.
 Die Tests verwenden ausschließlich lesende Dockerprobes und prüfen Fresh-/Samepin-
 Erlaubnis sowie Imagewechsel, fehlenden Pin, verwaistes Volume, fremden Mount und
 Dockerfehler. Keine echte Docker-/NCtestverbindung in diesen Unitfällen.
-Der echte frische Compose-Deploymentpfad und die vollständige Regression werden
-zusätzlich in CI geprüft; finaler Nachweis wird nach dem Lauf ergänzt.
+Ein zusätzlicher [Offline-Shelllauf](test-results/phase-13-guard-dry-run.json) mit
+den tatsächlichen `review-deploy`-/`review-stack`-Skripten und einem Dockerstub
+blockiert das alte Bookwormimage vor jedem Build/Stop/Run/Up: sechs reine Leseaufrufe,
+null mutierende Aufrufe. Kein Dockerdaemon oder bestehender Datenbestand kontaktiert.
+Der [vollständige CI-Lauf](https://github.com/IndieStu/Zirculeih/actions/runs/39257616580)
+auf `cacb8c6` ist bestanden: **405 Tests**, 253,52 Sekunden, Lint/Typen/Schema,
+Health/Reviewseed und echter frischer Composepfad mit `fresh_review_database`.
+[Prüfbericht](test-results/phase-13-ci.json). Der native verschlüsselte Restore
+bestätigt 82 Tabellen, 1425 fiktive Zeilen, zwei Medien, gleiche Quell-/Zielinhalte,
+wirksamen Evidenzguard und unangetastete Outbox: 16,292 Sekunden insgesamt, davon
+3,084 Sekunden Restore/Prüfung. Die begrenzte öffentliche HTTPprobe hat 60 Anfragen,
+acht gleichzeitige Clients, null Fehler und p95 1774,69 ms. Keine Produktions-SLA.
+Die [erneuten Containerscans](test-results/phase-13-container.json) bestätigen
+44 HIGH-Meldungen im Appimage (acht CVEs, null CRITICAL) und 87 HIGH/CRITICAL im
+DBimage (42 CVEs, zwei CRITICAL). Produktionsgate bleibt blockiert, kein Waiver.
+Lokale Schlussprüfung: Ruff Check/Format 231 Dateien, Mypy 201 Quelldateien,
+157 Markdowndateien mit Link-/Abnahmematrixprüfung, Shellsyntax und Secretmuster
+bestanden. Keine neue vollständige lokale PostgreSQLsuite behauptet; die volle
+Regression dieses Inkrements lief im echten Docker-/PostgreSQL-17-CI.
 
 Keine App-/Schema-/API-/Buchungsregeländerung, keine Migration, keine neue
 Abhängigkeit. Keine UIänderung, daher keine neue Browserabnahme behauptet.
