@@ -107,3 +107,10 @@ authorization lock serializes all domain writes; see [ADR-025](docs/adr/025.md).
 DTOs and OpenAPI. A ContextVar ceiling intersects current authorization checks
 inside the shared write lock, including nested services; no new domain state
 machine or synthetic user. See [ADR-026](docs/adr/026.md).
+
+## Phase 12 operator boundary
+
+`operations` contains offline backup/recovery and read-only deployment checks, no
+web domain endpoints or models. Restore profile blocks OIDC/outbox consumption;
+production profile fails unsafe startup. Existing booking/authz services remain
+authoritative. [ADR-027](docs/adr/027.md).

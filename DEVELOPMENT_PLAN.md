@@ -1,6 +1,6 @@
 # Entwicklungsplan
 
-Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phasen 1–10 einschließlich Owner-/Team-UX-Review sind akzeptiert und gemerged. Phase 11 wurde am 18.10.2026 ausdrücklich freigegeben und liegt zur Abnahme vor. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
+Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phasen 1–11 einschließlich Owner-/Team-UX-Review sind akzeptiert und gemerged. Phase 12 wurde am 19.10.2026 freigegeben; technische Betriebsnachweise liegen zur Owner-/Staging-Abnahme vor. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
 
 | Phase | Kleine Lieferinkremente / Abhängigkeiten | Gate |
 | --- | --- | --- |
@@ -118,3 +118,14 @@ Phase 10 accepted/merged, Phase 11 explicitly authorized. Versioned API, OpenAPI
 scoped expiring credentials, CSV adapters and Authentik callback hardening are
 implemented for owner review. See [review](docs/PHASE_11_REVIEW.md).
 Phase 12 requires separate acceptance and authorization. No deployment performed.
+
+## Phase 12 — authorized 19.10.2026
+
+Phase 11 accepted/merged on Main `998f167`. Production-readiness engineering is
+authorized; technical review/evidence, not automatic deployment. See [review](docs/PHASE_12_REVIEW.md)
+and unsigned [staging checklist](docs/release/STAGING_ACCEPTANCE.md). Phase 13 waits.
+
+397 tests pass locally and in the final implementation CI (`cfe47db`), including
+native encrypted PostgreSQL/media restore, evidence guards and unchanged outbox.
+Production gate remains blocked by [container findings](docs/release/CONTAINER_FINDINGS.md);
+technical phase review is not an operational risk waiver or deployment permission.

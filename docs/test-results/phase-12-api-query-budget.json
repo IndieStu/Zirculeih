@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-19",
+  "dataset": "1001 synthetic inventory-only assets",
+  "request": "GET /api/v1/assets/?page_size=30, organization ceiling",
+  "before_queries": 1032,
+  "after_queries": 31,
+  "before_ms": 335.92,
+  "after_ms": 137.38,
+  "regression_query_budget": 40,
+  "limitation": "Local PostgreSQL 16, in-process HTTP adapter; not a production latency SLA or all scope types. Existing object-scope tests also passed."
+}

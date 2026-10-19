@@ -179,3 +179,9 @@ digest, immutable capability/readonly/expiry ceiling, irreversible revocation),
 APIImport(client-bound native ImportPreview). SQL triggers preserve their history.
 OIDCStateUse stores only hashed one-time state and expiry, not provider tokens.
 No existing inventory/resource/booking/loan data is rewritten.
+
+## Phase 12
+
+No model or domain migration. Recovery evidence covers native PostgreSQL dump/restore,
+media identity and current immutable/constraint guards; keys/config/roles are separate
+operator recovery material. See [handbook](docs/handbook/production-operations.md).

@@ -1,5 +1,6 @@
 """Deelvo settings: PostgreSQL, local accounts and configured Authentik integration."""
 
+import json
 import os
 from pathlib import Path
 
@@ -25,6 +26,26 @@ def flag(name: str, default: bool = False) -> bool:
 SECRET_KEY = required("DJANGO_SECRET_KEY")
 if len(SECRET_KEY) < 50:
     raise ImproperlyConfigured("DJANGO_SECRET_KEY must contain at least 50 characters")
+
+
+def secret_fallbacks(raw):
+    try:
+        values = json.loads(raw)
+    except (ValueError, TypeError):
+        raise ImproperlyConfigured("DJANGO_SECRET_KEY_FALLBACKS requires a JSON list.") from None
+    if (
+        not isinstance(values, list)
+        or len(values) > 3
+        or any(not isinstance(value, str) or len(value) < 50 for value in values)
+        or len(set(values)) != len(values)
+    ):
+        raise ImproperlyConfigured(
+            "At most three distinct signing keys of 50+ characters required."
+        )
+    return values
+
+
+SECRET_KEY_FALLBACKS = secret_fallbacks(os.environ.get("DJANGO_SECRET_KEY_FALLBACKS", "[]"))
 DEBUG = flag("DJANGO_DEBUG")
 ALLOWED_HOSTS = [s.strip() for s in required("DJANGO_ALLOWED_HOSTS").split(",") if s.strip()]
 CSRF_TRUSTED_ORIGINS = [
@@ -45,6 +66,7 @@ INSTALLED_APPS = [
     "notifications",
     "assetops",
     "integrations",
+    "operations",
 ]
 AUTH_USER_MODEL = "accounts.User"
 AUTHENTICATION_BACKENDS = ["accounts.backends.EmailBackend"]
@@ -129,6 +151,8 @@ DATABASES = {
     }
 }
 LANGUAGE_CODE = "de-de"
+LANGUAGES = [("de", "Deutsch")]
+LOCALE_PATHS = [BASE_DIR / "locale"]
 TIME_ZONE = "Europe/Berlin"
 USE_I18N = True
 USE_TZ = True
@@ -210,3 +234,10 @@ if REVIEW_MODE:
 TERMINAL_IDLE_SECONDS = int(os.environ.get("TERMINAL_IDLE_SECONDS", "180"))
 if not 60 <= TERMINAL_IDLE_SECONDS <= 1800:
     raise ImproperlyConfigured("TERMINAL_IDLE_SECONDS must be between 60 and 1800")
+
+# Explicit operator profiles. No deployment or outgoing integration is activated by default.
+DEPLOYMENT_PROFILE = os.environ.get("DEELVO_DEPLOYMENT_PROFILE", "development")
+RESTORE_MODE = flag("DEELVO_RESTORE_MODE")
+if RESTORE_MODE:
+    OIDC_ENABLED = False
+    EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"

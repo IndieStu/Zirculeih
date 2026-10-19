@@ -30,3 +30,5 @@ footer{margin-top:2rem;font-weight:var(--weight-medium)}
 .table-scroll{overflow:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:.45rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}th{font-weight:600}
 @media(min-width:801px){.sidebar summary{display:none}}
 @media(max-width:800px){.operational-shell{display:block;padding:.6rem}.sidebar{margin-bottom:.6rem}.operational-shell main{padding:1rem}.sidebar nav{display:flex;gap:.6rem}.sidebar h2{width:100%}}
+
+pre{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere}

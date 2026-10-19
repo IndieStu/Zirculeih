@@ -2,7 +2,7 @@
 
 Selbst gehostete Inventarverwaltung, Ressourcenreservierung und Ausleihe für Makerspaces.
 
-Stand: 18.10.2026. Phasen 1–10 sind akzeptiert und gemerged. Phase 11 (361 Tests lokal und in CI bestanden) ergänzt die versionierte Integrations-API mit begrenzten, widerrufbaren Zugängen, OpenAPI und Authentik-Härtung. [Phase-11-Review](docs/PHASE_11_REVIEW.md), [API-Handbuch](docs/handbook/integrations-api.md). Nextcloud prüft der Owner später selbst, ohne Testcloud. Keine Produktion oder Phase 12 ohne eigene Freigabe.
+Stand: 19.10.2026. Phasen 1–11 sind akzeptiert und gemerged. Phase 12 ergänzt Produktionspreflight, verschlüsselte Backup-/Restorewerkzeuge und echte Wiederherstellungs-/Sicherheits-/Last-/Barrierefreiheitsnachweise. [Phase-12-Review](docs/PHASE_12_REVIEW.md), [Betriebshandbuch](docs/handbook/production-operations.md), [Staging-Abnahme](docs/release/STAGING_ACCEPTANCE.md). Kein Produktions-/NCtestdeployment oder Phase 13 ohne eigene Freigabe.
 
 ## Start und Review
 

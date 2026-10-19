@@ -1,0 +1,10 @@
+{
+  "requests": 60,
+  "concurrency": 8,
+  "errors": 0,
+  "p50_ms": 1621.27,
+  "p95_ms": 2017.65,
+  "max_ms": 2031.82,
+  "elapsed_seconds": 12.528,
+  "scope": "Synthetic loopback catalog only; no production, private/API or hardware guarantee."
+}

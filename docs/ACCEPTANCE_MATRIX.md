@@ -291,3 +291,14 @@ is not activated. [Review](PHASE_10_REVIEW.md), [ADR-025](adr/025.md).
 | OIDC-11 Parallel callback and safe configuration | Unique claim race, nonce/critical-header rejection, secret-free readiness command; actual provider not exercised |
 
 Realer Authentik-Operatorlogin und Nextcloud CAL-06 bleiben manuell. Phase 12 nicht gestartet.
+
+## Phase 12 readiness evidence
+
+Recovery AC-18: native PostgreSQL dump plus authenticated media restore in new
+UUID-prefixed disposable DBs, full data fingerprints, named guards and immutable
+evidence probe, unchanged outbox. API AC-09: 20 simultaneous actual API contenders,
+one allocation. AC-19: automated Axe plus keyboard/320px calendar/form checks,
+explicit manual limitations. AC-20: locked Python SBOM/licenses/package audit plus
+separate runtime image scan; final application license remains undecided.
+Real staging/operator/Privacy/provider/hardware approval is recorded separately in
+[unsigned acceptance checklist](release/STAGING_ACCEPTANCE.md), never auto-passed.

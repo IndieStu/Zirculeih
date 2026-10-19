@@ -1,4 +1,4 @@
-FROM python:3.12-slim-bookworm@sha256:34386ef0cb081344d7ec1c103ba398e6e9f64e9ab3a1509accc92a4e24a07258 AS base
+FROM python:3.12-slim-trixie@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 AS base
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 RUN apt-get update && apt-get install -y --no-install-recommends libpq5 \
     && rm -rf /var/lib/apt/lists/*
@@ -19,6 +19,8 @@ RUN python -m pip install --no-cache-dir --require-hashes -r requirements-dev.lo
 COPY --chown=app:app pyproject.toml ./
 COPY --chown=app:app prototypes ./prototypes
 COPY --chown=app:app tests ./tests
+COPY --chown=app:app scripts ./scripts
+COPY --chown=app:app docs/release ./docs/release
 COPY --chown=app:app docs/branding-artifacts.json ./docs/branding-artifacts.json
 COPY --chown=app:app docs/api ./docs/api
 USER app

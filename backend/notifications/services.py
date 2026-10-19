@@ -287,6 +287,8 @@ def _relevant(row, payload):
 
 def deliver_one(delivery_id, *, sender=None):
     """Lease/attempt limit prevents concurrent workers sending the same message."""
+    if settings.RESTORE_MODE:
+        return False
     now = timezone.now()
     with transaction.atomic():
         row = Delivery.objects.select_for_update().get(pk=delivery_id)

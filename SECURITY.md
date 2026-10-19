@@ -115,3 +115,12 @@ quotas, private cache/referrer policy and secret-free machine errors. No PII/pri
 asset projection. OIDC state consumption is unique in PostgreSQL even with parallel
 session copies; expired use records may be purged after 24h. Real provider login
 and production threat/load review remain separate acceptance.
+
+## Phase 12 review and recovery
+
+[Current threat review](docs/release/THREAT_REVIEW.md), [ADR-027](docs/adr/027.md),
+[operator handbook](docs/handbook/production-operations.md). Startup/preflight profiles,
+non-consuming no-mail restore mode, authenticated DB/media bundles, isolated native
+restore, locked SBOM/package/secret/container audits and measured API query budget
+add technical evidence. They do not sign off legal/real-provider/hardware/operator
+gates or promise an independent pentest, full WCAG certification or production SLA.
