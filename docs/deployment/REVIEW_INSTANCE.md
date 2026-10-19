@@ -1,7 +1,10 @@
 # Deelvo – private UX-Testinstanz
 
-Phase 6 ist gemerged, noch nicht abgenommen. Diese Instanz ist ausschließlich für
-fiktive Daten und den Teamreview bestimmt. Phase 7 bleibt gesperrt.
+Diese Instanz ist ausschließlich für fiktive Daten und den Teamreview bestimmt.
+Die folgenden Erstinstallationsbeispiele stammen aus Phase 6; deren damaliges
+Phasengate ist historisch. Phasen 1–12 sind inzwischen akzeptiert. Für den nächsten
+Pilot gilt die [Phase-13-Vorbereitung](../pilot/README.md); diese Anleitung macht
+die fiktive Instanz nicht zu einer freigegebenen Echtpersonenumgebung.
 
 ## Voraussetzungen und Erstinstallation
 
@@ -75,6 +78,21 @@ migriert, sammelt statische Dateien und startet mit Healthcheck. Es seedet nicht
 Bei Fehlern Webdienst gestoppt lassen und Diagnose/Backup verwenden. Ein alter
 Codecheckout ist kein Datenbankrollback. Schemaänderungen mit ihrem Migrationsplan
 beurteilen, im Zweifel vorherigen Stand aus vollständigem Backup wiederherstellen.
+
+**Seit Phase 13 vor jedem Update:** `review-deploy` prüft vor Build/Stop/Migration
+mit `review_upgrade_guard.py` ausschließlich lesend das gepinnte DBimage und das
+isolierte Datenvolume. Frische Installation ohne bestehendes Volume oder dasselbe
+Image am bekannten Reviewvolume sind erlaubt. Ein bestehendes Bookwormimage, ein
+anderer Pin, fremder Mount, verwaistes Volume oder unlesbarer Dockerzustand stoppt
+das Update. Keine Löschung/Neuerstellung durch den Guard, keine Bypassoption.
+Die Datenbank kann dabei laufen oder gestoppt sein; es wird kein DBstart ausgelöst.
+
+Beim Debian-13-Wechsel das alte Volume und dessen Container/Quellimage erhalten.
+Nach freigegebenem Upgradeplan einen nativen logischen Dump in ein **neues** Ziel
+restaurieren, Medien/Secrets passend sichern und Kollationen/Indizes prüfen;
+siehe [Betriebsanleitung](../handbook/production-operations.md). Kein `down --volumes`
+und kein Löschen alter Container/Volumes als „Reparatur“ einer Guardblockade.
+Die CI-Cleanupbefehle gelten ausschließlich für dort neu erzeugte Wegwerfvolumes.
 
 ## Backup und Restore
 

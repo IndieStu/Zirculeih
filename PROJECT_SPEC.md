@@ -1,6 +1,6 @@
 # Deelvo — Product & Engineering Specification
 
-**Version:** 0.8 · **Status:** Phase 11 accepted and merged; Phase 12 implementation for owner/staging review · **Date:** 2026-10-19
+**Version:** 0.9 · **Status:** Phases 1–12 accepted and merged; Phase 13 pilot/release preparation · **Date:** 2026-10-19
 **Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
@@ -577,3 +577,18 @@ Phase-11 evidence. [Authorization](docs/OWNER_APPROVAL_PHASE_12.md),
 Production-readiness work preserves all domain distinctions; no production/NCtest
 deployment, existing credential change, real mail, Nextcloud test cloud or Phase 13
 is implied. Human staging/privacy/operator signoff remains an explicit gate.
+
+
+## Phase 13 authorization — 2026-10-19
+
+Owner: “freigegeben und merged. Fahre fort”. Main `b435dd8` contains PR #13.
+[Phase-12 acceptance](docs/OWNER_ACCEPTANCE_PHASE_12.md),
+[Phase-13 authorization](docs/OWNER_APPROVAL_PHASE_13.md),
+[pilot preparation](docs/pilot/README.md), [ADR-028](docs/adr/028.md).
+Prepare the bounded internal pilot, manual real-data setup, defect collection and
+release gates. No automatic myTurn migration, fictional seeding into real data,
+public publishing, license choice or waiver of known container findings. Target
+instance and final license remain owner decisions. Existing review data is retained;
+a DB base image change requires a planned logical restore and collation/index checks.
+Human operator/privacy/security/provider/hardware acceptance is not inferred from
+code acceptance. Pilot execution and final release remain explicitly recorded gates.

@@ -21,7 +21,7 @@ Ein Asset kann nur einer Einheit zugeordnet werden, auch wenn diese später inak
 
 ## Pool konfigurieren
 
-„Pool konfigurieren“ fasst äquivalente aktive Einheiten desselben Angebots zusammen. Eine Einheit kann höchstens einem Pool angehören. Die Verwaltung zeigt einsatzfähige Einheiten aus realen Verknüpfungen und Assetzuständen; beschädigte/zu prüfende, nicht aktive oder archivierte Assets erhöhen diese Zahl nicht. Diese Zahl ist keine zeitliche Verfügbarkeit. Konkrete Buchungszuteilung folgt später.
+„Pool konfigurieren“ fasst äquivalente aktive Einheiten desselben Angebots zusammen. Eine Einheit kann höchstens einem Pool angehören. Die Verwaltung zeigt einsatzfähige Einheiten aus realen Verknüpfungen und Assetzuständen; beschädigte/zu prüfende, nicht aktive oder archivierte Assets erhöhen diese Zahl nicht. Diese Zahl ist keine zeitliche Verfügbarkeit. Bei der Buchung wird eine konkrete verfügbare Einheit unter den geltenden Regeln zugeteilt; siehe [Exemplare/Pools](qualifications-and-bundles.md).
 
 ## Codes
 

@@ -1,8 +1,8 @@
 # Deelvo-Handbuch
 
-Stand: Phase 10, 18.10.2026. Dieses Handbuch beschreibt die tatsächlich vorhandene Oberfläche. Die Anwendung befindet sich vor dem Echtbetrieb; Beispiele verwenden synthetische Daten.
+Stand: Phase 13, 19.10.2026. Dieses Handbuch beschreibt die tatsächlich vorhandene Oberfläche. Die Anwendung befindet sich vor dem Echtbetrieb; Beispiele verwenden synthetische Daten. [Pilotvorbereitung](../pilot/README.md) und [Releasegates](../release/RELEASE_CHECKLIST.md).
 
-Deelvo verwaltet gemeinsam nutzbare Ressourcen und deren Inventar. Aktuell verfügbar: Konten, Gruppenrechte, Inventar, Standorte, Kategorien, Identifier, Inventar-Betriebsübersicht sowie Ressourcen, Einheiten, Pools und veröffentlichter Katalog. Vor-Ort-Buchungen und Buchungskonfiguration sind hinzugekommen. Physische Ausleihen und versionierte Vereinbarungen sind hinzugekommen. Kalenderabos und Benachrichtigungen sind vorhanden; Inventurläufe sind hinzugekommen; Integrations-API folgt später.
+Deelvo verwaltet gemeinsam nutzbare Ressourcen und deren Inventar. Verfügbar sind Konten, Gruppenrechte, Inventar, Standorte, Kategorien, Codes, Betriebsübersicht, Ressourcen/Einheiten/Pools, Katalog, Vor-Ort-Buchungen, physische Ausleihen, versionierte Vereinbarungen, Einweisungen, Serienanträge, Kalenderabos, Benachrichtigungen, Inventurläufe und die begrenzte Integrations-API. Ressourcen, Buchungen und tatsächlicher Gewahrsam bleiben getrennt.
 
 ## Dein Einstieg
 
@@ -15,7 +15,7 @@ Das Handbuch wird gemeinsam mit Funktionen geändert und versioniert. Neue Kapit
 
 ## Ressourcen und Katalog — Phase 4
 
-Der Katalog mit eigener Veröffentlichung ist jetzt implementiert: [Angebote, Einheiten und Pools verwalten](resources.md), [entdecken, Galerie und Veröffentlichung](catalog.md). Für eingerichtete Vor-Ort-Angebote ist der Buchungskern verfügbar; physische Ausleihen, Kalender und API folgen später. Interne Inventardaten bleiben vom Katalog getrennt.
+Der Katalog mit eigener Veröffentlichung ist implementiert: [Angebote, Einheiten und Pools verwalten](resources.md), [entdecken, Galerie und Veröffentlichung](catalog.md). Interne Inventardaten bleiben vom Katalog getrennt. Physische Ausleihe, Kalender und API sind in den folgenden Kapiteln beschrieben.
 
 ## Buchungen — Phase 5
 
@@ -27,7 +27,7 @@ Der Katalog mit eigener Veröffentlichung ist jetzt implementiert: [Angebote, Ei
 
 ## Fiktive Teamtestinstanz
 
-Für den Phase-6-Review: [Aufgaben je Rolle](../review/UX_REVIEW_PHASE_6.md) und [Feedbackvorlage](../review/UX_FEEDBACK_TEMPLATE.md). Die Testinstanz zeigt TESTINSTANZ und den Build. Nur erfundene Personen/Geräte verwenden; keine echte Ausgabe. Betreiber finden Passwort-, Mail-, Backup- und Resetkommandos in der [Review-Anleitung](../deployment/REVIEW_INSTANCE.md).
+Historischer Phase-6-Review: [Aufgaben je Rolle](../review/UX_REVIEW_PHASE_6.md) und [Feedbackvorlage](../review/UX_FEEDBACK_TEMPLATE.md). Die Testinstanz zeigt TESTINSTANZ und den Build. Dort weiterhin nur erfundene Personen/Geräte verwenden; keine echte Ausgabe. Betreiber finden Passwort-, Mail- und Backupkommandos in der [Review-Anleitung](../deployment/REVIEW_INSTANCE.md). Ein späterer echter Pilot braucht die gesonderte [Ziel-/Betriebsfreigabe](../pilot/README.md); kein Reset vorhandener Reviewdaten.
 
 ## Einweisungen, Pools und Bundles — Phase 7
 

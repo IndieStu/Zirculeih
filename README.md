@@ -2,7 +2,7 @@
 
 Selbst gehostete Inventarverwaltung, Ressourcenreservierung und Ausleihe für Makerspaces.
 
-Stand: 19.10.2026. Phasen 1–11 sind akzeptiert und gemerged. Phase 12 ergänzt Produktionspreflight, verschlüsselte Backup-/Restorewerkzeuge und echte Wiederherstellungs-/Sicherheits-/Last-/Barrierefreiheitsnachweise. [Phase-12-Review](docs/PHASE_12_REVIEW.md), [Betriebshandbuch](docs/handbook/production-operations.md), [Staging-Abnahme](docs/release/STAGING_ACCEPTANCE.md). Kein Produktions-/NCtestdeployment oder Phase 13 ohne eigene Freigabe.
+Stand: 19.10.2026. Phasen 1–12 sind akzeptiert und gemerged. Phase 13 bereitet den internen Pilot und Release vor: [Pilotleitfaden](docs/pilot/README.md), [Phase-13-Review](docs/PHASE_13_REVIEW.md), [Releasecheckliste](docs/release/RELEASE_CHECKLIST.md). Offene Containerbefunde blockieren weiterhin das Produktionsgate. Zielinstanz, reale Abnahme und finale Lizenz sind noch offen; kein automatisches Deployment oder Publishing.
 
 ## Start und Review
 
