@@ -1,0 +1,28 @@
+{
+  "source_commit": "cfe47dba24f7d081554b231dfed31e541bc366d0",
+  "run_id": 39255079994,
+  "job_id": 118068218359,
+  "url": "https://github.com/IndieStu/Zirculeih/actions/runs/39255079994",
+  "conclusion": "success",
+  "tests": {
+    "passed": 397,
+    "seconds": 304.56
+  },
+  "native_compose_restore": "passed",
+  "public_http_probe": "60 requests / 8 concurrency / 0 errors",
+  "container_audits_completed": true,
+  "production_release_blocked": true,
+  "scope": "Disposable CI only. Successful engineering checks do not waive known image findings or operator acceptance.",
+  "previous_runs": [
+    {
+      "id": 39251881352,
+      "conclusion": "failure",
+      "reason": "Media chown prohibited by cap_drop ALL; corrected by extracting verified media as app UID without adding capabilities."
+    },
+    {
+      "id": 39253225403,
+      "conclusion": "success",
+      "reason": "397 tests, restore/load pass; Bookworm scan triggered refreshed bases and database scan."
+    }
+  ]
+}

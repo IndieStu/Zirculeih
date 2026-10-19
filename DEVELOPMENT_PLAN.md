@@ -124,3 +124,8 @@ Phase 12 requires separate acceptance and authorization. No deployment performed
 Phase 11 accepted/merged on Main `998f167`. Production-readiness engineering is
 authorized; technical review/evidence, not automatic deployment. See [review](docs/PHASE_12_REVIEW.md)
 and unsigned [staging checklist](docs/release/STAGING_ACCEPTANCE.md). Phase 13 waits.
+
+397 tests pass locally and in the final implementation CI (`cfe47db`), including
+native encrypted PostgreSQL/media restore, evidence guards and unchanged outbox.
+Production gate remains blocked by [container findings](docs/release/CONTAINER_FINDINGS.md);
+technical phase review is not an operational risk waiver or deployment permission.

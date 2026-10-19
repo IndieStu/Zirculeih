@@ -176,13 +176,15 @@ unabhängig. Nextcloud CAL-06 prüft der Owner später selbst, ausdrücklich ohn
 Testcloud. HID-/Drucker-/Touch-/Shared-Terminal- und Barrierefreiheitsabnahme mit echten
 Nutzenden bleiben vom Betreiber zu bestätigen. Phase 13 und Echtpersonenpilot brauchen
 separate Freigabe und Privacy-/Betriebsentscheidungen.
-# Phase-12 base image transition
 
-Phase 12 pins Python 3.12 and PostgreSQL 17 to Debian 13 (Trixie); exact registry
-digests are in `docs/release/container-images.json`. No existing instance has been
-upgraded. Do not attach an existing Bookworm PostgreSQL data volume to this image
-as an incidental application update. The libc/collation change needs a planned
-database upgrade: verified logical backup, restore to a new empty volume, collation
-and index verification/rebuild where required, integrity checks and a retained
-rollback source. The disposable CI restore checks the new stack, not an existing
-production volume. Coordinate the actual transition with the DBA/operator gate.
+## Basisimagewechsel in Phase 12
+
+Python 3.12 und PostgreSQL 17 verwenden jetzt Debian 13 (Trixie); genaue Digests:
+[Imageverzeichnis](../release/container-images.json). Keine bestehende Instanz wurde
+aktualisiert. Ein bestehendes Bookworm-PostgreSQL-Datenvolume darf nicht beiläufig
+beim Appupdate an dieses Image angeschlossen werden. Der libc-/Kollationswechsel
+benötigt ein geplantes Datenbankupgrade: verifiziertes logisches Backup, Restore in
+ein neues leeres Volume, Prüfung und gegebenenfalls Neubau betroffener Indizes sowie
+Kollationen, Integritätsprüfung und aufbewahrte Rollbackquelle. Der isolierte
+CI-Restore prüft den neuen Stack, kein bestehendes Produktionsvolume. Die tatsächliche
+Umstellung erfolgt erst nach DBA-/Betreiberfreigabe.

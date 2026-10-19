@@ -8,9 +8,9 @@ unterschreiben lassen. Phase 13 beginnt erst nach gesonderter Freigabe.
 | --- | --- | --- |
 | Regression/Integrität | Vollständige PostgreSQL-Suite inkl. 20-fach APIkonkurrenz, Widerruf, Gewahrsam, Vereinbarungen und Scopegrenzen | Nachweise im Phase-12-Review; Owner bestätigt |
 | Isolierter Restore | Native Dump-/Restoreprobe, 82 Tabellen/1425 fiktive Datensätze/2 Medien, identische Fingerprints, intakte Guards/Outbox | Synthetischer Nachweis; eigene Backupablage/RPO/RTO noch Betreiberentscheidung |
-| Upgrade/Recovery | Stopped-write DB/Medien/Secrets, neue Zieldatenbank, passende Version/Rollen, kein blindes Downgrade | Betreiber führt eigenen freigegebenen Stagingupgrade aus |
+| Upgrade/Recovery | Stopped-write DB/Medien/Secrets, neue Zieldatenbank, passende Version/Rollen, kein blindes Downgrade; Debian-13-Wechsel mit logischem Restore und Kollations-/Indexprüfung | Betreiber führt eigenen freigegebenen Stagingupgrade aus |
 | Konfiguration | Produktionsstartschutz plus `check --deploy` und `deployment_readiness` | Echte Host-/Proxy-/TLS-/DBrollenprüfung offen |
-| Supply chain | Lock-/Lizenz-/SBOM-/OSV-/Containerreports mit Datum/Scope | Offene Findings ausdrücklich bewerten; finaler Lizenzentscheid bleibt Owner |
+| Supply chain | Lock-/Lizenz-/SBOM-/OSV-/Containerreports mit Datum/Scope; [offene Containerbefunde](CONTAINER_FINDINGS.md) | **Produktionsgate blockiert:** App 44 HIGH, DB 87 HIGH/CRITICAL einschließlich zwei CRITICAL; Behebung bzw. ausdrückliche Risikoprüfung offen, kein Waiver; Lizenzentscheid bleibt Owner |
 | Barrierefreiheit | Axe, Tastatur, 320px und konkrete Kalenderkorrekturen | Kein WCAG-Zertifikat; reale Assistenztechnik-/Nutzerabnahme offen |
 | Last/Beobachtung | Abfragebudget 1001 Assets und begrenzter öffentlicher HTTPtest; Request-ID/Health/Queue/Backupmonitoring beschrieben | Reale Pilotdaten/Hardware und Betreiberalarme prüfen, keine erfundene SLA |
 | Authentik/SMTP | Konfigurations-/Replay-/Privacytests mit fiktiven Daten | Echte Provideranmeldung und erlaubte Mailzustellung durch Betreiber offen |

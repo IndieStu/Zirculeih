@@ -28,7 +28,7 @@ bleibt unterstützte Oberfläche, kein erfundener vollständig englischer UIstan
 Vollständige lokale PostgreSQL-Regression: **397 bestanden**, 138,83 Sekunden.
 [JUnit](test-results/phase-12-local.xml), davon 36 neue Phase-12-Fälle (einschließlich
 Parametervarianten). Ruff Check/Format: 229 Dateien, Mypy: 201 Quelldateien;
-Dokumentationsprüfung: 145 Markdowndateien. Django-Systemcheck und Migrationskonsistenz
+Dokumentationsprüfung abschließend: 146 Markdowndateien. Django-Systemcheck und Migrationskonsistenz
 bestanden; keine Schemaänderung. Heuristischer Secretcheck der versionierten Dateien
 bestanden, kein vollständiger History-/Pentest behauptet.
 
@@ -54,7 +54,25 @@ CI prüft den Gesamtstand zusätzlich mit PostgreSQL 17 und neuen Betriebsschrit
 Der erste Lauf bestand 397 Tests/Build/Health/Reviewseed, fand aber fehlende chown-
 Berechtigung beim Medienrücktransfer. Das Prüftool überträgt jetzt als vorhandene
 App-UID mit sicherem tar-Datenfilter; Webcontainerrechte bleiben unverändert.
-Finaler Betriebs-/Containerreport wird nach vollständigem CI-Lauf ergänzt.
+Der abschließende [CI-Lauf](https://github.com/IndieStu/Zirculeih/actions/runs/39255079994)
+auf `cfe47db` besteht vollständig: **397 Tests**, 304,56 Sekunden, Build/Typen/Health/
+Reviewseed, nativer Compose-Restore und beide Containerscans. [Metadaten](test-results/phase-12-ci.json).
+Der [Compose-Restore](test-results/phase-12-restore-ci.json) bestätigt 82 Tabellen,
+1425 fiktive Zeilen, zwei Medien, identische Quell-/Zielinhalte, Evidenzguard und
+unveränderte Outbox; insgesamt 18,436 Sekunden, Restore/Prüfung 3,503 Sekunden.
+Die [öffentliche Lastprobe](test-results/phase-12-load-ci.json) mit 60 Anfragen und
+acht gleichzeitigen Clients hat null Fehler, p95 2017,65 ms unter begrenzten
+CI-Containerressourcen. Kein Kapazitätsversprechen für private Workflows/Produktion.
+
+**Produktionsgate wegen Containerbefunden blockiert.** Gepinnte Basisimages wurden
+auf Debian 13 aktualisiert; die App hat jetzt 44 HIGH-Meldungen zu acht CVEs und
+keine CRITICAL-Meldung. Das offizielle DBimage meldet 87 HIGH/CRITICAL-Paketbefunde
+zu 42 CVEs, davon zwei CRITICAL (libxml2/Go-Standardbibliothek). Keine automatische
+Ausnahme oder stilles Ignore. [Einordnung und nächste Schritte](release/CONTAINER_FINDINGS.md),
+[Appreport](test-results/phase-12-container.json),
+[DBreport](test-results/phase-12-database-container.json).
+Bestehende Datenbankvolumes benötigen beim OSwechsel einen geplanten logischen
+Restore mit Kollations-/Indexprüfung; keine Instanz wurde umgestellt.
 
 [Lokaler Restore](test-results/phase-12-restore-local.json): native PostgreSQL-16-
 Probe, 82 Tabellen, 1425 fiktive Datensätze und 2 Medien, Quell-/Zielinhalt identisch,
