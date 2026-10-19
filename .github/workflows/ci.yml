@@ -68,6 +68,8 @@ jobs:
         run: |
           python3 scripts/fetch_audit_tool.py --destination /tmp/deelvo-tools/trivy
           python3 scripts/container_audit.py --scanner /tmp/deelvo-tools/trivy --output /tmp/phase-12-container.json
+          DATABASE_IMAGE=$(python3 -c 'import json; d=next(i for i in json.load(open("docs/release/container-images.json"))["images"] if i["repository"].endswith("/postgres")); print("postgres:"+d["tag"]+"@"+d["digest"])')
+          python3 scripts/container_audit.py --scanner /tmp/deelvo-tools/trivy --image "$DATABASE_IMAGE" --output /tmp/phase-12-database-container.json
       - name: Disposable cleanup
         if: always()
         run: |

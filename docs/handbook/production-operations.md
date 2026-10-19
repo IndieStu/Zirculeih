@@ -100,7 +100,7 @@ separat dokumentieren, da `--no-owner --no-acl` sie nicht überträgt.
 Backup authentifizieren/entpacken, Hashes prüfen und regelmäßig tatsächlich in eine
 neue Umgebung zurückspielen. Ein vorhandenes verschlüsseltes Archiv allein ist kein
 Restorenachweis. Off-host-Kopie, Zugriffsschutz, Retention, Schlüsselverwahrung und
-RPO/RTO müssen vom Betreiber festgelegt und geprüft werden. Werkzeug generiert keine
+maximal verkraftbarer Datenverlust (RPO) und Wiederanlaufzeit (RTO) müssen vom Betreiber festgelegt und geprüft werden. Werkzeug generiert keine
 rechtlichen Aufbewahrungsfristen und löscht keine Geschäftshistorie automatisch.
 
 ## Wiederherstellung und Upgrade
@@ -176,3 +176,13 @@ unabhängig. Nextcloud CAL-06 prüft der Owner später selbst, ausdrücklich ohn
 Testcloud. HID-/Drucker-/Touch-/Shared-Terminal- und Barrierefreiheitsabnahme mit echten
 Nutzenden bleiben vom Betreiber zu bestätigen. Phase 13 und Echtpersonenpilot brauchen
 separate Freigabe und Privacy-/Betriebsentscheidungen.
+# Phase-12 base image transition
+
+Phase 12 pins Python 3.12 and PostgreSQL 17 to Debian 13 (Trixie); exact registry
+digests are in `docs/release/container-images.json`. No existing instance has been
+upgraded. Do not attach an existing Bookworm PostgreSQL data volume to this image
+as an incidental application update. The libc/collation change needs a planned
+database upgrade: verified logical backup, restore to a new empty volume, collation
+and index verification/rebuild where required, integrity checks and a retained
+rollback source. The disposable CI restore checks the new stack, not an existing
+production volume. Coordinate the actual transition with the DBA/operator gate.

@@ -14,8 +14,11 @@ def main():
     parser.add_argument("--image", default="deelvo-dev-web")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    if args.image != "deelvo-dev-web":
-        parser.error("Only the disposable CI application image is supported.")
+    manifest = json.loads(Path("docs/release/container-images.json").read_text())
+    database = next(row for row in manifest["images"] if row["repository"].endswith("/postgres"))
+    database_image = f"postgres:{database['tag']}@{database['digest']}"
+    if args.image not in {"deelvo-dev-web", database_image}:
+        parser.error("Only the disposable application or pinned database image is supported.")
     with tempfile.TemporaryDirectory(prefix="deelvo-image-audit-") as work:
         work = Path(work)
         saved, report = work / "image.tar", work / "report.json"

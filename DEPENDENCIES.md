@@ -141,3 +141,16 @@ remain separate; no upstream source changes/copied runtime implementation. Tool
 licenses are compatible with the intended application distribution; project license
 remains an owner decision. OSV and package registries are engineering audit sources,
 not production runtime services. Absence of published advisories is no future guarantee.
+# Phase 12 container bases
+
+Runtime bases now use digest-pinned official Python 3.12 slim Trixie and PostgreSQL
+17 Trixie images (`docs/release/container-images.json`). Both are scanned in CI.
+The prior Bookworm application scan is retained as baseline evidence, not an
+accepted vulnerability waiver. Debian identifies Trixie's SQLite and zlib versions
+as fixed for [CVE-2025-7458](https://security-tracker.debian.org/tracker/CVE-2025-7458)
+and [CVE-2023-45853](https://security-tracker.debian.org/tracker/CVE-2023-45853).
+The latter's Bookworm zlib finding concerns MiniZip code Debian says is not built
+into that binary; scanner severity alone is not reachability evidence. Remaining
+findings require explicit assessment; successful CI does not waive the release gate.
+Existing PostgreSQL volumes require the planned logical restore/collation procedure
+in the production operations handbook before switching operating-system images.

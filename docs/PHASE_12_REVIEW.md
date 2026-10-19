@@ -25,14 +25,41 @@ bleibt unterstützte Oberfläche, kein erfundener vollständig englischer UIstan
 
 ## Prüfstand
 
-Gezielte Betriebsprüfungen: 27 bestanden; gemeinsame Phase-11/12-Regression mit
-57 Tests vor den letzten zusätzlichen Archiv-/Startupnegativfällen bestanden.
-Vollständige Regression, finale Browserreports und CI-Nachweise werden nach Laufabschluss
-ergänzt. Keine ausstehende Prüfung wird hier vorzeitig als bestanden erklärt.
+Vollständige lokale PostgreSQL-Regression: **397 bestanden**, 138,83 Sekunden.
+[JUnit](test-results/phase-12-local.xml), davon 36 neue Phase-12-Fälle (einschließlich
+Parametervarianten). Ruff Check/Format: 229 Dateien, Mypy: 201 Quelldateien;
+Dokumentationsprüfung: 145 Markdowndateien. Django-Systemcheck und Migrationskonsistenz
+bestanden; keine Schemaänderung. Heuristischer Secretcheck der versionierten Dateien
+bestanden, kein vollständiger History-/Pentest behauptet.
+
+[Browserbericht](test-results/phase-12-accessibility.json): acht fiktive Ansichten
+mit Axe-core 4.14.0/WCAG-2.x-AA-Tags, keine erkannten Verstöße nach Korrekturen.
+Manuelle Hinweise am Ressourcenkalender bleiben im Bericht sichtbar: dekorative,
+aria-hidden Pfeil-/Punktsymbole und der benannte Iconlink wurden gesondert geprüft,
+keine Regel deaktiviert. Skip-Link/Tastatur erreicht das E-Mailfeld, native Von/Bis-
+Auswahl bedienbar; kein Booking abgeschickt. Registrierung, Zeitwahl und harmlose
+Secretlayoutprobe bei 320px ohne horizontalen Überlauf. Keine echten APIkeys im Browser
+erzeugt. [Registrierung](screenshots/phase-12-signup-mobile.png),
+[Kalender](screenshots/phase-12-calendar-mobile.png),
+[Layoutprobe](screenshots/phase-12-token-layout.png). Temporärer Prüftab/Server beendet,
+Viewport zurückgesetzt; keine Auditroute im ausgelieferten Produkt.
+
+Die Basisnavigation nutzt jetzt Django-i18n und das aktive `de-de`-Sprachtag. Der
+vorher auf statisches `lang="de"` festgelegte Foundationtest wurde entsprechend
+angepasst. Deutsch bleibt einzige unterstützte UI-Sprache. Explizite alte Signing-
+Keys können per validierter JSON-Umgebungsoption für eine geplante Rotation gehalten
+werden; Entschlüsselung mit/ohne alten Key ist getestet. Keine tatsächliche Rotation.
+
+CI prüft den Gesamtstand zusätzlich mit PostgreSQL 17 und neuen Betriebsschritten.
+Der erste Lauf bestand 397 Tests/Build/Health/Reviewseed, fand aber fehlende chown-
+Berechtigung beim Medienrücktransfer. Das Prüftool überträgt jetzt als vorhandene
+App-UID mit sicherem tar-Datenfilter; Webcontainerrechte bleiben unverändert.
+Finaler Betriebs-/Containerreport wird nach vollständigem CI-Lauf ergänzt.
 
 [Lokaler Restore](test-results/phase-12-restore-local.json): native PostgreSQL-16-
 Probe, 82 Tabellen, 1425 fiktive Datensätze und 2 Medien, Quell-/Zielinhalt identisch,
-Evidenzguard wirksam, Outbox unangetastet. Gemessene Laufzeit ist kein zugesagtes RTO.
+Evidenzguard wirksam, Outbox unangetastet. Gemessen: 6,633 Sekunden insgesamt, davon 0,946 Sekunden für Entpacken/Restore/Prüfung.
+Das ist kein zugesagtes RTO und keine Messung einer großen Produktionsdatenbank.
 [Abfragebudget](test-results/phase-12-api-query-budget.json).
 [Paketaudit](test-results/phase-12-package-audit.json): 28 exakte Pythonlocks, keine
 zum Abfragezeitpunkt bekannten OSV/PyPI-Findings. Kein nativer/Container-Nachweis
