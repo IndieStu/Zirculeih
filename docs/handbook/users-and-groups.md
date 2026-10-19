@@ -8,7 +8,7 @@ Eine Regel benennt Aktion, Erlauben/Verweigern, Geltungsbereich und gegebenenfal
 
 Inventar-Zielobjekte lassen sich mit realen Standorten/Kategorien/Assets auswählen, wenn du deren Leserechte hast. Systemadministration allein zeigt keine privaten Inventardetails. Richte zunächst eine ausdrücklich auditierte passende Lesegruppe ein, falls du solche Ziele verwalten sollst.
 
-Die Basisgruppe für neue Konten bleibt aktiv und erlaubt ausschließlich sichere eigene Aktionen. Anfangs enthält sie nur öffentliches Kataloglesen; Buchungsfunktionen stehen noch nicht bereit. Sie darf keine Inventar- oder Verwaltungsrechte bekommen. Eine normale Gruppe kann archiviert werden; damit entfallen ihre operativen Rechte und aktiven Mitgliedschaften, die Historie bleibt bestehen.
+Die Basisgruppe für neue Konten bleibt aktiv und erlaubt ausschließlich sichere eigene Aktionen. Prüfe die tatsächlich konfigurierten eigenen Buchungsrechte und Grenzen; Registrierung vergibt keine Inventar- oder Verwaltungsrechte. Die Basisgruppe darf keine solchen Rechte bekommen. Eine normale Gruppe kann archiviert werden; damit entfallen ihre operativen Rechte und aktiven Mitgliedschaften, die Historie bleibt bestehen.
 
 ## Delegierte Mitgliedschaftsverwaltung
 
@@ -16,7 +16,7 @@ Ein Systemadmin kann einer Gruppe die Aktion „Mitgliedschaften einer Gruppe ve
 
 ## Kontosperre
 
-Bei entsprechender Berechtigung öffnest du beim Gruppenmitglied „Kontosperre verwalten“, setzt/entfernst die Sperre und gibst einen knappen sachlichen Grund ohne sensible Angaben an. Sperren entziehen Sitzungen und verhindern neue Anmeldungen/operative Aktionen. Geschützte Systemadministratorkonten lassen sich hier nicht sperren. Künftige Rücknahmen offener Ausleihen bleiben durch berechtigtes Personal möglich; diese Ausleihfunktion existiert noch nicht.
+Bei entsprechender Berechtigung öffnest du beim Gruppenmitglied „Kontosperre verwalten“, setzt/entfernst die Sperre und gibst einen knappen sachlichen Grund ohne sensible Angaben an. Sperren entziehen Sitzungen und verhindern neue Anmeldungen/operative Aktionen. Geschützte Systemadministratorkonten lassen sich hier nicht sperren. Rücknahmen offener Ausleihen bleiben durch berechtigtes Personal möglich; die Sperre erklärt keinen Gegenstand automatisch für zurückgegeben.
 
 Mitarbeitendenmarker und Authentik-Zuordnung vergibt die Systemadministration über die geschützten Betriebsbefehle. Der Marker allein erteilt keine Inventar- oder Buchungsrechte.
 

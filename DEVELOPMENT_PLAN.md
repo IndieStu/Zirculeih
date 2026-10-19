@@ -1,6 +1,6 @@
 # Entwicklungsplan
 
-Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phasen 1–11 einschließlich Owner-/Team-UX-Review sind akzeptiert und gemerged. Phase 12 wurde am 19.10.2026 freigegeben; technische Betriebsnachweise liegen zur Owner-/Staging-Abnahme vor. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
+Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phasen 1–12 einschließlich Owner-/Team-UX-Review sind akzeptiert und gemerged. Phase 13 wurde am 19.10.2026 zur Pilot-/Releasevorbereitung freigegeben; reale Betreiber-/Privacy-/Sicherheitsgates bleiben offen. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
 
 | Phase | Kleine Lieferinkremente / Abhängigkeiten | Gate |
 | --- | --- | --- |
@@ -129,3 +129,15 @@ and unsigned [staging checklist](docs/release/STAGING_ACCEPTANCE.md). Phase 13 w
 native encrypted PostgreSQL/media restore, evidence guards and unchanged outbox.
 Production gate remains blocked by [container findings](docs/release/CONTAINER_FINDINGS.md);
 technical phase review is not an operational risk waiver or deployment permission.
+
+
+## Phase 13 — authorized 19.10.2026
+
+Main `b435dd8`, [authorization](docs/OWNER_APPROVAL_PHASE_13.md). P13.1 manual pilot
+setup worksheet and operational task cards, defect/stop/freeze procedure. P13.2
+read-only review database image/volume provenance guard before any deployment
+mutation; fresh Compose path plus existing/orphan/foreign-volume negative cases.
+P13.3 current handbook and release/license/third-party gates. Target instance and
+final license pending owner clarification; no actual pilot/deployment/publishing
+or blanket risk acceptance. Real results remain unexecuted until verified.
+[Review](docs/PHASE_13_REVIEW.md), [pilot guide](docs/pilot/README.md).

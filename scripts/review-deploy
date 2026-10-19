@@ -3,6 +3,7 @@ set -eu
 cd "$(dirname "$0")/.."
 test -f .env.review
 scripts/review-stack config --quiet
+python3 scripts/review_upgrade_guard.py
 scripts/review-stack build web
 # Avoid writes against a schema being upgraded. No volumes are removed.
 scripts/review-stack stop web
