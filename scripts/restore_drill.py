@@ -6,6 +6,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tarfile
 import tempfile
 from pathlib import Path
 from time import perf_counter
@@ -159,21 +160,21 @@ def main():
                     input_file=stream,
                 )
             if options.adapter == "compose":
-                run([*compose, "cp", str(restored / "media"), "web:" + root(target)])
-                run(
-                    [
-                        *compose,
-                        "exec",
-                        "-T",
-                        "--user",
-                        "root",
-                        "web",
-                        "chown",
-                        "-R",
-                        "10001:10001",
-                        root(target),
-                    ]
-                )
+                # Restore as the real app UID. No chown capability/root exec is required.
+                media_tar = work / "restored-media.tar"
+                with tarfile.open(media_tar, "w") as archive:
+                    archive.add(restored / "media", arcname=".")
+                extractor = """import pathlib, sys, tarfile
+root = pathlib.Path(sys.argv[1])
+root.mkdir(mode=0o700)
+with tarfile.open(fileobj=sys.stdin.buffer, mode='r|') as archive:
+    archive.extractall(root, filter='data')
+"""
+                with media_tar.open("rb") as stream:
+                    run(
+                        [*compose, "exec", "-T", "web", "python", "-c", extractor, root(target)],
+                        input_file=stream,
+                    )
             else:
                 shutil.copytree(restored / "media", root(target))
             after = json.loads(manage(target, ["verify_restore_drill"]).strip().splitlines()[-1])
