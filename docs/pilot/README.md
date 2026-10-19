@@ -4,7 +4,9 @@ Stand 19.10.2026. **Vorbereitung; kein durchgeführter oder freigegebener Echtbe
 Phase 12 ist technisch akzeptiert. [Offene Containerbefunde](../release/CONTAINER_FINDINGS.md)
 und [Staging-/Betreiberabnahme](../release/STAGING_ACCEPTANCE.md) bleiben bestehen.
 Die freigegebene Phase 13 führt weder automatisch ein Deployment noch einen
-öffentlichen Release aus. Zielinstanz und finale Lizenz sind noch zu klären.
+öffentlichen Release aus. NCtest ist als internes Testziel gewählt; AGPL-3.0-or-later
+ist vorbehaltlich Ressourcenkompatibilität bestätigt. Nächster Schritt:
+[Sicherheitsbearbeitung vor NCtest](SECURITY_TO_NCTEST.md).
 
 ## Vor der ersten Pilotsitzung
 

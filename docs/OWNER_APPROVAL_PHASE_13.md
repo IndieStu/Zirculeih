@@ -14,3 +14,13 @@ Instanz aktualisieren, echte Personendaten eintragen, Einladungen/Mails versende
 oder Ressourcen veröffentlichen. Keine bestehende Reviewdatenbank zurücksetzen.
 Sichere, unabhängige Vorbereitung läuft weiter. Der tatsächliche Pilot benötigt
 das ausgefüllte Betreiber-/Privacygate und eine abgestimmte Zielumgebung.
+
+
+## Ownerklärung — 19.10.2026
+
+Der Owner bestätigt NCtest für den ersten internen Test und AGPL-3.0-or-later unter
+dem Vorbehalt kompatibler Ressourcen. Die vorher offenen Auswahlfragen sind damit
+geklärt. [Lizenzprotokoll](../LICENSE_DECISION.md) und
+[Reihenfolge Sicherheit/NCtest](pilot/SECURITY_TO_NCTEST.md). Sicherheitsbefunde vor
+dem nächsten Instanzupdate bearbeiten; keine pauschale Risikoausnahme, kein
+öffentlicher Release und kein Reset vorhandener Reviewdaten.

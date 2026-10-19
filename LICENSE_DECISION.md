@@ -1,12 +1,15 @@
-# Projektlizenz — Ownerentscheidung offen
+# Projektlizenz — AGPL-3.0-or-later bestätigt, Abschlussprüfung offen
 
-Stand 19.10.2026. Zielkompatibilität: **AGPL-3.0-or-later**. Der Owner hat die
-endgültige Lizenz für Deelvos eigenen Anwendungscode noch nicht bestimmt.
-Dieses Dokument erteilt keine Lizenz und ersetzt keinen Lizenztext.
+Stand 19.10.2026. Der Owner bestätigt **AGPL-3.0-or-later**, sofern die genutzten
+Ressourcen damit vereinbar sind. Nach bisheriger dokumentierter Paket-/Assetprüfung
+ist kein konkreter Hinderungsgrund bekannt. Die Abschlussprüfung der tatsächlich
+verteilten Artefakte und ihrer Pflichten bleibt offen. Dieses Entscheidungsprotokoll
+ersetzt keinen Lizenztext und lizenziert Drittkomponenten nicht um.
 
-Der öffentliche Open-Source-Release ist bis zur ausdrücklichen Wahl blockiert.
+Die gewünschte Lizenz ist entschieden; ihre Einbindung und die abschließende
+Distributionsprüfung sind vor öffentlichem Release zu erledigen.
 Die bisherige Architektur-/Paketprüfung bestätigt nicht automatisch die Lizenz
-aller späteren Distributionsartefakte. Nach der Ownerwahl den offiziellen
+aller späteren Distributionsartefakte. Nach der Abschlussprüfung den offiziellen
 unveränderten Text bereitstellen, eindeutige Projektmetadaten ergänzen und
 [Releasecheckliste](docs/release/RELEASE_CHECKLIST.md) abnehmen.
 
