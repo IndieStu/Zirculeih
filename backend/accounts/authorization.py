@@ -5,6 +5,7 @@ from uuid import UUID
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 
+from .limits import permits
 from .models import AuthorizationRevision, Grant, User
 
 SYSTEM_ACTIONS = frozenset({"permissions.manage", "system.configure", "admin.manage"})
@@ -21,6 +22,7 @@ ACTIONS = (
     | SYSTEM_ACTIONS
     | frozenset(
         {
+            "integration.manage",
             "catalog.view_private",
             "booking.create_for_others",
             "booking.override_policy",
@@ -155,6 +157,7 @@ def allowed_many(actor, action, scopes, *, horizon_days=None, duration_minutes=N
     if action in SYSTEM_ACTIONS:
         return [
             user.is_system_admin
+            and permits(actor, action, s)
             and all(
                 c.kind in SCOPE_KINDS and ((c.kind == "organization") == (c.id is None))
                 for c in (s, *s.related)
@@ -170,7 +173,11 @@ def allowed_many(actor, action, scopes, *, horizon_days=None, duration_minutes=N
             action=action,
         )
     )
-    return [_grants_allow(grants, scope, horizon_days, duration_minutes) for scope in scopes]
+    return [
+        _grants_allow(grants, scope, horizon_days, duration_minutes)
+        and permits(actor, action, scope)
+        for scope in scopes
+    ]
 
 
 def allowed(actor, action, scope=ORGANIZATION, *, horizon_days=None, duration_minutes=None):
@@ -195,6 +202,7 @@ def require_beneficiary(actor, beneficiary, action, scope, **restrictions):
 
 
 ACTION_LABELS = {
+    "integration.manage": "Eigene Integrationszugänge verwalten",
     "user.invite": "Personen einladen",
     "catalog.view_public": "Öffentlichen Katalog ansehen",
     "catalog.view_private": "Internen Katalog ansehen",

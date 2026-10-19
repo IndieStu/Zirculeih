@@ -1,6 +1,6 @@
 # Entwicklungsplan
 
-Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phasen 1–9 einschließlich Owner-/Team-UX-Review sind akzeptiert und gemerged. Phase 10 wurde am 18.10.2026 ausdrücklich freigegeben. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
+Phase 0 ist fachlich geprüft und mit Owner-Review vom 14.10.2026 entschieden. Phasen 1–10 einschließlich Owner-/Team-UX-Review sind akzeptiert und gemerged. Phase 11 wurde am 18.10.2026 ausdrücklich freigegeben und liegt zur Abnahme vor. Authentik ist in Phase 2 als Komfortlogin für Mitarbeitende verpflichtend umzusetzen. Die Phasennummern der Spezifikation bleiben erhalten. Jede Phase braucht aktualisierte ADRs, relevante automatisierte Tests, manuelle Abnahme, Migrations-/Rollbackbeschreibung und Owner-Freigabe für die nächste.
 
 | Phase | Kleine Lieferinkremente / Abhängigkeiten | Gate |
 | --- | --- | --- |
@@ -111,3 +111,10 @@ and observations; P10.2 explicit discrepancies and frozen custody-aware assessme
 P10.3 maintenance/labels/bounded atomic bulk actions/aggregate reports; P10.4 staffed
 terminal reset/idle/focus/FIFO and real-HID pilot gate; P10.5 full regression, browser,
 CI, handbook and [owner review](docs/PHASE_10_REVIEW.md). No Phase 11 or deployment.
+
+## Phase 11 delivery
+
+Phase 10 accepted/merged, Phase 11 explicitly authorized. Versioned API, OpenAPI,
+scoped expiring credentials, CSV adapters and Authentik callback hardening are
+implemented for owner review. See [review](docs/PHASE_11_REVIEW.md).
+Phase 12 requires separate acceptance and authorization. No deployment performed.

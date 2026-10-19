@@ -177,3 +177,8 @@ class OIDCIdentity(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["issuer", "subject"], name="unique_oidc_subject")
         ]
+
+
+class OIDCStateUse(models.Model):
+    digest = models.CharField(primary_key=True, max_length=64)
+    expires_at = models.DateTimeField()

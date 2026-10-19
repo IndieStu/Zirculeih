@@ -31,6 +31,7 @@ def navigation(request):
         return {}
     flags = {
         "staff_navigation": operational_user(user),
+        "integrations_navigation": allowed(user, "integration.manage"),
         "assetops_navigation": any_action(user, "inventory_run.read")
         or any_action(user, "inventory_run.create"),
         "maintenance_navigation": any_action(user, "maintenance.manage"),

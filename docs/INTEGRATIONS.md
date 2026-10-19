@@ -1,27 +1,27 @@
 # Deelvo — Integrations- und Kalenderarchitektur
 
-Stand: 18.10.2026. Verbindliche [Owner-Ergänzung](OWNER_ADDITION_DASHBOARD_API_HANDBOOK.md), konkretisiert in [ADR-015](adr/015.md). Die Integrations-API bleibt Planung für Phase 11; private ICS-Feeds sind in Phase 9 implementiert. Kein CalDAV.
+Stand: 18.10.2026. Verbindliche [Owner-Ergänzung](OWNER_ADDITION_DASHBOARD_API_HANDBOOK.md), konkretisiert in [ADR-015](adr/015.md). Die Integrations-API ist in Phase 11 gemäß [ADR-026](adr/026.md) und [API-Handbuch](handbook/integrations-api.md) implementiert; private ICS-Feeds sind in Phase 9 implementiert. Kein CalDAV.
 
 ## Gemeinsame Domänengrenze
 
-HTML, künftige API, Kiosk und Integrationen verwenden dieselben Domainservices. Konten-/Grantresolver und Autorisierungslock bleiben zentral. Inventoryservices verantworten Anlegen/Edit/Umzug/Archivierung und Identifierauflösung; CSV ruft denselben Assetservice auf. Der Resolver liefert nur die eigene minimale Resolution, nicht beliebige ORM-Felder. Kein Booking-/Loan-/Inventurcode im Lookup.
+HTML, API, Kiosk und Integrationen verwenden dieselben Domainservices. Konten-/Grantresolver und Autorisierungslock bleiben zentral. Inventoryservices verantworten Anlegen/Edit/Umzug/Archivierung und Identifierauflösung; CSV ruft denselben Assetservice auf. Der Resolver liefert nur die eigene minimale Resolution, nicht beliebige ORM-Felder. Kein Booking-/Loan-/Inventurcode im Lookup.
 
-API-Adapter dürfen keine eigenen Regelkopien oder automatische ungeprüfte ModelSerializer erzeugen. Fachliche Lesedaten über explizite Projektionen, sensible Werte/Medien gesondert prüfen. Ein späterer APIrequest hält dieselben Autorisierungs-/Objektlocks wie HTMLwrites und prüft aktuelle Rechte unmittelbar vor Commit. Actor, Beneficiary und optionaler Client/Device sind verschiedene Identitäten.
+API-Adapter dürfen keine eigenen Regelkopien oder automatische ungeprüfte ModelSerializer erzeugen. Fachliche Lesedaten über explizite Projektionen, sensible Werte/Medien gesondert prüfen. Ein APIrequest hält dieselben Autorisierungs-/Objektlocks wie HTMLwrites und prüft aktuelle Rechte unmittelbar vor Commit. Actor, Beneficiary und optionaler Client/Device sind verschiedene Identitäten.
 
-## API-Vertrag, produktive Umsetzung ab Phase 11
+## API-Vertrag und Phase-11-Implementierung
 
 Explizites Präfix `/api/v1/`. Keine öffentliche Bindung an interne Tabellennamen/ORM-Formate. Domainfähigkeiten schrittweise: zunächst berechtigtes Inventar/Codeauflösung, danach freigegebene Buchungs-/Loanaktionen, niemals große ungesicherte CRUD-Fläche. In Phase 3 gibt es bewusst keinen leeren `/api/v1/`-Endpoint.
 
 - **Authentifizierung:** Browser weiterhin Session + CSRF für Mutationen. Integrationen: explizit angelegte Service-Clients oder Benutzerzugang, gesonderte widerrufbare, befristbare opaque Tokens mit kryptografischer Zufälligkeit, nur gehashte Tokens im Speicher, einmalige Klartextanzeige. Keine globale dauerhafte API-Masterkey. OIDC-Login allein erzeugt keinen Integrationsclient und importiert keine Rechteclaims.
 - **Rechte:** effektive Rechte sind Schnitt von aktuellen Benutzer-/Clientgrants, Tokenobergrenze und Objekt-/Feldscope. Ein Token verleiht nie mehr Rechte als sein aktiver Owner/Client. Lesetokens sind technisch mutationsunfähig. Suspension, Membership-/Grantentzug und Widerruf wirken bei jedem neuen Request. Service-Clients bekommen keine implizite Admin-/Employee-Rolle.
-- **Versionierung:** explizite öffentliche DTOs mit stabilen opaken Objekt-IDs; additive kompatible Felder innerhalb v1, Breaking Changes nur neue Version und dokumentierte Ablösung. Keine sequentialen IDs als Zugangsschlüssel. Revision/ETag für optimistisches Edit; APIwrite-Idempotenz gemäß Bookingarchitektur.
+- **Versionierung:** explizite öffentliche DTOs mit stabilen opaken Objekt-IDs; additive kompatible Felder innerhalb v1, Breaking Changes nur neue Version und dokumentierte Ablösung. Keine sequenziellen IDs als Zugangsschlüssel. Revision/ETag für optimistisches Edit; APIwrite-Idempotenz gemäß Bookingarchitektur.
 - **Pagination/Filter:** bounded Cursor-/Pagevertrag vor Veröffentlichung festlegen, Scopefilter zwingend vor Pagination/Counts. Nur dokumentierte Such-/Filterfelder, keine beliebigen ORM-Lookups oder private Suchtreffer. Maximalgröße und erlaubte Sortierungen im OpenAPI-Vertrag.
 - **Fehler:** konsistente maschinenlesbare Codes, Request-ID, keine SQL-/Token-/fremden Objektdetails; 401 fehlende Authentifizierung, 403 verbotene Aktion, 404 unbekannt/nicht sichtbares Objekt, 409 Versions-/Integritätskonflikt, 400/422 ungültige Eingabe nach endgültigem APIvertrag, 429 mit Retry-After. Keine Enumeration über unterschiedliche private Objektantworten.
 - **Zeit:** UTC-aware RFC-3339-Zeitpunkte, gesonderte ISO-Datumswerte für Tagesausleihe und IANA-Zone für lokale Regeln. DST/halboffene Intervalle bleiben Domainsemantik.
 - **Rate Limits:** per Client/Owner und vertrauenswürdiger Herkunft, getrennte lesende/schreibende Quoten; Pagination, Payload-/Suchlängen und teure Operationen begrenzen. Kein Vertrauen in frei gelieferte Proxyheader. Token-/Payload-/PII-Logging ausgeschlossen.
 - **Dokumentation:** maschinenlesbares OpenAPI, konkrete Auth-/Scope-/Fehler-/Paginationbeispiele und Handbook-Kapitel erst mit produktiven Endpunkten. DRF/OpenAPIpakete dann konkret lizenz-/hashprüfen; heute keine neue API-Abhängigkeit.
 
-Die genaue Token-Lebensdauer, Clientadministration und endgültige v1-Schemata werden vor dem produktiven Phase-11-Inkrement geprüft, nicht still in Phase 3 erfunden. API-Akzeptanzfälle API-01–04 bleiben geplant.
+Die konkrete Umsetzung mit Laufzeiten, Verwaltung, Quoten, DTOs und Prüfnachweisen ist im [Handbuch](handbook/integrations-api.md) und [Phase-11-Review](PHASE_11_REVIEW.md) dokumentiert. Die folgenden Phase-3/8/10-Abschnitte beschreiben ihren damaligen Stand; aktuelle Endpunkte stehen im v1-Vertrag.
 
 ## Kalender: einseitige abonnierbare iCalendar-Feeds in Phase 9
 
@@ -88,3 +88,12 @@ server-side terminal generation; it can resolve or observe, never checkout/retur
 JSON responses contain minimal scan result and generation, no borrower data.
 401 expired terminal, 409 changed context, 400 invalid scan; normal object denial
 remains 404. All private responses no-store. Public API stays Phase 11.
+
+## Phase 11 implemented
+
+Current versioned contract: [OpenAPI JSON](api/deelvo-openapi-v1.json);
+public schema endpoint `/api/v1/openapi.json`. Explicit Django adapters, no DRF
+or runtime documentation CDN. Native transaction-safe allocation and CSV/loan
+services, context-local authorization ceilings and minimal DTOs. Authentik callback
+state is additionally consumed atomically across parallel session copies. Existing
+ICS stays one-way and independently credentialed; API tokens are not feed tokens.

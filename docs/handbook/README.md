@@ -48,3 +48,5 @@ Die echte Nextcloud-Abnahme übernimmt der Owner später manuell.
 ## Assetbetrieb — Phase 10
 
 [Inventur, Wartung, Sammelaktionen, QR-Etiketten, Berichte und betreutes Terminal](asset-operations.md).
+
+- [Integrationen und API](integrations-api.md): Zugang, Rechteobergrenzen, v1-Endpunkte, Fehler, Authentik-Betriebsprüfung.

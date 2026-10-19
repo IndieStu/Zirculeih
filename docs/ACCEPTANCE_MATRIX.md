@@ -117,10 +117,10 @@ Originalaufträge: [Phase 3](OWNER_APPROVAL_PHASE_3.md), [Dashboard/API/Handbuch
 | DASH-02 | nur implementierte erlaubte Schnellaktionen; persönlicher Bereich getrennt | 3+ | positive/negative Link- und Redirecttests |
 | DASH-03 | prüfbare Inventarhinweise vor Bestandszahlen, keine Fakecharts/-Loans | 3+ | Dashboardinhalt/Hierarchie, manuelle Browserabnahme |
 | DASH-04 | Phase-3-Dashboard ohne Booking/Loan/InventoryRun produktiv | 3 | reale Inventardaten/Scope-Tests; Timeline erst in ihren Phasen |
-| API-01 | APIadapter ruft gemeinsame Services/Schreiblocks, keine Regeldoppelung | 11 | geplant, noch keine externen Endpunkte |
-| API-02 | /api/v1/, explizite DTOs und OpenAPI, bounded Pagination/Filter/Fehler | 11 | geplant, dokumentierter Vertragsrahmen |
-| API-03 | Tokenrechte höchstens Owner/Client ∩ Token, Widerruf/Sperre aktuell | 11 | geplant, kein Tokenmodell vorgezogen |
-| API-04 | kein internes Modell-/Feld-/Objekt-Bypass; API-IDOR und read-only Token | 11 | geplant, negative Transporttests erforderlich |
+| API-01 | APIadapter ruft gemeinsame Services/Schreiblocks, keine Regeldoppelung | 11 | implementiert/geprüft, gemeinsame Dienste und native Konkurrenztests (Phase 11) |
+| API-02 | /api/v1/, explizite DTOs und OpenAPI, bounded Pagination/Filter/Fehler | 11 | implementiert/geprüft, OpenAPI-/Filter-/Fehlertests (Phase 11) |
+| API-03 | Tokenrechte höchstens Owner/Client ∩ Token, Widerruf/Sperre aktuell | 11 | implementiert/geprüft, SQL-Guards/Rotation/aktueller Widerruf (Phase 11) |
+| API-04 | kein internes Modell-/Feld-/Objekt-Bypass; API-IDOR und read-only Token | 11 | implementiert/geprüft, IDOR/readonly/verschachtelte Bereiche (Phase 11) |
 | CAL-01 | RFC-5545-konformes UTF-8-ICS aus produktiven Bookingdaten | 9 | implementiert; unabhängiger Parser, Escape-/UTF-8-/Faltungstests in tests/test_phase9.py |
 | CAL-02 | stabile UID bei Wiederabruf/Änderung/Storno, keine Duplikate | 9 | implementiert; wiederholter Export, Änderung/Storno und Ersatzketten mit gleicher UID getestet |
 | CAL-03 | IANA/DST/UTC, [start,end), echte DATE-Endsemantik | 9 | implementiert; UTC-/DATE-Export über DST getestet; lokale Gap-/Fold-Regression bestehend |
@@ -279,3 +279,15 @@ KIOSK-AC-01–13/15–22 map to these and the existing Phase-3/6/7 tests plus
 the explicitly open manual checks; real HID/layout/suffix/printer/touch and shared-terminal pilot
 acceptance remains **pending**, not replaced by simulation. KIOSK-AC-14 self-service
 is not activated. [Review](PHASE_10_REVIEW.md), [ADR-025](adr/025.md).
+
+## Phase 11 API acceptance
+
+| Check | Evidence |
+| --- | --- |
+| Phase11 API-01 Versioned contract and bounded projection | `/api/v1/`, explicit OpenAPI registry/ref tests, private field exclusion |
+| Phase11 API-02 Revocable scoped authentication | Hash/rotation/SQL guards, readonly, live grant/suspension, scope-before-count, own-object and nested bundle tests |
+| Phase11 API-03 Shared write invariants | ETag conflict, CSV native retry/client ownership, booking idempotency and parallel allocation, existing reservation checkout/identity/actual return |
+| Phase11 API-04 Limits/errors/docs | Strict JSON/filter/media/quota/request-ID tests, handbook/OpenAPI, browser forms |
+| OIDC-11 Parallel callback and safe configuration | Unique claim race, nonce/critical-header rejection, secret-free readiness command; actual provider not exercised |
+
+Realer Authentik-Operatorlogin und Nextcloud CAL-06 bleiben manuell. Phase 12 nicht gestartet.

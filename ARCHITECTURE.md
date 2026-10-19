@@ -100,3 +100,10 @@ only feed credentials and public event revisions. See [ADR-024](docs/adr/024.md)
 terminal interaction contexts. Existing inventory, booking and lending services
 remain the only writers of master location/lifecycle/allocation/custody. The common
 authorization lock serializes all domain writes; see [ADR-025](docs/adr/025.md).
+
+## Phase 11 integration boundary
+
+[integrations](backend/integrations/) supplies fixed Django JSON adapters, explicit
+DTOs and OpenAPI. A ContextVar ceiling intersects current authorization checks
+inside the shared write lock, including nested services; no new domain state
+machine or synthetic user. See [ADR-026](docs/adr/026.md).

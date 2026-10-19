@@ -138,3 +138,11 @@ does not imply asset.move; explicit moves check source/destination/current revis
 Maintenance.manage requires asset.read; lifecycle/condition writes require normal
 asset.manage. Media retains attach/sensitive checks. Report export additionally
 requires asset.export. Terminal mode adds no rights and invalidates stale forms.
+
+## Phase 11 integration authority
+
+Explicit organization `integration.manage` permits managing only one’s own clients
+and tokens, with no operational rights. Every API request intersects current owner
+grants, client/token capabilities, readonly and object scope. Context-local ceilings
+apply within nested services, never import OIDC claims or bypass explicit denies.
+Resource scope does not imply linked asset scope. See [API handbook](docs/handbook/integrations-api.md).

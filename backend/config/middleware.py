@@ -13,6 +13,7 @@ class RequestLogMiddleware:
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         request_id = str(uuid4())
+        request.request_id = request_id
         started = monotonic()
         response = self.get_response(request)
         response["X-Request-ID"] = request_id
@@ -45,6 +46,7 @@ class AccountPrivacyMiddleware:
                 "/ausleihen/",
                 "/kalender/",
                 "/betrieb/",
+                "/api/",
             )
         ):
             response["Cache-Control"] = "no-store, private"

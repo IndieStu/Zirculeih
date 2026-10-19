@@ -2,7 +2,7 @@
 
 Selbst gehostete Inventarverwaltung, Ressourcenreservierung und Ausleihe für Makerspaces.
 
-Stand: 18.10.2026. Phasen 1–9 sind akzeptiert und gemerged. Phase 10 ergänzt Inventurläufe mit festem Erwartungsstand, Wartung, lokale QR-Etiketten, atomare Sammelaktionen, Betriebsberichte und ein betreutes Scannerterminal. 326 Tests lokal und in CI bestanden. [Phase-10-Review](docs/PHASE_10_REVIEW.md) enthält Prüfnachweise und manuelle Aufgaben. Nextcloud prüft der Owner später selbst, ohne Testcloud. Keine Produktion oder Phase 11 ohne eigene Freigabe.
+Stand: 18.10.2026. Phasen 1–10 sind akzeptiert und gemerged. Phase 11 (361 Tests lokal und in CI bestanden) ergänzt die versionierte Integrations-API mit begrenzten, widerrufbaren Zugängen, OpenAPI und Authentik-Härtung. [Phase-11-Review](docs/PHASE_11_REVIEW.md), [API-Handbuch](docs/handbook/integrations-api.md). Nextcloud prüft der Owner später selbst, ohne Testcloud. Keine Produktion oder Phase 12 ohne eigene Freigabe.
 
 ## Start und Review
 

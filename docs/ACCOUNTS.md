@@ -66,3 +66,11 @@ Alle zukünftigen geschützten Fachwrites müssen `authorization_write()` über 
 Markenwechsel benennt keine bestehenden Datenbanken/Volumes um. Bestehende .env-Werte behalten. Wegen neuem Compose-Projektnamen bei vorhandenem Devvolume vor `up` ausdrücklich COMPOSE_PROJECT_NAME=zirculeih-dev setzen. Keine `down --volumes` gegen zu erhaltende Daten.
 
 Vor einem späteren Upgrade Backup/Restore prüfen. Sicherer App-Rückweg zu Phase 1: vorheriges Image starten, zusätzliche Tabellen behalten und Schreibzugriff stoppen; Phase-1-Code verwendet die Kontentabellen nicht. `migrate accounts zero` löscht Konten/Audit und ist kein datenbewahrender Rollback. Die Rückoperation von 0002 ist absichtlich noop, damit keine Mitgliedschaftshistorie durch Baseline-Löschung verschwindet. Forward-Fix bzw. geprüfter Restore bei Datenproblemen.
+
+## Phase 11 Authentik hardening
+
+Callback state is claimed once using a unique hashed database record before provider
+exchange, preventing parallel callbacks from reusing copied session state. Non-string
+nonce and unsupported critical JOSE extensions fail closed. No claim-based role
+import, email autolinking or changed local-login requirement. Safe operator checks
+and state cleanup: [integration handbook](handbook/integrations-api.md).

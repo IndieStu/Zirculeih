@@ -1,9 +1,12 @@
 from django.conf import settings
 from django.urls import include, path
+from integrations.views import management
 
 from . import views
 
 urlpatterns = [
+    path("api/v1/", include("integrations.urls")),
+    path("konto/integrationen/", management, name="integrations_manage"),
     path("betrieb/", include("assetops.urls")),
     path("kalender/", include("notifications.urls")),
     path("ausleihen/", include("lending.urls")),

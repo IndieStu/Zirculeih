@@ -5,6 +5,7 @@ import hashlib
 import json
 import secrets
 import time
+from datetime import UTC, datetime
 from urllib.parse import quote, urlencode, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
@@ -14,13 +15,14 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.db import IntegrityError, transaction
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.views.decorators.http import require_GET, require_http_methods
 
 from .authorization import authorization_write, bump
 from .forms import ReauthenticateForm
-from .models import OIDCIdentity, User
+from .models import OIDCIdentity, OIDCStateUse, User
 from .ratelimit import take
 from .services import audit
 from .views import page, throttled
@@ -106,7 +108,11 @@ def link(request):
 
 
 def validate_id_token(encoded, nonce):
+    if not isinstance(encoded, str) or len(encoded) > 32768:
+        raise ValueError("Oversized ID token")
     header = jwt.get_unverified_header(encoded)
+    if "crit" in header:
+        raise ValueError("Unsupported critical JOSE extensions")
     if header.get("alg") != "RS256" or not header.get("kid"):
         raise ValueError("Unsupported signing key")
     keys = fetch_json(settings.OIDC_JWKS_ENDPOINT)["keys"]
@@ -131,13 +137,28 @@ def validate_id_token(encoded, nonce):
     )
     if not isinstance(claims["sub"], str) or not 0 < len(claims["sub"]) <= 255:
         raise ValueError("Invalid subject")
-    if not secrets.compare_digest(str(claims["nonce"]), nonce):
+    if not isinstance(claims["nonce"], str) or not secrets.compare_digest(
+        claims["nonce"].encode(), nonce.encode()
+    ):
         raise ValueError("Invalid nonce")
     if (
         isinstance(claims["aud"], list) and len(claims["aud"]) > 1 or "azp" in claims
     ) and claims.get("azp") != settings.OIDC_CLIENT_ID:
         raise ValueError("Invalid authorized party")
     return claims
+
+
+def claim_flow(flow):
+    """One-time state even when two callbacks load the same session concurrently."""
+    try:
+        with transaction.atomic():
+            OIDCStateUse.objects.create(
+                digest=hashlib.sha256(flow["state"].encode()).hexdigest(),
+                expires_at=datetime.fromtimestamp(flow["created"] + 300, UTC),
+            )
+        return True
+    except IntegrityError:
+        return False
 
 
 @require_GET
@@ -147,10 +168,14 @@ def callback(request):
     flow = request.session.pop("oidc_flow", None)
     # Persist consumption before processing: a callback URL cannot be replayed later.
     request.session.save()
-    if not flow or not secrets.compare_digest(flow["state"], request.GET.get("state", "")):
+    if not flow or not secrets.compare_digest(
+        flow["state"].encode(), request.GET.get("state", "").encode()
+    ):
         return HttpResponse("Anmeldung konnte nicht bestätigt werden.", status=400)
     if not 0 <= time.time() - flow["created"] <= 300 or not request.GET.get("code"):
         return HttpResponse("Anmeldung ist abgelaufen oder wurde abgebrochen.", status=400)
+    if len(request.GET["code"]) > 4096 or not claim_flow(flow):
+        return HttpResponse("Anmeldung konnte nicht bestätigt werden.", status=400)
     try:
         client_id = quote(settings.OIDC_CLIENT_ID, safe="")
         client_secret = quote(settings.OIDC_CLIENT_SECRET, safe="")

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "review",
     "notifications",
     "assetops",
+    "integrations",
 ]
 AUTH_USER_MODEL = "accounts.User"
 AUTHENTICATION_BACKENDS = ["accounts.backends.EmailBackend"]
