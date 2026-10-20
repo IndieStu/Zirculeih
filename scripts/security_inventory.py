@@ -71,11 +71,16 @@ def sbom():
         specVersion="1.6",
         version=1,
         metadata={
-            "component": {"type": "application", "name": "Deelvo", "version": "phase-12-review"},
+            "component": {
+                "type": "application",
+                "name": "Deelvo",
+                "version": "phase-13-review",
+                "licenses": [{"expression": "AGPL-3.0-or-later"}],
+            },
             "properties": [
                 {
                     "name": "deelvo:license-status",
-                    "value": "owner decision pending; no project license declared",
+                    "value": "AGPL-3.0-or-later approved; third-party obligations separate",
                 },
                 {
                     "name": "deelvo:scope",

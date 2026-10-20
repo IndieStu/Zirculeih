@@ -6,7 +6,6 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VOLUME = "deelvo_review_postgres"
 
 
 class UpgradeBlocked(Exception):
@@ -23,11 +22,17 @@ def check_review_database(run=subprocess.run):
     manifest = json.loads((ROOT / "docs/release/container-images.json").read_text())
     db = next(row for row in manifest["images"] if row["repository"].endswith("/postgres"))
     expected = f"postgres:{db['tag']}@{db['digest']}"
-    images = read("scripts/review-stack", "config", "--images").splitlines()
-    if expected not in images:
+    config = json.loads(read("scripts/review-stack", "config", "--format", "json"))
+    project = config["name"]
+    volume = config["volumes"]["postgres_data"]["name"]
+    if not re.fullmatch(r"deelvo-review(?:-[a-z0-9]+)*", project) or not re.fullmatch(
+        r"deelvo_review(?:_[a-z0-9]+)*_postgres", volume
+    ):
+        raise UpgradeBlocked("Only an isolated Deelvo review project/volume is supported.")
+    if config["services"]["db"]["image"] != expected:
         raise UpgradeBlocked("Review database image differs from the reviewed image manifest.")
     volumes = read(
-        "docker", "volume", "ls", "--filter", f"name=^{VOLUME}$", "--format", "{{.Name}}"
+        "docker", "volume", "ls", "--filter", f"name=^{volume}$", "--format", "{{.Name}}"
     ).splitlines()
     containers = read("scripts/review-stack", "ps", "-a", "-q", "db").splitlines()
     if not containers:
@@ -41,10 +46,10 @@ def check_review_database(run=subprocess.run):
     mounts = json.loads(read("docker", "inspect", "--format", "{{json .Mounts}}", container))
     data_mounts = [m for m in mounts if m.get("Destination") == "/var/lib/postgresql/data"]
     if (
-        volumes != [VOLUME]
+        volumes != [volume]
         or len(data_mounts) != 1
         or data_mounts[0].get("Type") != "volume"
-        or data_mounts[0].get("Name") != VOLUME
+        or data_mounts[0].get("Name") != volume
     ):
         raise UpgradeBlocked("Database volume does not match the isolated review volume.")
     if image != expected:

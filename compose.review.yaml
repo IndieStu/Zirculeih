@@ -1,5 +1,5 @@
 # Compose >= 2.24.4; explicit overrides never inherit dev secrets/listen sockets.
-name: deelvo-review
+name: ${DEELVO_REVIEW_PROJECT:-deelvo-review}
 services:
   db:
     restart: unless-stopped
@@ -10,6 +10,8 @@ services:
       DEELVO_REVIEW_MODE: "true"
       DEELVO_REVIEW_BUILD: ${DEELVO_REVIEW_BUILD:?Generate review configuration}
       REVIEW_EMAIL_DIR: /app/review-mail
+      POSTGRES_USER: ${DEELVO_REVIEW_RUNTIME_USER:-${POSTGRES_USER}}
+      POSTGRES_PASSWORD: ${DEELVO_REVIEW_RUNTIME_PASSWORD:-${POSTGRES_PASSWORD}}
     ports: !override ["${REVIEW_BIND_IP:-127.0.0.1}:${REVIEW_PORT:-8766}:8000"]
     volumes: !override ["media:/app/media", "static:/app/backend/staticfiles:ro", "review_mail:/app/review-mail"]
     restart: unless-stopped
@@ -30,10 +32,10 @@ services:
       DEELVO_REVIEW_MODE: "false"
 volumes:
   postgres_data:
-    name: deelvo_review_postgres
+    name: ${DEELVO_REVIEW_DATA_PREFIX:-deelvo_review}_postgres
   media:
-    name: deelvo_review_media
+    name: ${DEELVO_REVIEW_DATA_PREFIX:-deelvo_review}_media
   static:
-    name: deelvo_review_static
+    name: ${DEELVO_REVIEW_DATA_PREFIX:-deelvo_review}_static
   review_mail:
-    name: deelvo_review_mail
+    name: ${DEELVO_REVIEW_DATA_PREFIX:-deelvo_review}_mail

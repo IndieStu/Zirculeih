@@ -14,5 +14,19 @@
     "checksum_source": "https://github.com/aquasecurity/trivy/releases/download/v0.76.0/trivy_0.76.0_checksums.txt",
     "license": "Apache-2.0",
     "role": "CI audit only; not app runtime"
+  },
+  "go_audit": {
+    "version": "go1.27.2",
+    "source": "https://go.dev/dl/go1.27.2.darwin-arm64.tar.gz",
+    "sha256": "76812b213b1b2302c978d28fa52fa92d541704b9e7d9d5db8002c50e4018c4c5",
+    "license": "BSD-3-Clause",
+    "role": "local binary vulnerability audit only; no app runtime"
+  },
+  "govulncheck": {
+    "module": "golang.org/x/vuln/cmd/govulncheck@v1.1.4",
+    "module_sum": "h1:Ju8QsuyhX3Hk8ma3CesTbO8vfJD9EvUBgHvkxHBzj0I=",
+    "license": "BSD-3-Clause",
+    "source": "https://github.com/golang/vuln/tree/v1.1.4",
+    "role": "local audit only; binary symbol scan without upstream exclusions"
   }
 }

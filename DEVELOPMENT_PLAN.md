@@ -146,3 +146,14 @@ Preparation verified: eight new local guard tests and 405 full PostgreSQL/Compos
 CI tests on `cacb8c6`, successful fresh review deployment and encrypted restore.
 Actual pilot unexecuted; target/operational signoff and final license remain open.
 This is a verified preparation increment, not completed Phase-13 pilot/release.
+
+
+### Phase-13 security/NCtest increment — 20.10.2026
+
+Completed under owner “Dann go”/“continue”: concrete gosu symbol analysis, rootless
+DB/capability/no-new-privileges hardening, own-code AGPL license/metadata, verified
+logical upgrade of the preserved NCtest review with separate volumes and restricted
+DB runtime role. 409 CI tests pass on `7d671d4`.
+[Handover and actual results](docs/pilot/NCTEST_HANDOVER_2026-10-20.md).
+Next: real team feedback and targeted fixes, hardware/provider acceptance, remaining
+OS findings and final distribution/release gate. No automatic public release.

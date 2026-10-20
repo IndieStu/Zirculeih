@@ -2,7 +2,7 @@
 
 Selbst gehostete Inventarverwaltung, Ressourcenreservierung und Ausleihe für Makerspaces.
 
-Stand: 19.10.2026. Phasen 1–12 sind akzeptiert und gemerged. Phase 13 bereitet den internen Pilot und Release vor: [Pilotleitfaden](docs/pilot/README.md), [Phase-13-Review](docs/PHASE_13_REVIEW.md), [Releasecheckliste](docs/release/RELEASE_CHECKLIST.md). Offene Containerbefunde blockieren weiterhin das Produktionsgate. Zielinstanz, reale Abnahme und finale Lizenz sind noch offen; kein automatisches Deployment oder Publishing.
+Stand: 20.10.2026. Phasen 1–12 sind akzeptiert und gemerged. Der Phase-13-Sicherheitsstand ist für den [internen NCtest-Review](docs/pilot/NCTEST_HANDOVER_2026-10-20.md) bereit: 409 CItests bestanden, bestehende Daten/Passwörter/Medien erhalten. [Phase-13-Review](docs/PHASE_13_REVIEW.md), [Sicherheitsbewertung](docs/release/SECURITY_ASSESSMENT_PHASE_13.md). Eigener Anwendungscode: AGPL-3.0-or-later. Reale Team-/Hardware-/Providerabnahme und verbleibende OS-/Produktionsgates bleiben offen.
 
 ## Start und Review
 
@@ -29,7 +29,7 @@ Stand: 19.10.2026. Phasen 1–12 sind akzeptiert und gemerged. Phase 13 bereitet
 
 [Projektbeschreibung](PROJECT_SPEC.md), [Owner-Festlegungen](docs/OWNER_DECISIONS.md), [Architektur](ARCHITECTURE.md), [Datenmodell](DATA_MODEL.md), [Buchungsengine](BOOKING_ENGINE.md), [Berechtigungen](PERMISSIONS.md), [UX](UI_UX.md), [Sicherheit](SECURITY.md), [Entwicklungsplan](DEVELOPMENT_PLAN.md), [ADRs](docs/adr/README.md), [Akzeptanzmatrix](docs/ACCEPTANCE_MATRIX.md).
 
-Historische Phase-0-Entwürfe unter docs/history/phase-0/ sind keine aktuellen Anforderungen. Keine Produktionsbereitstellung oder realen personenbezogenen Daten. Die endgültige Projektlizenz ist noch nicht festgelegt; AGPL-3.0-or-later-Kompatibilität bleibt Ziel.
+Historische Phase-0-Entwürfe unter docs/history/phase-0/ sind keine aktuellen Anforderungen. Keine Produktionsbereitstellung oder realen personenbezogenen Daten. Deelvos eigener Anwendungscode steht unter [AGPL-3.0-or-later](LICENSE); Drittkomponenten behalten ihre Lizenzen. [Entscheidung und Distributionspflichten](LICENSE_DECISION.md).
 
 ## Kiosk, Scanner und Inventur — Ergänzung 15.10.2026
 
@@ -37,4 +37,4 @@ Historische Phase-0-Entwürfe unter docs/history/phase-0/ sind keine aktuellen A
 
 ## Team-UX-Review nach Phase 6
 
-Phase 6 und die nachfolgenden UX-/Kalenderkorrekturen wurden am 17.10.2026 abgenommen. [Private Reviewinstanz betreiben](docs/deployment/REVIEW_INSTANCE.md), [Teamaufgaben](docs/review/UX_REVIEW_PHASE_6.md), [Feedback](docs/review/UX_FEEDBACK_TEMPLATE.md). [Phase 7 ist ausdrücklich freigegeben](docs/OWNER_APPROVAL_PHASE_7.md). Die bisherige NCtest-Instanz bleibt bis zu einem gesonderten Update auf dem akzeptierten Kalenderbuild.
+Phase 6 und die nachfolgenden UX-/Kalenderkorrekturen wurden am 17.10.2026 abgenommen. [Private Reviewinstanz betreiben](docs/deployment/REVIEW_INSTANCE.md), [Teamaufgaben](docs/review/UX_REVIEW_PHASE_6.md), [Feedback](docs/review/UX_FEEDBACK_TEMPLATE.md). [Phase 7 ist ausdrücklich freigegeben](docs/OWNER_APPROVAL_PHASE_7.md). NCtest wurde am 20.10.2026 datenbewahrend auf den geprüften Phase-13-Sicherheitsstand aktualisiert; die alten Volumes bleiben als Rückfallstand erhalten.

@@ -190,7 +190,7 @@ def test_sbom_matches_reviewed_locks():
     result = sbom()
     assert len(result["components"]) == len(locked()) == 28
     assert all(c["hashes"] and c["licenses"] for c in result["components"])
-    assert "licenses" not in result["metadata"]["component"]
+    assert result["metadata"]["component"]["licenses"] == [{"expression": "AGPL-3.0-or-later"}]
 
 
 from test_bookings import configured as configured_fixture  # noqa: E402
