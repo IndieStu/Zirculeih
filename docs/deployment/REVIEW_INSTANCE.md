@@ -1,5 +1,10 @@
 # Deelvo – private UX-Testinstanz
 
+Aktueller Phase-13-Wechsel: [Sicherheitsbewertung](../release/SECURITY_ASSESSMENT_PHASE_13.md)
+und [NCtest-Prüfbericht](../test-results/phase-13-nctest.json). Der neue Stand wird
+in einem separaten Projekt und neuen Volumes restauriert; die historischen
+Phase-6-Kommandos unten nicht gegen dessen erhaltenen Rückfallstand ausführen.
+
 Diese Instanz ist ausschließlich für fiktive Daten und den Teamreview bestimmt.
 Die folgenden Erstinstallationsbeispiele stammen aus Phase 6; deren damaliges
 Phasengate ist historisch. Phasen 1–12 sind inzwischen akzeptiert. Für den nächsten

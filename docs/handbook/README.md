@@ -1,5 +1,8 @@
 # Deelvo-Handbuch
 
+[Aktueller interner NCtest-Review, 20.10.2026](../pilot/NCTEST_HANDOVER_2026-10-20.md):
+aktualisierter Stand, erhaltene Konten/Passwörter, fiktive Daten und Teamaufgaben.
+
 Stand: Phase 13, 19.10.2026. Dieses Handbuch beschreibt die tatsächlich vorhandene Oberfläche. Die Anwendung befindet sich vor dem Echtbetrieb; Beispiele verwenden synthetische Daten. [Pilotvorbereitung](../pilot/README.md) und [Releasegates](../release/RELEASE_CHECKLIST.md).
 
 Deelvo verwaltet gemeinsam nutzbare Ressourcen und deren Inventar. Verfügbar sind Konten, Gruppenrechte, Inventar, Standorte, Kategorien, Codes, Betriebsübersicht, Ressourcen/Einheiten/Pools, Katalog, Vor-Ort-Buchungen, physische Ausleihen, versionierte Vereinbarungen, Einweisungen, Serienanträge, Kalenderabos, Benachrichtigungen, Inventurläufe und die begrenzte Integrations-API. Ressourcen, Buchungen und tatsächlicher Gewahrsam bleiben getrennt.

@@ -1,5 +1,13 @@
 # Phase 12 — offene Containerbefunde
 
+**Nachprüfung 19.–20.10.2026:** Die Rohzahlen unten bleiben unverändert, die konkrete
+[Phase-13-Bewertung](SECURITY_ASSESSMENT_PHASE_13.md) ergänzt nun Betroffenheit und
+Härtung. Für alle 25 Go-CVEs wurde im offiziellen gosu-amd64-/arm64-Binary kein
+betroffenes Symbol gefunden, mit vollständiger CVEabdeckung der Prüfdatenbank.
+Keine pauschale Ausnahme; übrige OS-/libxml2-Befunde bleiben vor Produktion offen.
+[CI](../test-results/phase-13-security-ci.json) und
+[isoliertes NCtest-Update](../test-results/phase-13-nctest.json) sind geprüft.
+
 19.10.2026. **Produktionsgate blockiert, keine automatische Risikoausnahme.**
 Die CI-Prüfungen sind bestanden; ein erfolgreich durchgelaufener Scanner ist kein
 unbedenklicher Scan. Keine Produktion oder NCtest wurde aktualisiert.

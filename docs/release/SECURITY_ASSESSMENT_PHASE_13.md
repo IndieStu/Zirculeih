@@ -1,5 +1,13 @@
 # Sicherheitsbewertung — Phase 13
 
+**Umsetzung 20.10.2026:** [409 Tests und Runtime-/Restoreprüfung](../test-results/phase-13-security-ci.json)
+bestanden. [NCtest](../test-results/phase-13-nctest.json) mit neuen Volumes aktualisiert:
+Runtime-DBrolle ohne privilegierte Flags/SchemaCREATE/Tabellenbesitz und beide Dienste
+ohne Caps, mit no-new-privileges nachgeprüft. Alter Stand gestoppt erhalten,
+kein externer Mailversand. Die nachstehend beschriebenen Maßnahmen sind damit
+technisch umgesetzt; Produktions-/Echtpersonenfreigabe und verbleibende OSbefunde
+sind weiterhin offen.
+
 19.10.2026. Konkrete Analyse für den internen fiktiven NCtest-Review; keine
 pauschale Produktionsfreigabe. Rohbefunde bleiben in den Containerreports.
 
@@ -29,7 +37,7 @@ Die bekannte Datenbank ist endlich; keine Aussage über zukünftige Lücken.
 | --- | --- | --- |
 | CVE-2026-16742 | Betrifft systemd-homed; Daemon im geprüften DBimage nicht vorhanden, libsystemd0 allein ist nicht homed | Komponentenbestand bei Imagewechsel erneut prüfen |
 | CVE-2026-24882 | Betrifft GnuPG tpm2daemon; im geprüften DBimage nicht vorhanden | Kein allgemeiner Ignore für GnuPG |
-| CVE-2026-74860 | Betrifft libxml2-Python-SAX-Bindings; deren tatsächlichen Paket-/Dateibestand vor Zielabnahme bestätigen | Keine Gleichsetzung mit allen libxml2-Funktionen |
+| CVE-2026-74860 | Betrifft libxml2-Python-SAX-Bindings; kein `libxml2mod`-Binary im vollständigen `/usr`-Dateiscan des Kandidatenimages; keine Python-SAX-Bindings gefunden | Nichtbetroffenheit dieses Bindingspfads; keine Gleichsetzung mit allen libxml2-Funktionen |
 | CVE-2026-76642/78408/78409/78410 | util-linux-Mount-/Namespacepfade; keine entsprechenden Aufrufe in Deelvo, kein konfiguriertes fstab, Runtime ohne root/Caps/Rechteerhöhung | Bibliotheken/Tools bleiben vorhanden; Produktionsrestrisiko offen |
 | CVE-2026-54369 | Privilegierte ACL-Pfadoperationen, kein solcher Apppfad, Runtime unprivilegiert | Kein Versionsfix behauptet; Herstellerupdate beobachten |
 | CVE-2025-69720 | infocmp CLI vorhanden, kein Deelvoaufruf oder untrusted Terminfoladen | Komponentenbefund bleibt sichtbar |
@@ -61,3 +69,9 @@ prüfen, verfügbare Updates einspielen und offene Risiken einzeln entscheiden.
 Verantwortung technische Nachprüfung: Projektentwicklung; Betreiberfreigabe: Owner.
 Nächster Review spätestens vor jedem Imagewechsel, vor Echtpersonenbetrieb oder
 am 19.11.2026, je nachdem was zuerst eintritt. Kein Hintergrundmonitor aktiviert.
+
+
+[Registry-Nachprüfung vom 20.10.2026](../test-results/phase-13-registry-recheck.json):
+beide offiziellen Tags zeigen weiterhin auf die geprüften/deployten Digests.
+Keine verfügbare neue Basisimageversion durch den Tageswechsel übersehen. Dies
+ersetzt nicht die laufende spätere Hersteller-/CVEprüfung vor Echtbetrieb.

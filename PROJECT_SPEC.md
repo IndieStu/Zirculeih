@@ -1,6 +1,6 @@
 # Deelvo — Product & Engineering Specification
 
-**Version:** 0.9 · **Status:** Phases 1–12 accepted and merged; Phase 13 pilot/release preparation · **Date:** 2026-10-19
+**Version:** 0.9 · **Status:** Phases 1–12 accepted and merged; Phase 13 internal NCtest review ready · **Date:** 2026-10-20
 **Product name:** Deelvo · **Primary language:** German (de-DE) · **Timezone:** Europe/Berlin
 
 > This document is the authoritative product specification for Codex. Do not implement the entire product at once. First complete Phase 0, produce architecture artifacts, and request approval before writing application features. Unresolved choices must be captured as ADRs and must not be silently invented.
@@ -592,3 +592,19 @@ instance and final license remain owner decisions. Existing review data is retai
 a DB base image change requires a planned logical restore and collation/index checks.
 Human operator/privacy/security/provider/hardware acceptance is not inferred from
 code acceptance. Pilot execution and final release remain explicitly recorded gates.
+
+
+## Phase-13 security and NCtest execution — 2026-10-20
+
+Owner chose NCtest for internal testing, approved AGPL-3.0-or-later conditional on
+resource compatibility and instructed “Dann go”, then “continue”.
+[ADR-029](docs/adr/029.md), [security assessment](docs/release/SECURITY_ASSESSMENT_PHASE_13.md),
+[team handover](docs/pilot/NCTEST_HANDOVER_2026-10-20.md). Own application source is
+licensed AGPL-3.0-or-later (LICENSE/README/SPDX/SBOM); third-party licenses remain
+separate and actual binary distribution obligations remain a release gate.
+409 full CI tests pass. Official gosu binaries have no affected symbols for the
+25 scanner Go-CVEs; raw scanner evidence and remaining OS findings are retained.
+NCtest moved by verified logical restore to a separate project and volumes, with
+all original rows/passwords/media preserved, collation/index checks and a restricted
+web DB role. Old containers/volumes are stopped and retained. Fictional review only,
+local mail capture; no production/real-person/public-release acceptance is implied.

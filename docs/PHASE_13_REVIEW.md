@@ -1,5 +1,40 @@
 # Phase 13 — Pilot- und Releasevorbereitung
 
+## Aktualisierung 20.10.2026 — Sicherheitsbearbeitung und NCtest umgesetzt
+
+Owner wählte NCtest und AGPL-3.0-or-later und autorisierte mit „Dann go“ die
+Sicherheitsbearbeitung und das datenbewahrende interne Reviewupdate.
+[Teamübergabe](pilot/NCTEST_HANDOVER_2026-10-20.md),
+[Sicherheitsbewertung](release/SECURITY_ASSESSMENT_PHASE_13.md), [ADR-029](adr/029.md).
+Der folgende ursprüngliche Vorbereitungsstand ist historisch; Zielwahl und
+Lizenzwahl sind inzwischen geklärt, der technische Review ist auf NCtest verfügbar.
+Echter Team-/Hardware-/Providerpilot und öffentlicher Release bleiben offen.
+
+**409 Tests** im vollständigen [Sicherheits-CI-Lauf](test-results/phase-13-security-ci.json)
+auf `7d671d4` bestanden, einschließlich effektiver Runtimehärtung und verschlüsseltem
+Restore. Lokale gezielte Prüfung: 42 bestanden, sechs DBfälle nicht erneut lokal
+ausgeführt (vollständig in CI). Ruff 232 Dateien, Mypy 201 Quelldateien sauber.
+Die 25 Go-CVEs sind in den verifizierten amd64-/arm64-gosu-Binaries nicht als
+betroffene Symbole vorhanden. Roh-Containerscans bleiben erhalten; keine pauschale
+Risikofreigabe für die übrigen OS-/libxml2-Befunde.
+
+NCtest: 57 Tabellen/1729 Datensätze nativ identisch restauriert; alte Zeilen nach
+Migration vollständig erhalten, Passwörter unverändert, zwei Medien identisch,
+Indizes neu aufgebaut und null Kollationsmismatches. Runtime-DBrolle sicher,
+Startseite und Monats-/Tageskalender im Browser geprüft.
+[Upgradebericht](test-results/phase-13-nctest.json),
+[Startseite](test-results/phase-13-nctest-home.png),
+[Kalender](test-results/phase-13-nctest-calendar.png).
+Neue isolierte Volumes; alte Container/Volumes gestoppt erhalten. Verschlüsselte
+Backups plus getrennt geschütztes Wiederherstellungsmaterial offhost gesichert.
+Kein realer Mailversand, kein automatisches Neu-Seeding, kein öffentlicher Release.
+
+Deelvos eigener Anwendungscode ist unter [AGPL-3.0-or-later](../LICENSE) erklärt;
+SPDX-Metadaten/SBOM ergänzt, Drittkomponenten bleiben separat lizenziert. Konkrete
+binäre Distributions-/Quellzugangs-/Noticepflichten sind weiterhin Releasegate.
+
+## Ursprünglicher Vorbereitungsstand vom 19.10.2026
+
 19.10.2026. [Freigabe](OWNER_APPROVAL_PHASE_13.md), Basis Main `b435dd8` (PR #13,
 akzeptierte Phase 12), Branch `phase-13-pilot-release`.
 

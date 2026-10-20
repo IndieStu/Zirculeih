@@ -2,7 +2,7 @@
 
 Selbst gehostete Inventarverwaltung, Ressourcenreservierung und Ausleihe für Makerspaces.
 
-Stand: 19.10.2026. Phasen 1–12 sind akzeptiert und gemerged. Phase 13 bereitet den internen Pilot und Release vor: [Pilotleitfaden](docs/pilot/README.md), [Phase-13-Review](docs/PHASE_13_REVIEW.md), [Releasecheckliste](docs/release/RELEASE_CHECKLIST.md). Offene Containerbefunde blockieren weiterhin das Produktionsgate. NCtest ist als internes Testziel gewählt; AGPL-3.0-or-later ist vorbehaltlich Ressourcenkompatibilität bestätigt. Sicherheitsbearbeitung und reale Abnahme stehen vor Instanzupdate und Publishing.
+Stand: 20.10.2026. Phasen 1–12 sind akzeptiert und gemerged. Der Phase-13-Sicherheitsstand ist für den [internen NCtest-Review](docs/pilot/NCTEST_HANDOVER_2026-10-20.md) bereit: 409 CItests bestanden, bestehende Daten/Passwörter/Medien erhalten. [Phase-13-Review](docs/PHASE_13_REVIEW.md), [Sicherheitsbewertung](docs/release/SECURITY_ASSESSMENT_PHASE_13.md). Eigener Anwendungscode: AGPL-3.0-or-later. Reale Team-/Hardware-/Providerabnahme und verbleibende OS-/Produktionsgates bleiben offen.
 
 ## Start und Review
 
@@ -37,4 +37,4 @@ Historische Phase-0-Entwürfe unter docs/history/phase-0/ sind keine aktuellen A
 
 ## Team-UX-Review nach Phase 6
 
-Phase 6 und die nachfolgenden UX-/Kalenderkorrekturen wurden am 17.10.2026 abgenommen. [Private Reviewinstanz betreiben](docs/deployment/REVIEW_INSTANCE.md), [Teamaufgaben](docs/review/UX_REVIEW_PHASE_6.md), [Feedback](docs/review/UX_FEEDBACK_TEMPLATE.md). [Phase 7 ist ausdrücklich freigegeben](docs/OWNER_APPROVAL_PHASE_7.md). Die bisherige NCtest-Instanz bleibt bis zu einem gesonderten Update auf dem akzeptierten Kalenderbuild.
+Phase 6 und die nachfolgenden UX-/Kalenderkorrekturen wurden am 17.10.2026 abgenommen. [Private Reviewinstanz betreiben](docs/deployment/REVIEW_INSTANCE.md), [Teamaufgaben](docs/review/UX_REVIEW_PHASE_6.md), [Feedback](docs/review/UX_FEEDBACK_TEMPLATE.md). [Phase 7 ist ausdrücklich freigegeben](docs/OWNER_APPROVAL_PHASE_7.md). NCtest wurde am 20.10.2026 datenbewahrend auf den geprüften Phase-13-Sicherheitsstand aktualisiert; die alten Volumes bleiben als Rückfallstand erhalten.

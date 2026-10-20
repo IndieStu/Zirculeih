@@ -1,0 +1,55 @@
+{
+  "source_commit": "c0135156a74e0927988dab0ebf3daca6d34d1171",
+  "target_commit": "7d671d495d679a2599bf2fbfd07bd50e608226d9",
+  "source_tables": 57,
+  "source_rows": 1729,
+  "source_fingerprint": "f10722c240a7a68b86583b304ae75c327c345aa49cb9ec0015508cf20f7f1148",
+  "restored_fingerprint": "f10722c240a7a68b86583b304ae75c327c345aa49cb9ec0015508cf20f7f1148",
+  "all_original_rows_preserved_after_migrations": true,
+  "passwords_preserved": true,
+  "media_files": 2,
+  "media_hashes_equal": true,
+  "native_restore_equal": true,
+  "encrypted_backup_authenticated": true,
+  "collation_mismatches": 0,
+  "indexes_rebuilt": true,
+  "runtime_role_safe": true,
+  "schema_current": true,
+  "old_containers_and_volumes_retained": true,
+  "old_containers_stopped": true,
+  "external_mail_enabled": false,
+  "review_only": true,
+  "health_checks_passed": true,
+  "url": "http://nctest.tailf7eaa5.ts.net:8766",
+  "completed_at": "2026-10-20T07:13:51.093447+00:00",
+  "encrypted_backup_offhost_copy": true,
+  "recovery_material_separate_owner_only_copy": true,
+  "runtime_probes": {
+    "web": {
+      "uid": 10001,
+      "effective_capabilities": 0,
+      "no_new_privileges": true
+    },
+    "db": {
+      "uid": 999,
+      "effective_capabilities": 0,
+      "no_new_privileges": true
+    },
+    "django_check": "passed",
+    "deployment_readiness": {
+      "schema_current": true,
+      "runtime_role_safe": true,
+      "errors": [],
+      "external_integrations_verified": false
+    }
+  },
+  "browser_smoke": {
+    "date": "2026-10-20",
+    "home": "passed: TESTINSTANZ and build 7d671d4 visible",
+    "resource_month_calendar": "passed",
+    "resource_day_timeline": "passed: 2026-10-21, free/booked/transition visible",
+    "booking_submitted": false,
+    "real_credentials_used": false
+  },
+  "temporary_plaintext_snapshots_removed": true
+}

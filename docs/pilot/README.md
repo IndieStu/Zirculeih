@@ -1,5 +1,12 @@
 # Deelvo — internen Pilot vorbereiten
 
+**Update 20.10.2026:** Der [interne NCtest-Review](NCTEST_HANDOVER_2026-10-20.md)
+ist nach Sicherheitsanalyse, 409 CItests und nativem datenbewahrendem Restore
+bereit. Dieser technische Review verwendet fiktive Daten; die tatsächlichen
+Team-/Hardware-/Provideraufgaben bleiben durchzuführen. AGPL-3.0-or-later für
+eigenen Anwendungscode ist eingebunden. Frühere offene Ziel-/Lizenzauswahlfragen
+unten sind damit geklärt; reale Betriebs-/Privacy-/Restbefundgates bleiben offen.
+
 Stand 19.10.2026. **Vorbereitung; kein durchgeführter oder freigegebener Echtbetrieb.**
 Phase 12 ist technisch akzeptiert. [Offene Containerbefunde](../release/CONTAINER_FINDINGS.md)
 und [Staging-/Betreiberabnahme](../release/STAGING_ACCEPTANCE.md) bleiben bestehen.

@@ -15,7 +15,7 @@ Commit vom Owner/Betreiber ausgefüllt; hier bleiben Ergebnisse offen.
 | Regression | Vollständige PostgreSQLsuite, Lint/Typen, Migrationscheck, tatsächlicher frischer Composepfad am Kandidaten | 405 Tests am Vorbereitungscommit `cacb8c6` bestanden; tatsächlichen Releasekandidaten erneut zuordnen/prüfen |
 | Barrierefreiheit/Hardware | Aufgaben am realen Telefon, Tastatur/Assistenztechnik und HID/Drucker/Terminal; keine bloße Axe-Zertifizierung | Offen |
 | Kalender | CAL-06 durch Owner später manuell; falls noch offen Kalenderclientfunktion explizit nicht als abgenommen veröffentlichen | Offen, keine Testcloud |
-| Lizenz | Schriftliche [Ownerentscheidung](../../LICENSE_DECISION.md), passender unveränderter Lizenztext und eindeutige Metadaten | Ownerwahl bestätigt; Abschlussprüfung und Einbindung offen |
+| Lizenz | Schriftliche [Ownerentscheidung](../../LICENSE_DECISION.md), passender unveränderter Lizenztext und eindeutige Metadaten | AGPL-3.0-or-later für eigenen Code mit LICENSE/SBOM/SPDX eingebunden; konkrete binäre Distributionsprüfung offen |
 | Drittkomponenten | Tatsächliche Runtimeartefakte, Python/OS/native Codecs/Fonts, Notices/Quellen-/Austauschbarkeitspflichten inkl. Psycopg-LGPL prüfen | Teilnachweise vorhanden, finale Distribution offen |
 | Lieferartefakt | Quellcommit, Lockhashes, Image-Digests/SBOM, reproduzierbare Buildanleitung und Prüfsummen | Noch kein Releaseartefakt |
 | Inhalte | [Release-Notizen](../../CHANGELOG.md), aktuelle Installation/Upgrade/Backuphilfe und bekannte Grenzen | Entwurf vorhanden |
