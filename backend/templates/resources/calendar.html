@@ -7,6 +7,9 @@
 {% if calendar.days_mode %}
 <h3>Zeitraum auswählen</h3>
 <form id="calendar-selection" method="get" action="{{ calendar.data.action }}"><div class="period-controls"><p><label for="calendar-start-date">Von</label><input id="calendar-start-date" type="date" name="start" required></p><p><label for="calendar-end-date">Bis einschließlich</label><input id="calendar-end-date" type="date" name="end" required></p></div><p>Maximal {{ calendar.duration }} buchbar.</p><p id="calendar-feedback" role="status" aria-live="polite">Wähle Anfang und Ende im Kalender.</p><button id="calendar-continue" disabled>Reservieren</button></form>
+{% elif calendar.loan_slots %}
+<h3>Ausleihzeitraum auswählen</h3>
+<form id="calendar-selection" method="get" action="{{ calendar.data.action }}"><div class="period-controls"><p><label for="loan-start">Abholung ab</label><input id="loan-start" type="datetime-local" name="start" step="{{ calendar.step_seconds }}" required></p><p><label for="loan-end">Rückgabe bis</label><input id="loan-end" type="datetime-local" name="end" step="{{ calendar.step_seconds }}" required></p></div><p>Maximal {{ calendar.duration }} buchbar. Die Rückgabe kann an einem späteren Tag erfolgen.</p><p id="calendar-feedback" role="status" aria-live="polite">Wähle Datum und Uhrzeit für Anfang und Ende der Ausleihe.</p><button id="calendar-continue" disabled>Zeitraum prüfen</button></form>
 {% elif calendar.day %}
 <h3 id="day-availability">{{ calendar.day|date:'l, d. F Y' }}</h3>
 <div class="timeline-legend"><span class="legend-available">Frei</span><span class="legend-booked">Belegt</span><span class="legend-transition">Übergangszeit</span><span class="legend-closed">Nicht verfügbar</span><span class="legend-blocked">Gesperrt / Wartung</span></div>

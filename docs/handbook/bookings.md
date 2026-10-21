@@ -24,6 +24,13 @@ Status: bestätigt → aktiv → abgeschlossen oder vor Frist storniert. Der Sta
 
 ## Zeitraum über die Verfügbarkeit wählen
 
+Bei Ausleihen nach Kalendertagen wählst du einen ersten und einen letzten Tag;
+der letzte Tag ist eingeschlossen. Eine maximale Dauer von 14 Tagen bedeutet
+entsprechend höchstens 14 ausgewählte Kalendertage. Für ausdrücklich nach
+Uhrzeiten konfigurierte Mitnahme-Ausleihen können Beginn und Ende auf
+verschiedenen Tagen liegen. „Zeitraum prüfen“ prüft den vollständigen Zeitraum;
+Abholung und Rückgabe werden weiterhin als eigene Termine angegeben.
+
 Im Katalog zeigt jeder Eintrag seine aktuelle Belegung. Auf der Detailseite einen
 Tag wählen und einen freien Zeitraum anklicken. Das Buchungsformular übernimmt
 Von/Bis; längere Zeiträume können dort angepasst werden. Mitnahmen benötigen

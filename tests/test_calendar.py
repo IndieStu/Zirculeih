@@ -213,6 +213,63 @@ def test_day_based_range_retains_inclusive_dates_and_max_days(lending_setup, cli
     assert response.status_code == 400
 
 
+def test_hour_based_take_home_loan_can_span_multiple_dates(lending_setup, client):
+    _, resource, _, _, user, start, _, _, _, _ = lending_setup
+    client.force_login(user)
+    view = calendar(resource, actor=user)
+    assert view["loan_slots"] and view["data"]["mode"] == "loan-slots"
+    assert view["duration"] == "7 Tage"
+    response = client.get(reverse("resource_detail", args=[resource.slug]))
+    assert b'id="loan-start"' in response.content and b'id="loan-end"' in response.content
+    assert b'id="calendar-end-time"' not in response.content
+    response = client.get(
+        reverse("calendar_select", args=[resource.slug]),
+        {
+            "start": start.isoformat(),
+            "end": (start + timedelta(days=2)).isoformat(),
+        },
+    )
+    assert response.status_code == 302
+    assert (start + timedelta(days=2)).date().isoformat() in response.url
+    assert not Booking.objects.exists()
+
+
+def test_day_loan_selection_reaches_booking_with_inclusive_end(lending_setup, client):
+    actor, resource, _, policy, user, start, _, _, _, _ = lending_setup
+    services.save_policy(actor, resource.pk, {"time_mode": "days", "max_days": 14}, policy.revision)
+    client.force_login(user)
+    end = start.date() + timedelta(days=2)
+    response = client.get(
+        reverse("calendar_select", args=[resource.slug]),
+        {
+            "start": start.date().isoformat(),
+            "end": end.isoformat(),
+        },
+    )
+    assert response.status_code == 302 and end.isoformat() in response.url
+    response = client.get(reverse("resource_detail", args=[resource.slug]))
+    assert b"Maximal 14 Tage" in response.content and b"336 Stunden" not in response.content
+    assert b"calendar-end-date" in response.content
+    assert not Booking.objects.exists()
+    payload = {
+        "start": start.date().isoformat(),
+        "end": end.isoformat(),
+        "pickup_at": start.isoformat(),
+        "return_at": (start + timedelta(days=2)).isoformat(),
+        "key": str(uuid4()),
+        "action": "preview",
+    }
+    url = reverse("booking_create", args=[resource.pk])
+    response = client.post(url, payload)
+    assert response.status_code == 200
+    assert response.context["result"].code == "available"
+    payload["action"] = "confirm"
+    assert client.post(url, payload).status_code == 302
+    booking = Booking.objects.get()
+    assert booking.start_date == start.date()
+    assert booking.end_date_exclusive == end + timedelta(days=1)
+
+
 def test_projection_checks_one_continuous_unit_and_next_booking_padding(configured):
     actor, resource, unit, policy, user, start, end = configured
     from resources import services as resources

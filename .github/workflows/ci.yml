@@ -55,6 +55,8 @@ jobs:
           scripts/review-stack exec -T web python backend/manage.py enhance_review_calendar
           scripts/review-stack exec -T web python backend/manage.py enhance_review_phase7
           scripts/review-stack exec -T web python backend/manage.py enhance_review_phase7
+          scripts/review-stack exec -T web python backend/manage.py correct_review_lending_dates
+          scripts/review-stack exec -T web python backend/manage.py correct_review_lending_dates
           scripts/review-stack exec -T web python backend/manage.py review_identifiers
           curl --fail http://localhost:8766/ | grep TESTINSTANZ
           curl --fail http://localhost:8766/static/brand.css

@@ -27,6 +27,22 @@ def test_seed_guard(settings):
     assert not ReviewDataset.objects.exists()
 
 
+def test_legacy_take_home_correction_is_explicit_idempotent_and_preserves_data(settings, tmp_path):
+    from bookings.models import Booking, BookingPolicy
+
+    settings.REVIEW_MODE = True
+    settings.MEDIA_ROOT = tmp_path / "media"
+    seed(timezone.localdate())
+    bookings = list(Booking.objects.values().order_by("pk"))
+    users = list(User.objects.values("pk", "password", "session_revision").order_by("pk"))
+    call_command("correct_review_lending_dates")
+    call_command("correct_review_lending_dates")
+    assert BookingPolicy.objects.get(resource__slug="review-bohrer").time_mode == "days"
+    assert BookingPolicy.objects.get(resource__slug="review-raum").time_mode == "slots"
+    assert list(Booking.objects.values().order_by("pk")) == bookings
+    assert list(User.objects.values("pk", "password", "session_revision").order_by("pk")) == users
+
+
 def test_seed_preserves_review_and_real_states(settings, tmp_path, client):
     settings.REVIEW_MODE = True
     settings.REVIEW_BUILD = "abcdef0"

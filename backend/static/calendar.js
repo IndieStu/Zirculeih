@@ -7,6 +7,22 @@
   if (!form) return;
   const message = document.getElementById('calendar-feedback');
   const submit = document.getElementById('calendar-continue');
+  if (data.mode === 'loan-slots') {
+    const start = document.getElementById('loan-start');
+    const end = document.getElementById('loan-end');
+    const params = new URLSearchParams(location.search);
+    start.value = params.get('start') || data.initialStart || ''; end.value = params.get('end') || '';
+    start.min = `${data.minDate}T00:00`; start.max = `${data.maxStartDate}T23:59`;
+    const sync = () => {
+      end.min = start.value || `${data.minDate}T00:00`;
+      submit.disabled = !start.value || !end.value || end.value <= start.value;
+      message.textContent = submit.disabled ? 'Wähle einen Beginn und ein späteres Ende der Ausleihe.' :
+        'Die Verfügbarkeit des gesamten Zeitraums und die Abhol-/Rückgabezeiten werden im nächsten Schritt geprüft.';
+    };
+    start.addEventListener('input',sync); end.addEventListener('input',sync);
+    form.addEventListener('submit',event => {sync(); if(submit.disabled) event.preventDefault();});
+    sync(); return;
+  }
   if (data.mode === 'days') {
     const start = document.getElementById('calendar-start-date');
     const end = document.getElementById('calendar-end-date');

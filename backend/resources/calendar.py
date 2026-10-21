@@ -129,6 +129,8 @@ def appointment_day(snapshot, day, purpose):
 
 
 def duration_label(minutes):
+    if minutes % 1440 == 0:
+        return f"{minutes // 1440} Tag" + ("e" if minutes != 1440 else "")
     if minutes % 60 == 0:
         return f"{minutes // 60} Stunde" + ("n" if minutes != 60 else "")
     return f"{minutes} Minuten"
@@ -206,6 +208,7 @@ def calendar(resource, selected=None, *, month=None, actor=None, query=None):
     p = BookingPolicy.objects.filter(resource=resource).first()
     if not resource.booking_enabled or p is None:
         return None
+    loan_slots = p.use_mode == "physical_loan" and p.time_mode == "slots"
     today = timezone.now().astimezone(zone(p.timezone)).date()
     latest = today + timedelta(days=p.max_horizon_days)
     day = parse_date(selected)
@@ -233,6 +236,12 @@ def calendar(resource, selected=None, *, month=None, actor=None, query=None):
                     bookable = (
                         validate_period(snapshot, d, d + timedelta(days=p.min_days - 1)) is None
                     )
+                elif loan_slots:
+                    bookable = any(
+                        t >= snapshot.now + timedelta(minutes=p.lead_minutes)
+                        and snapshot.free_units(t, t + timedelta(minutes=p.min_duration_minutes))
+                        for t in appointment_points(snapshot, d, "pickup")
+                    )
                 else:
                     bookable = day_options(snapshot, d)
             cells.append(
@@ -245,12 +254,18 @@ def calendar(resource, selected=None, *, month=None, actor=None, query=None):
                     "today": d == today,
                     "url": "?"
                     + urlencode({"month": first.strftime("%Y-%m"), "day": d.isoformat()})
-                    + ("#resource-calendar" if p.time_mode == "days" else "#day-availability"),
+                    + (
+                        "#resource-calendar"
+                        if p.time_mode == "days"
+                        else "#calendar-selection"
+                        if loan_slots
+                        else "#day-availability"
+                    ),
                 }
             )
         weeks.append(cells)
     data = {
-        "mode": p.time_mode,
+        "mode": "loan-slots" if loan_slots else p.time_mode,
         "minDate": today.isoformat(),
         "maxStartDate": latest.isoformat(),
         "day": day.isoformat() if day else None,
@@ -265,7 +280,23 @@ def calendar(resource, selected=None, *, month=None, actor=None, query=None):
         "segments": [],
     }
     segments = []
-    if day and p.time_mode != "days":
+    if loan_slots and day:
+        first_pickup = next(
+            (
+                t
+                for t in appointment_points(snapshot, day, "pickup")
+                if t >= snapshot.now + timedelta(minutes=p.lead_minutes)
+                and snapshot.free_units(t, t + timedelta(minutes=p.min_duration_minutes))
+            ),
+            None,
+        )
+        if first_pickup:
+            data["initialStart"] = (
+                first_pickup.astimezone(zone(p.timezone))
+                .replace(tzinfo=None)
+                .isoformat(timespec="minutes")
+            )
+    if day and p.time_mode != "days" and not loan_slots:
         lo = midnight(day, p)
         hi = midnight(day + timedelta(days=1), p)
         data.update(day_options(snapshot, day, all_ends=True))
@@ -333,6 +364,8 @@ def calendar(resource, selected=None, *, month=None, actor=None, query=None):
         "next_month": next_month.strftime("%Y-%m") if next_month <= latest.replace(day=1) else None,
         "day": day,
         "days_mode": p.time_mode == "days",
+        "loan_slots": loan_slots,
+        "step_seconds": p.granularity_minutes * 60,
         "segments": segments,
         "data": data,
         "duration": f"{p.max_days} Tage"
