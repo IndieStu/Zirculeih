@@ -29,10 +29,16 @@ class Command(BaseCommand):
                 policy = BookingPolicy.objects.select_related("resource").get(resource__slug=slug)
                 if policy.time_mode == "days":
                     continue
+                # The UX enhancement only enabled the cargo agreement (revision 2).
+                legacy_revision = policy.revision == 1 or (
+                    slug == "review-lastenrad"
+                    and policy.revision == 2
+                    and policy.requires_agreement
+                )
                 if (
                     policy.use_mode != "physical_loan"
                     or policy.time_mode != "slots"
-                    or policy.revision != 1
+                    or not legacy_revision
                     or policy.max_duration_minutes != 14 * 1440
                     or policy.max_days != 14
                 ):

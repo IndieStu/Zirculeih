@@ -33,6 +33,7 @@ def test_legacy_take_home_correction_is_explicit_idempotent_and_preserves_data(s
     settings.REVIEW_MODE = True
     settings.MEDIA_ROOT = tmp_path / "media"
     seed(timezone.localdate())
+    call_command("enhance_review_ux")
     bookings = list(Booking.objects.values().order_by("pk"))
     users = list(User.objects.values("pk", "password", "session_revision").order_by("pk"))
     call_command("correct_review_lending_dates")
