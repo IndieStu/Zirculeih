@@ -1,24 +1,26 @@
 [
   {
     "name": "Pillow",
-    "version": "12.3.0",
-    "filename": "pillow-12.3.0-cp312-cp312-macosx_11_0_arm64.whl",
-    "sha256": "ffd0c5368496f41b0944be820fcb7a838aa6e623d250b01acf2643939c3f99d7",
+    "version": "13.0.0",
+    "filename": "pillow-13.0.0-cp312-cp312-macosx_11_0_arm64.whl",
+    "sha256": "fc481f742ccda20e9ed760b8f978dff50f2a4e9bc253ac167fb0a05b0783ef52",
     "license_files": [
-      "pillow-12.3.0.dist-info/licenses/LICENSE"
+      "pillow-13.0.0.dist-info/licenses/LICENSE"
     ],
-    "source": "https://pypi.org/project/Pillow/12.3.0/",
-    "vulnerabilities": []
+    "source": "https://pypi.org/project/Pillow/13.0.0/",
+    "vulnerabilities": [],
+    "checked_at": "2026-10-21"
   },
   {
     "name": "Pillow",
-    "version": "12.3.0",
-    "filename": "pillow-12.3.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
-    "sha256": "78cb2c6865a35ab8ff8b75fd122f6033b92a62c82801110e48ddd6c936a45d91",
+    "version": "13.0.0",
+    "filename": "pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+    "sha256": "42d63be3af4f9b951b199b0a9d23365d37ab14687e6d77b74940432c8515c4ca",
     "license_files": [
-      "pillow-12.3.0.dist-info/licenses/LICENSE"
+      "pillow-13.0.0.dist-info/licenses/LICENSE"
     ],
-    "source": "https://pypi.org/project/Pillow/12.3.0/",
-    "vulnerabilities": []
+    "source": "https://pypi.org/project/Pillow/13.0.0/",
+    "vulnerabilities": [],
+    "checked_at": "2026-10-21"
   }
 ]

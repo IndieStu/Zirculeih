@@ -78,7 +78,7 @@ Inter-Fonts unverändert, ursprüngliche Lizenz-/Copyrightdatei wird neben den F
 
 ## Phase 3 — private Bildvalidierung, geprüft 15.10.2026
 
-Pillow **12.3.0**, SPDX **MIT-CMU**, Runtime ausschließlich zur PNG/JPEG-Dekodierung und metadatafreien Neukodierung. [Release](https://pypi.org/project/Pillow/12.3.0/), [konkrete macOS-arm64-/Linux-x86_64-Artefakte, SHA-256 und Lizenzpfade](docs/inventory-dependency-artifacts.json), [mitgelieferte vollständige Lizenz-/Noticedatei](docs/third-party/Pillow-LICENSE.txt). Beide Wheels heruntergeladen, Hashes gegen PyPI verglichen, Paket-/Bundled-Lizenztexte geprüft; keine Python-Extras/Transitives installiert. Hashlock ergänzt. PyPI-vulnerabilities-Feld war bei Abfrage leer, kein vollständiger Systemscan.
+Pillow **13.0.0**, SPDX **MIT-CMU**, Runtime ausschließlich zur PNG/JPEG-Dekodierung und metadatafreien Neukodierung. [Release](https://pypi.org/project/Pillow/13.0.0/), [konkrete macOS-arm64-/Linux-x86_64-Artefakte, SHA-256 und Lizenzpfade](docs/inventory-dependency-artifacts.json), [mitgelieferte vollständige Lizenz-/Noticedatei](docs/third-party/Pillow-LICENSE.txt). Beide Wheels heruntergeladen, Hashes gegen PyPI verglichen, Paket-/Bundled-Lizenztexte geprüft; keine Python-Extras/Transitives installiert. Hashlock ergänzt. PyPI-vulnerabilities-Feld war bei Abfrage leer, kein vollständiger Systemscan.
 
 MIT-CMU erlaubt unveränderte Nutzung/Verteilung unter Erhalt von Copyright-/Lizenztexten und Namens-/Werbeverbot. Wheel enthält zusätzliche native Open-Source-Bibliotheken; die beigefügte Datei erfasst u.a. JPEG, PNG, TIFF, OpenJPEG, FreeType, HarfBuzz, LittleCMS, Brotli, AVIF/AOM/dav1d, WebP, libyuv, liblzma, Zlib/Zstd und X-Bibliotheksnotices. Für FreeType wird der **FTL**-Lizenzzweig gewählt, nicht GPLv2; erforderliche Anerkennung in der Distributionsdokumentation erhalten. Das liblzma-Notice unterscheidet die Public-Domain-Library von GPL-Buildscripts/-Tools, die laut Lizenztext nicht in den Librarybinärbestand eingehen. Vollständige tatsächlich installierte Native-/OS-SBOM, Codecversions-/CVE-Prüfung bleiben vor Release erforderlich. Keine stillschweigende Einführung eines GPL-only-Pakets oder endgültige Anwendungslizenzwahl.
 
@@ -174,3 +174,13 @@ Gosu 1.19 im offiziellen PostgreSQLimage unter Apache-2.0;
 Gosuänderung/Neuverteilung außerhalb des bestehenden Images.
 [Konkrete Symbolanalyse](docs/test-results/phase-13-gosu-reachability.json) und
 [Sicherheitsbewertung](docs/release/SECURITY_ASSESSMENT_PHASE_13.md).
+
+## Pillow security refresh — 2026-10-21
+
+Pillow 13.0.0 replaces 12.3.0 after the live OSV/PyPI audit blocked CI.
+[Upstream advisories](https://github.com/python-pillow/Pillow/security/advisories)
+identify fixes in 13.0.0. macOS arm64 and Linux x86_64 Python 3.12 wheels were
+downloaded and verified against PyPI SHA-256; their complete license text is
+identical to the previously reviewed MIT-CMU/bundled-library notice. No new
+dependency or format support is introduced. Runtime continues accepting PNG/JPEG
+only. New lock hashes and artifact evidence are recorded alongside the SBOM.
