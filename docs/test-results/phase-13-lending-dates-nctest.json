@@ -1,0 +1,31 @@
+{
+  "build": "a395de5c289c16ad0500d98e23c3ca36e298944a",
+  "corrected_policies": 4,
+  "changed_tables": [
+    "accounts_auditevent",
+    "bookings_bookingpolicy"
+  ],
+  "preserved_tables": 80,
+  "bookings_users_passwords_media_mail_unchanged": true,
+  "backup_roundtrip_verified": true,
+  "native_snapshot_restore_verified": true,
+  "source_fingerprint": "1434cca46b35b3ab25e3ea8189f1117b956cf9c7afffc48a0bc081d48f5efead",
+  "result_fingerprint": "829540fb57d7f4b705a92a7bd9f15f9c986ca65beeff2c9fcda84a8a97519286",
+  "health": "ready",
+  "runtime_role_safe": true,
+  "schema_current": true,
+  "completed_at": "2026-10-21T09:32:38.338233+00:00",
+  "rollback_image": "deelvo-review-lending-rollback:20261021T092940Z",
+  "postflight_note": "Initial IP health probe was refused by configured allowed-host protection; canonical configured hostname passes. Protection unchanged.",
+  "browser_check": {
+    "role": "normal user",
+    "resource": "review-bohrer",
+    "start": "2026-10-23",
+    "inclusive_end": "2026-10-25",
+    "pickup": "2026-10-23T10:00",
+    "return": "2026-10-25T16:00",
+    "result": "Der Zeitraum ist frei.",
+    "reservation_created": false,
+    "onsite_machine": "review-drucker retains same-day time controls and maximum 8 hours"
+  }
+}
